@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/vendor.mjs && tailwindcss -c tailwind.config.cjs -i assets/css/tailwind.css -o assets/css/utilities.css --minify",
-    "start": "python -m http.server 8080 --bind 127.0.0.1",
+    "build": "node scripts/vendor.mjs && tailwindcss -c tailwind.config.cjs -i assets/css/tailwind.css -o assets/css/utilities.css --minify && node scripts/build-site.mjs",
+    "start": "node scripts/serve.mjs",
+    "preview": "node scripts/serve.mjs dist /painel-goias/",
     "test": "node --test tests/*.test.js",
     "test:browser": "playwright test"
   },

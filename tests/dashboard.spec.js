@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const route = '/mapa_calor_v0.10.21.html';
+const route = 'index.html';
 async function ready(page) {
   await page.goto(route);
   await expect(page.locator('#map .leaflet-overlay-pane path')).toHaveCount(246);
@@ -34,14 +34,14 @@ test('reset cancels search and population timers; malformed inputs do not filter
   await ready(page);
   await page.locator('#filter-search').fill('Goiania');
   await page.locator('#btn-reset-filters').click();
-  await expect.poll(() => page.evaluate(async () => (await import('/assets/js/core.js')).State.get('searchTerm'))).toBe('');
+  await expect.poll(() => page.evaluate(async () => (await import('./assets/js/core.js')).State.get('searchTerm'))).toBe('');
   await page.locator('#filter-pop').selectOption('custom');
   await page.locator('#filter-pop-min').fill('50000abc');
   await expect(page.locator('#custom-population-error')).toBeVisible();
   await page.locator('#filter-pop-min').fill('50.000');
   await page.locator('#btn-reset-filters').click();
   await page.waitForTimeout(200);
-  expect(await page.evaluate(async () => (await import('/assets/js/core.js')).State.get('populationBand'))).toBe('all');
+  expect(await page.evaluate(async () => (await import('./assets/js/core.js')).State.get('populationBand'))).toBe('all');
   await expect(page.locator('#filter-pop-min')).toHaveValue('');
 });
 
@@ -66,7 +66,7 @@ test('program correlation selection agrees with panel and modal traps focus', as
   await expect(point).toBeVisible();
   await point.focus();
   await page.keyboard.press('Enter');
-  const selected = await page.evaluate(async () => (await import('/assets/js/core.js')).State.get('selectedCity').name);
+  const selected = await page.evaluate(async () => (await import('./assets/js/core.js')).State.get('selectedCity').name);
   await expect(page.locator('#panel-city-name')).toHaveText(selected);
   await page.locator('#scatter-expand').click();
   await expect(page.locator('#scatter-dialog')).toBeVisible();
@@ -102,7 +102,7 @@ test('all social indicators agree with filtered table and numeric export', async
   for (const indicator of ['norm_ext', 'norm_pob', 'norm_pob_p1_p2']) {
     await page.locator('#sel-pob-ind').selectOption(indicator);
     const expected = await page.evaluate(async () => {
-      const { State, DataSelectors, ColumnSelectors } = await import('/assets/js/core.js');
+      const { State, DataSelectors, ColumnSelectors } = await import('./assets/js/core.js');
       const state = State.getState();
       return { count: DataSelectors.getFilteredFeatures(state).length, labels: ColumnSelectors.get(state).map(column => column.label) };
     });
@@ -131,8 +131,8 @@ test('selection changed while correlation is hidden is restored from shared stat
   await page.locator('#scatter-municipio-select').selectOption({ label: 'Abadia de Goiás' });
   await page.locator('#view-mapa').click();
   await page.evaluate(async () => {
-    const { State } = await import('/assets/js/core.js');
-    const { geojsonData } = await import('/assets/js/data.js');
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
     State.set('selectedCity', geojsonData.features.find(feature => feature.properties.name === 'Abadiânia').properties);
   });
   await page.locator('#view-scatter').click();
@@ -147,8 +147,8 @@ test('radar PLES does not inherit hidden status/metric and dialog restores focus
   await page.locator('#sel-prog-metrica').selectOption('Pessoas');
   await page.locator('#sel-prog-programa').selectOption('PLES');
   await page.evaluate(async () => {
-    const { State } = await import('/assets/js/core.js');
-    const { geojsonData } = await import('/assets/js/data.js');
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
     State.set('selectedCity', geojsonData.features.find(feature => feature.id === '5200050').properties);
   });
   await expect(page.locator('#program-comparison-chart')).toBeVisible();
@@ -169,8 +169,8 @@ test('theme refreshes chart colors and reduced motion disables animations', asyn
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await ready(page);
   await page.evaluate(async () => {
-    const { State } = await import('/assets/js/core.js');
-    const { geojsonData } = await import('/assets/js/data.js');
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
     State.set('selectedCity', geojsonData.features[0].properties);
   });
   await page.locator('#btn-dark-toggle').click();
@@ -202,13 +202,13 @@ test('leaving custom population reconciles discarded edits with applied limits',
   await ready(page);
   await page.locator('#filter-pop').selectOption('custom');
   await page.locator('#filter-pop-min').fill('10.000');
-  await expect.poll(() => page.evaluate(async () => (await import('/assets/js/core.js')).State.get('populationMin'))).toBe(10000);
+  await expect.poll(() => page.evaluate(async () => (await import('./assets/js/core.js')).State.get('populationMin'))).toBe(10000);
   await page.locator('#filter-pop-min').fill('50.000');
   await page.locator('#filter-pop').selectOption('all');
   await page.locator('#filter-pop').selectOption('custom');
   await expect(page.locator('#filter-pop-min')).toHaveValue('10.000');
   await page.waitForTimeout(200);
-  expect(await page.evaluate(async () => (await import('/assets/js/core.js')).State.get('populationMin'))).toBe(10000);
+  expect(await page.evaluate(async () => (await import('./assets/js/core.js')).State.get('populationMin'))).toBe(10000);
 });
 
 test('unknown indicator never becomes a zero statewide; population stays visible', async ({ page }) => {
@@ -220,11 +220,11 @@ test('unknown indicator never becomes a zero statewide; population stays visible
   });
   await ready(page);
   await expect(page.locator('#panel-overview-grid .overview-card').first()).toContainText('População');
-  const totalPopulation = await page.evaluate(async () => (await import('/assets/js/data.js')).geojsonData.features.reduce((sum, feature) => sum + feature.properties.população, 0));
+  const totalPopulation = await page.evaluate(async () => (await import('./assets/js/data.js')).geojsonData.features.reduce((sum, feature) => sum + feature.properties.população, 0));
   await expect(page.locator('#panel-overview-grid .overview-card').first()).toContainText(new Intl.NumberFormat('pt-BR').format(totalPopulation));
   await page.evaluate(async () => {
-    const { State } = await import('/assets/js/core.js');
-    const { geojsonData } = await import('/assets/js/data.js');
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
     State.set('selectedCity', geojsonData.features[0].properties);
   });
   await expect.poll(() => page.evaluate(() => window.Chart.getChart('comparison-chart')?.data.datasets[0].data)).toEqual([null, null]);

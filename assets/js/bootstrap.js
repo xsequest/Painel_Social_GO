@@ -10,7 +10,7 @@ function showError(error) {
   const message = document.createElement('p');
   message.textContent = error.message;
   const help = document.createElement('p');
-  help.textContent = 'Abra esta pasta em um servidor HTTP local: npm start. Acesse http://localhost:8080/mapa_calor_v0.10.21.html. Verifique se assets e output acompanham o HTML.';
+  help.textContent = 'Abra esta pasta em um servidor HTTP local: npm start. Acesse http://localhost:8080/. Verifique se assets e output acompanham o HTML.';
   section.append(title, message, help);
   main.append(section);
 }

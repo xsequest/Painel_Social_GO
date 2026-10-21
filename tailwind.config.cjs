@@ -1,5 +1,5 @@
 module.exports = {
-  content: ['./mapa_calor_v0.10.21.html', './assets/js/*.js'],
+  content: ['./index.html', './assets/js/*.js'],
   darkMode: 'class',
   theme: {
     extend: {
