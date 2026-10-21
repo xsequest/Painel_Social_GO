@@ -124,6 +124,23 @@ test('all social indicators agree with filtered table and numeric export', async
   expect(abadia['% PBF 2026']).toBeCloseTo(100 * 7270 / 22918, 10);
 });
 
+test('poverty map legend rescales when the selected indicator changes', async ({ page }) => {
+  await ready(page);
+  const legendValues = page.locator('#map-legend-host .legend > div.flex');
+  const extLegendMax = await legendValues.last().innerText();
+
+  await page.locator('#sel-pob-ind').selectOption('norm_pob');
+  await expect(page.locator('#map-legend-host .legend > strong')).toContainText('Pobreza');
+  await expect.poll(() => legendValues.last().innerText()).not.toBe(extLegendMax);
+
+  const expectedMax = await page.evaluate(async () => {
+    const { State, MetricSelectors, Utils } = await import('./assets/js/core.js');
+    const state = State.getState();
+    return MetricSelectors.get(state).formatScaleValue(Utils.getDynamicMax(state));
+  });
+  await expect(legendValues.last()).toHaveText(expectedMax);
+});
+
 test('selection changed while correlation is hidden is restored from shared state', async ({ page }) => {
   await ready(page);
   await page.locator('#tab-prog').click();
@@ -152,6 +169,7 @@ test('radar PLES does not inherit hidden status/metric and dialog restores focus
     State.set('selectedCity', geojsonData.features.find(feature => feature.id === '5200050').properties);
   });
   await expect(page.locator('#program-comparison-chart')).toBeVisible();
+  await expect.poll(() => page.evaluate(() => Boolean(window.Chart.getChart('program-comparison-chart')))).toBe(true);
   const values = await page.evaluate(() => {
     const chart = window.Chart.getChart('program-comparison-chart');
     return { labels: chart.data.labels, data: chart.data.datasets[0].data };
@@ -237,6 +255,52 @@ test('selected municipality shows charts and selected indicator in collapsed pan
   await expect(page.locator('#panel-methodology')).toHaveCount(0);
   const fillOpacity = await page.locator('#map .leaflet-overlay-pane path').first().evaluate(path => Number(path.getAttribute('fill-opacity')));
   expect(fillOpacity).toBeGreaterThanOrEqual(0.95);
+});
+
+test('municipal charts redraw after selecting a different city on a narrow panel', async ({ page }) => {
+  await page.setViewportSize({ width: 366, height: 542 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await ready(page);
+  await page.locator('#tab-prog').click();
+
+  const selectCity = name => page.evaluate(async cityName => {
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
+    const feature = geojsonData.features.find(item => item.properties.name === cityName);
+    State.set('selectedCity', feature.properties);
+  }, name);
+  const snapshot = () => page.evaluate(() => {
+    const comparison = window.Chart.getChart('comparison-chart');
+    const radar = window.Chart.getChart('program-comparison-chart');
+    return {
+      comparisonLabels: comparison.data.labels,
+      comparisonValue: comparison.data.datasets[0].data[0],
+      comparisonImage: comparison.toBase64Image(),
+      comparisonArea: { width: comparison.chartArea.width, height: comparison.chartArea.height },
+      radarValues: radar.data.datasets[0].data,
+      radarImage: radar.toBase64Image(),
+      radarArea: { width: radar.chartArea.width, height: radar.chartArea.height }
+    };
+  });
+
+  await selectCity('Abadiânia');
+  await expect(page.locator('#panel-city-name')).toHaveText('Abadiânia');
+  await expect.poll(() => page.evaluate(() => Boolean(window.Chart.getChart('comparison-chart') && window.Chart.getChart('program-comparison-chart')))).toBe(true);
+  const first = await snapshot();
+
+  await selectCity('Goiânia');
+  await expect(page.locator('#panel-city-name')).toHaveText('Goiânia');
+  await expect.poll(() => page.evaluate(() => window.Chart.getChart('comparison-chart')?.data.labels[0])).toBe('Goiânia');
+  const second = await snapshot();
+
+  expect(second.comparisonValue).not.toBe(first.comparisonValue);
+  expect(second.comparisonImage).not.toBe(first.comparisonImage);
+  expect(second.radarValues).not.toEqual(first.radarValues);
+  expect(second.radarImage).not.toBe(first.radarImage);
+  for (const area of [second.comparisonArea, second.radarArea]) {
+    expect(area.width).toBeGreaterThan(0);
+    expect(area.height).toBeGreaterThan(0);
+  }
 });
 
 test('theme refreshes chart colors and reduced motion disables animations', async ({ page }) => {

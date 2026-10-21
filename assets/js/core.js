@@ -421,9 +421,8 @@ function numberFormatter(decimals) {
 
       // Calcula o teto da escala de cores removendo Outliers (Percentil)
        getDynamicMax: (state) => {
-         if (state.activeTab === 'pob') return MAX_VALUES.pob;
          let values = [];
-        const metric = MetricSelectors.get(state);
+         const metric = MetricSelectors.get(state);
         
          if (typeof geojsonData !== 'undefined' && Array.isArray(geojsonData.features)) {
            geojsonData.features.forEach(f => {
@@ -432,8 +431,8 @@ function numberFormatter(decimals) {
            });
          }
 
-         return Utils.getPercentileMax(values, 1);
-       },
+          return Utils.getPercentileMax(values, state.activeTab === 'pob' ? MAX_VALUES.pob : 1);
+        },
 
       getCriticityMax: (state) => {
         if (state.activeTab !== 'prog') return Utils.getDynamicMax(state);

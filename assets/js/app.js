@@ -1,7 +1,6 @@
 import { geojsonData } from './data.js';
 import { fmtPtbrInt, validateGeoData, State, Utils, MetricSelectors, DataSelectors, validateProgramTotalsDryRun } from './core.js';
 import './controls.js';
-import { MapModule } from './map.js';
 import './scatter.js';
 import './table.js';
 import './panel.js';
@@ -126,7 +125,6 @@ import './panel.js';
       if (validation.valid) {
         // A rotina mensal deve chamar window.runProgramTotalsDryRun(expectedTotals) antes de substituir os dados.
         validateProgramTotalsDryRun(geojsonData);
-        MapModule.initMap();
       }
       State.init();
       setTimeout(() => window.dispatchEvent(new Event('resize')), 150);

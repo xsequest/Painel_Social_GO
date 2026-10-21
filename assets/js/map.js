@@ -55,17 +55,18 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
          });
        }
          function initMap() {
-           if (map || !mapEl) return;
-           map = L.map(mapEl, { zoomControl: false }).setView([-15.8, -49.8], 6);
+            if (map || !mapEl || containerEl.classList.contains('hidden') || State.get('viewMode') !== 'mapa' || State.get('dataError')) return;
+            map = L.map(mapEl, { zoomControl: false }).setView([-15.8, -49.8], 6);
            const zoomControl = L.control.zoom({ position: 'bottomright' }).addTo(map);
            mapZoomControlHost.append(zoomControl.getContainer());
            if (map.attributionControl) mapAttributionHost.append(map.attributionControl.getContainer());
-           L.DomEvent.disableClickPropagation(mapControlsContainer);
+            L.DomEvent.disableClickPropagation(mapControlsContainer);
            map.on('click', () => {
              if (clickInMunicipality) { clickInMunicipality = false; return; }
              if (State.get('selectedCity')) State.set('selectedCity', null);
-           });
-           updateTileLayer(State.get('isDark'));
+            });
+            updateTileLayer(State.get('isDark'));
+            updateLayer();
          }
          function getFitBoundsOptions() {
            const mapBounds = mapEl.getBoundingClientRect();
@@ -399,16 +400,17 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
          State.subscribe('isDark', () => { updateTileLayer(State.get('isDark')); updateLayer(); }); State.subscribe('activeTab', updateLayer); State.subscribe('pobIndicator', updateLayer); State.subscribe('pobPbfAno', updateLayer); State.subscribe('pobPalette', updateLayer);
         State.subscribe('progPrograma', updateLayer); State.subscribe('progStatus', updateLayer); State.subscribe('progMetrica', updateLayer); State.subscribe('progPlesMetrica', updateLayer); State.subscribe('progMetricaModo', updateLayer); State.subscribe('progPalette', updateLayer);
         State.subscribe('viewMode', () => {
-          const mode = State.get('viewMode');
-         containerEl.classList.toggle('hidden', mode !== 'mapa');
-          if (mode === 'mapa') {
-            updateLayer();
-            setTimeout(() => { map?.invalidateSize({ pan: false }); adjustMapControlsPosition(); }, 50);
-          }
+           const mode = State.get('viewMode');
+          const showMap = mode === 'mapa';
+          containerEl.classList.toggle('hidden', !showMap);
+           if (showMap) {
+             if (!map) initMap();
+             else updateLayer();
+             setTimeout(() => { map?.invalidateSize({ pan: false }); adjustMapControlsPosition(); }, 50);
+           }
        });
        State.subscribe('searchTerm', updateLayer); State.subscribe('riskFilter', updateLayer); State.subscribe('populationBand', updateLayer); State.subscribe('populationMin', updateLayer); State.subscribe('populationMax', updateLayer);
-      if (!State.get('dataError')) initMap();
-        if (btnResetView) btnResetView.addEventListener('click', () => { if (map && geoJsonLayer) { try { map.fitBounds(geoJsonLayer.getBounds(), { ...getFitBoundsOptions(), maxZoom: 8 }); } catch(e) {} } });
+         if (btnResetView) btnResetView.addEventListener('click', () => { if (map && geoJsonLayer) { try { map.fitBounds(geoJsonLayer.getBounds(), { ...getFitBoundsOptions(), maxZoom: 8 }); } catch(e) {} } });
          window.addEventListener('resize', () => {
           if (!map) return;
           map.invalidateSize({ pan: false, debounceMoveend: true });

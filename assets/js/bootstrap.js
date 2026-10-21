@@ -45,10 +45,8 @@ try {
   const dependencies = { Leaflet: window.L, chroma: window.chroma, 'Chart.js': window.Chart, TopoJSON: window.topojson };
   const missing = Object.entries(dependencies).filter(([, dependency]) => !dependency).map(([name]) => name);
   if (missing.length) throw new Error(`Bibliotecas locais indisponiveis: ${missing.join(', ')}. Execute npm install e npm run build.`);
-  const motion = matchMedia('(prefers-reduced-motion: reduce)');
-  const syncMotion = () => { window.Chart.defaults.animation = motion.matches ? false : { duration: 500 }; };
-  syncMotion();
-  motion.addEventListener('change', syncMotion);
+  // Preserve interpolation options; reduced motion is applied to each chart in panel.js.
+  window.Chart.defaults.animation.duration = 500;
   const { loadData } = await import('./data.js');
   await loadData();
   installModalAccessibility();

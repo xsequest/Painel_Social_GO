@@ -48,6 +48,20 @@ test('zero is not unknown and percentages keep full calculation precision', () =
   assert.equal(Utils.fmtPtbrPct(variation), '16,67%');
 });
 
+test('poverty map scale follows the selected indicator distribution', () => {
+  const extState = { activeTab: 'pob', pobIndicator: 'norm_ext', pobPbfAno: '2026' };
+  const povertyState = { activeTab: 'pob', pobIndicator: 'norm_pob', pobPbfAno: '2026' };
+  const extMax = Utils.getDynamicMax(extState);
+  const povertyMax = Utils.getDynamicMax(povertyState);
+
+  assert.notEqual(extMax, povertyMax);
+  for (const [state, max] of [[extState, extMax], [povertyState, povertyMax]]) {
+    const metric = MetricSelectors.get(state);
+    const values = collection.features.map(feature => metric.value(feature.properties));
+    assert.equal(max, Utils.getPercentileMax(values, 0.6));
+  }
+});
+
 test('aggregates use only compatible known populations and a paired historical sample', () => {
   const metric = MetricSelectors.get({ activeTab: 'pob', pobIndicator: 'norm_ext' });
   const features = [{ properties: { população: 100, ext_pob: 10 } }, { properties: { população: 900, ext_pob: null } }];

@@ -5,7 +5,7 @@ import { MapModule } from './map.js';
           const panel = document.getElementById('side-panel'), closeBtn = document.getElementById('btn-close-panel'), centerBtn = document.getElementById('btn-center-city'), centerCityStatus = document.getElementById('center-city-status'), cityNameEl = document.getElementById('panel-city-name'), gridMain = document.getElementById('panel-grid-main'), chartTitle = document.getElementById('chart-title'), chartCanvas = document.getElementById('comparison-chart'), chartContainer = document.getElementById('chart-container'), pobChartModeToggle = document.getElementById('pob-chart-mode-toggle'), pobGoiasBtn = document.getElementById('pob-chart-goias'), pobCompara2019Btn = document.getElementById('pob-chart-comparativo-2019'), povertyPieSection = document.getElementById('panel-poverty-pie-section'), povertyPieCanvas = document.getElementById('poverty-pie-chart'), radarSection = document.getElementById('panel-radar-section'), radarCanvas = document.getElementById('program-comparison-chart'), radarContainer = document.getElementById('radar-container'), radarExpandBtn = document.getElementById('btn-radar-expand'), radarDialog = document.getElementById('radar-dialog'), radarDialogCloseBtn = document.getElementById('btn-close-radar'), radarDialogTitle = document.getElementById('radar-dialog-title'), radarDialogContext = document.getElementById('radar-dialog-context'), radarExpandedContainer = document.getElementById('radar-expanded-container');
         const panelSubtitle = document.getElementById('panel-subtitle'), openPanelBtn = document.getElementById('btn-open-panel'), collapsedLabel = document.getElementById('collapsed-panel-label'), collapsedSelectedIndicator = document.getElementById('collapsed-selected-indicator'), collapsedPopulation = document.getElementById('collapsed-population'), collapsedIndicatorCount = document.getElementById('collapsed-indicator-count'), collapsedIndicatorPercent = document.getElementById('collapsed-indicator-percent'), rankingHighButton = document.getElementById('panel-ranking-high'), rankingLowButton = document.getElementById('panel-ranking-low'), overviewSection = document.getElementById('panel-overview-section'), overviewGrid = document.getElementById('panel-overview-grid'), overviewRanking = document.getElementById('panel-overview-ranking'), overviewRankingTitle = document.getElementById('panel-overview-ranking-title'), cityDetails = document.getElementById('panel-city-details');
         
-         let chartInstance = null, chartType = null, chartContext = null, povertyPieChartInstance = null, radarChartInstance = null, radarDialogOpen = false, isPanelCollapsed = false, overviewRankDirection = 'high';
+         let chartInstance = null, chartType = null, chartContext = null, povertyPieChartInstance = null, radarChartInstance = null, chartFrame = null, radarDialogOpen = false, isPanelCollapsed = false, overviewRankDirection = 'high';
 
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         const safeHtml = (strings, ...values) => strings.reduce((html, part, index) => html + part + (index < values.length
@@ -168,7 +168,7 @@ import { MapModule } from './map.js';
         function moveRadarCanvas(target) {
           if (!target || !radarCanvas || radarCanvas.parentElement === target) return;
           target.appendChild(radarCanvas);
-          if (radarChartInstance) window.requestAnimationFrame(() => radarChartInstance.resize());
+          window.requestAnimationFrame(() => radarChartInstance?.resize());
         }
 
          function updateRadarDialogContent(city, state) {
@@ -223,6 +223,10 @@ import { MapModule } from './map.js';
         }
 
         function renderPanel(city) {
+            if (chartFrame !== null) {
+              cancelAnimationFrame(chartFrame);
+              chartFrame = null;
+            }
             const state = State.getState(), activeTab = state.activeTab;
             const showPovertyPie = activeTab === 'pob' && !(state.pobIndicator === 'norm_pob_p1_p2' && state.pobPbfAno === '2019');
             panel.classList.remove('hidden');
@@ -247,8 +251,8 @@ import { MapModule } from './map.js';
                if (povertyPieChartInstance) { povertyPieChartInstance.destroy(); povertyPieChartInstance = null; }
                destroyComparisonChart();
                if (radarChartInstance) { radarChartInstance.destroy(); radarChartInstance = null; }
-                renderOverview(state);
-              return;
+                 renderOverview(state);
+               return;
            }
         
         const metric = MetricSelectors.get(state);
@@ -379,21 +383,27 @@ import { MapModule } from './map.js';
           
          }
 
-         renderChart(city, metric, activeTab, maxVal);
-         if (showPovertyPie) {
-           renderPovertyPieChart(city);
-         } else if (povertyPieChartInstance) {
-           povertyPieChartInstance.destroy();
-           povertyPieChartInstance = null;
-         }
-         if (activeTab === 'prog') renderRadarChart(city, state);
-       }
+          // Wait for layout; collapsed parents cannot provide usable chart dimensions.
+          if (!isPanelCollapsed && !state.isKiosk) chartFrame = requestAnimationFrame(() => {
+            chartFrame = null;
+            if (chartContainer.clientWidth <= 0 || chartContainer.clientHeight <= 0) return;
+            renderChart(city, metric, activeTab, maxVal);
+            if (showPovertyPie) {
+              renderPovertyPieChart(city);
+            } else if (povertyPieChartInstance) {
+              povertyPieChartInstance.destroy();
+              povertyPieChartInstance = null;
+            }
+            if (activeTab === 'prog') renderRadarChart(city, state);
+          });
+        }
 
         function renderChartConfig(config) {
           prepareChart(chartCanvas, config, `${chartTitle.textContent} - ${cityNameEl.textContent}`);
          if (chartInstance && chartType !== config.type) destroyComparisonChart();
-         if (chartInstance) {
-           chartInstance.data = config.data;
+          if (chartInstance) {
+            chartInstance.resize();
+            chartInstance.data = config.data;
            chartInstance.options = config.options;
            chartInstance.update();
          } else {
@@ -438,11 +448,11 @@ import { MapModule } from './map.js';
        }
 
      // GRAFICO COMPARATIVO ADAPTADO PARA PROG
-       function renderChart(city, metric, activeTab, maxVal) {
-         const state = State.getState();
-           const nextChartContext = activeTab === 'pob'
-             ? `pob:${state.pobIndicator}:${state.pobPbfAno}:${state.pobChartMode === 'comparativo2019' ? 'comparativo2019' : 'goias'}`
-            : activeTab;
+         function renderChart(city, metric, activeTab, maxVal) {
+          const state = State.getState();
+            const nextChartContext = activeTab === 'pob'
+              ? `pob:${state.pobIndicator}:${state.pobPbfAno}:${state.pobChartMode === 'comparativo2019' ? 'comparativo2019' : 'goias'}`
+             : activeTab;
          if (chartInstance && chartContext !== nextChartContext) destroyComparisonChart();
           if (activeTab === 'pob' && state.pobIndicator === 'norm_pob_p1_p2' && state.pobChartMode === 'comparativo2019') {
             renderPbfComparativo2019Chart(city, state);
@@ -501,8 +511,8 @@ import { MapModule } from './map.js';
          chartContext = nextChartContext;
        }
 
-       function renderPovertyPieChart(city) {
-         const values = [Utils.parseNum(city.ext_pob), Utils.parseNum(city.pob)];
+        function renderPovertyPieChart(city) {
+          const values = [Utils.parseNum(city.ext_pob), Utils.parseNum(city.pob)];
          const total = values.reduce((sum, value) => sum + (value === null ? 0 : value), 0);
          const pieConfig = {
            type: 'pie',
@@ -545,13 +555,14 @@ import { MapModule } from './map.js';
          };
           prepareChart(povertyPieCanvas, pieConfig, `Composição da pobreza PBF - ${city.name}`);
           if (povertyPieChartInstance) {
+            povertyPieChartInstance.resize();
            povertyPieChartInstance.data = pieConfig.data;
            povertyPieChartInstance.options = pieConfig.options;
            povertyPieChartInstance.update();
-         } else {
-           povertyPieChartInstance = new Chart(povertyPieCanvas, pieConfig);
-         }
-       }
+          } else {
+            povertyPieChartInstance = new Chart(povertyPieCanvas, pieConfig);
+          }
+        }
 
         const radarLabelTooltipPlugin = {
           id: 'radar-label-tooltip',
@@ -727,15 +738,16 @@ import { MapModule } from './map.js';
             animation: { duration: 500, easing: 'easeOutQuart' }
           }
          };
-          prepareChart(radarCanvas, radarConfig, `Composição dos programas sociais - ${city.name}`);
-          if (radarChartInstance) {
+           prepareChart(radarCanvas, radarConfig, `Composição dos programas sociais - ${city.name}`);
+           if (radarChartInstance) {
+            radarChartInstance.resize();
            radarChartInstance.$radarLabelTooltip = null;
            radarChartInstance.data = radarConfig.data;
           radarChartInstance.options = radarConfig.options;
           radarChartInstance.update();
-        } else {
-          radarChartInstance = new Chart(radarCanvas, radarConfig);
-        }
+         } else {
+           radarChartInstance = new Chart(radarCanvas, radarConfig);
+         }
         }
 
         if (pobGoiasBtn) pobGoiasBtn.addEventListener('click', () => State.set('pobChartMode', 'goias'));
@@ -762,7 +774,7 @@ import { MapModule } from './map.js';
         const refreshPanel = () => renderPanel(State.get('selectedCity'));
         State.subscribe('selectedCity', refreshPanel);
         State.subscribe('viewMode', refreshPanel);
-        ['isDark', 'pobPalette', 'progPalette', 'activeTab', 'pobIndicator', 'pobPbfAno', 'pobChartMode', 'progPrograma', 'progStatus', 'progMetrica', 'progPlesMetrica', 'progMetricaModo', 'searchTerm', 'riskFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, refreshPanel));
+        ['isDark', 'isKiosk', 'pobPalette', 'progPalette', 'activeTab', 'pobIndicator', 'pobPbfAno', 'pobChartMode', 'progPrograma', 'progStatus', 'progMetrica', 'progPlesMetrica', 'progMetricaModo', 'searchTerm', 'riskFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, refreshPanel));
         reducedMotion.addEventListener('change', refreshPanel);
         syncOverviewRankingToggle();
         refreshPanel();
