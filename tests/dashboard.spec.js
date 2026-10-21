@@ -165,6 +165,58 @@ test('radar PLES does not inherit hidden status/metric and dialog restores focus
   await expect(page.locator('#btn-radar-expand')).toBeFocused();
 });
 
+test('charts omit the data table option and keep hover tooltips interactive', async ({ page }) => {
+  await ready(page);
+  await page.evaluate(async () => {
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
+    State.set('selectedCity', geojsonData.features.find(feature => feature.properties.name === 'Abadiânia').properties);
+  });
+
+  const canvas = page.locator('#comparison-chart');
+  await expect(canvas).toBeVisible();
+  await expect(page.getByText('Consultar todos os dados do gráfico')).toHaveCount(0);
+  await expect(page.locator('.chart-data')).toHaveCount(0);
+
+  const point = await canvas.evaluate(element => {
+    const chart = window.Chart.getChart(element);
+    const { x, y } = chart.getDatasetMeta(0).data[0].getCenterPoint();
+    return { x, y, tooltipEnabled: chart.options.plugins.tooltip.enabled !== false };
+  });
+  expect(point.tooltipEnabled).toBe(true);
+  const box = await canvas.boundingBox();
+  await page.mouse.move(box.x + point.x, box.y + point.y);
+  await expect.poll(() => canvas.evaluate(element => window.Chart.getChart(element).tooltip.opacity)).toBeGreaterThan(0);
+});
+
+test('selected municipality shows charts and selected indicator in collapsed panel', async ({ page }) => {
+  await ready(page);
+  await page.locator('#tab-prog').click();
+  await page.evaluate(async () => {
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
+    State.set('selectedCity', geojsonData.features.find(feature => feature.properties.name === 'Abadiânia').properties);
+  });
+
+  const comparison = page.locator('#comparison-chart');
+  const radar = page.locator('#program-comparison-chart');
+  await expect(comparison).toBeVisible();
+  await expect(radar).toBeVisible();
+  const chartPositions = await page.evaluate(() => {
+    const comparisonRect = document.querySelector('#comparison-chart').getBoundingClientRect();
+    const radarRect = document.querySelector('#program-comparison-chart').getBoundingClientRect();
+    return { comparisonBottom: comparisonRect.bottom, radarBottom: radarRect.bottom, viewportHeight: innerHeight };
+  });
+  expect(chartPositions.comparisonBottom).toBeLessThan(chartPositions.radarBottom);
+  expect(chartPositions.radarBottom).toBeLessThanOrEqual(chartPositions.viewportHeight);
+
+  await page.locator('#btn-close-panel').click();
+  await expect(page.locator('#collapsed-panel-label')).toHaveText('Abadiânia');
+  await expect(page.locator('#collapsed-selected-indicator')).toContainText('Benefícios');
+  const fillOpacity = await page.locator('#map .leaflet-overlay-pane path').first().evaluate(path => Number(path.getAttribute('fill-opacity')));
+  expect(fillOpacity).toBeGreaterThanOrEqual(0.95);
+});
+
 test('theme refreshes chart colors and reduced motion disables animations', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await ready(page);

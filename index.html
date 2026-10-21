@@ -291,9 +291,10 @@
            </button>
           </div>
           <div id="panel-collapsed-summary" class="hidden items-center gap-3">
-             <div class="min-w-0 flex-1">
-                <strong id="collapsed-panel-label" class="block truncate text-sm font-extrabold text-slate-800 dark:text-slate-100">Indicador social</strong>
-                <div id="collapsed-indicator-stats" class="mt-1 flex items-baseline gap-3 text-xs">
+              <div class="min-w-0 flex-1">
+                 <strong id="collapsed-panel-label" class="block truncate text-sm font-extrabold text-slate-800 dark:text-slate-100">Indicador social</strong>
+                 <span id="collapsed-selected-indicator" class="hidden mt-0.5 block truncate text-xs font-semibold text-emerald-700 dark:text-emerald-300"></span>
+                 <div id="collapsed-indicator-stats" class="mt-1 flex items-baseline gap-3 text-xs">
                   <span aria-label="Contagem geral do indicador" class="text-slate-500 dark:text-slate-400">Qtd. <strong id="collapsed-indicator-count" class="font-extrabold text-slate-700 dark:text-slate-200">-</strong></span>
                   <span aria-label="Percentual do indicador" class="text-slate-500 dark:text-slate-400"><strong id="collapsed-indicator-percent" class="font-extrabold text-slate-700 dark:text-slate-200">-</strong></span>
                 </div>
@@ -314,23 +315,20 @@
               <div id="panel-overview-ranking" class="space-y-2"></div>
            </div>
          </section>
-         <div id="panel-city-details" class="space-y-4">
-          <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800 pb-2">Dados Consolidados</h5>
-          <div class="grid grid-cols-2 gap-3" id="panel-grid-main"></div>
-          
-             <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
-               <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mb-3" id="chart-title">Comparativo com Goiás</h5>
-                 <div id="pob-chart-mode-toggle" class="hidden mb-3 flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1" role="group" aria-label="Tipo de comparativo do indicador de pobreza">
-                   <button id="pob-chart-goias" type="button" aria-pressed="true" aria-controls="chart-container" class="flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all bg-white dark:bg-slate-900 shadow text-emerald-600 dark:text-emerald-400">Goiás</button>
-                   <button id="pob-chart-comparativo-2019" type="button" aria-pressed="false" aria-controls="chart-container" class="flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all text-slate-500 dark:text-slate-400">Comparativo com 2019</button>
-                 </div>
-                 <div id="chart-container"><canvas id="comparison-chart" role="img" aria-label="Comparativo do município com Goiás ou com 2019">Os dados completos estão na tabela após o gráfico.</canvas></div>
+          <div id="panel-city-details" class="space-y-4">
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+              <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mb-3" id="chart-title">Comparativo com Goiás</h5>
+              <div id="pob-chart-mode-toggle" class="hidden mb-3 flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1" role="group" aria-label="Tipo de comparativo do indicador de pobreza">
+                <button id="pob-chart-goias" type="button" aria-pressed="true" aria-controls="chart-container" class="flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all bg-white dark:bg-slate-900 shadow text-emerald-600 dark:text-emerald-400">Goiás</button>
+                <button id="pob-chart-comparativo-2019" type="button" aria-pressed="false" aria-controls="chart-container" class="flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all text-slate-500 dark:text-slate-400">Comparativo com 2019</button>
+              </div>
+              <div id="chart-container"><canvas id="comparison-chart" role="img" aria-label="Comparativo do município com Goiás ou com 2019">Os dados completos estão na tabela após o gráfico.</canvas></div>
             </div>
             <div id="panel-poverty-pie-section" class="hidden pt-4 border-t border-slate-100 dark:border-slate-800">
-             <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mb-3">Pobreza PBF - Município</h5>
-             <div id="poverty-pie-container"><canvas id="poverty-pie-chart" role="img" aria-label="Composição da pobreza PBF no município">Os dados completos estão na tabela após o gráfico.</canvas></div>
-           </div>
-             <div id="panel-radar-section" class="pt-4 border-t border-slate-100 dark:border-slate-800">
+              <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mb-3">Pobreza PBF - Município</h5>
+              <div id="poverty-pie-container"><canvas id="poverty-pie-chart" role="img" aria-label="Composição da pobreza PBF no município">Os dados completos estão na tabela após o gráfico.</canvas></div>
+            </div>
+            <div id="panel-radar-section" class="pt-4 border-t border-slate-100 dark:border-slate-800">
               <div class="mb-3 flex items-start justify-between gap-3">
                 <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">Composição dos Programas Sociais no Município</h5>
                 <button id="btn-radar-expand" type="button" class="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[11px] font-bold text-emerald-700 transition-colors hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-950/70" aria-label="Abrir gráfico de radar ampliado" aria-haspopup="dialog" aria-controls="radar-dialog" aria-expanded="false" title="Abrir gráfico ampliado">
@@ -339,8 +337,12 @@
                 </button>
               </div>
               <div id="radar-container"><canvas id="program-comparison-chart" role="img" aria-label="Composição dos programas sociais no município">Os dados completos estão na tabela após o gráfico.</canvas></div>
-           </div>
-         </div>
+            </div>
+            <div>
+              <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800 pb-2">Dados Consolidados</h5>
+              <div class="grid grid-cols-2 gap-3 mt-4" id="panel-grid-main"></div>
+            </div>
+          </div>
        </aside>
      </main>
    </div>

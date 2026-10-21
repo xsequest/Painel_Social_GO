@@ -297,7 +297,7 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
               }
               else fillColor = (val === null || val === undefined || isNaN(val)) ? '#cccccc' : colorScale(val).hex();
            }
-           return { fillColor, weight: isVisible ? 0.7 : 0.2, color: isDark ? (isVisible ? '#374151' : '#1f2937') : (isVisible ? '#4b5563' : '#e5e7eb'), fillOpacity: isVisible ? 0.8 : 0.1 };
+            return { fillColor, weight: isVisible ? 0.9 : 0.2, color: isDark ? (isVisible ? '#374151' : '#1f2937') : (isVisible ? '#4b5563' : '#e5e7eb'), fillOpacity: isVisible ? 0.96 : 0.1 };
          };
          const isInitialRender = !geoJsonLayer;
          if (!geoJsonLayer) geoJsonLayer = L.geoJSON(geojsonData, {

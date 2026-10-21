@@ -58,10 +58,7 @@ import './panel.js';
     function updateMethodology() {
       const state = State.getState();
       const features = state.selectedCity ? [{ properties: state.selectedCity }] : DataSelectors.getFilteredFeatures(state);
-      const totals = DataSelectors.getTotals(features, MetricSelectors.get(state));
-      const paired = features.filter(({ properties: p }) => [p.PBF_2019, p.população_2019, p.pob_p1_p2, p.população].every(Number.isFinite)).length;
-      const isDifference = state.activeTab === 'pob' && state.pobIndicator === 'norm_pob_p1_p2' && state.pobPbfAno === 'diff';
-      methodology.textContent = `Percentuais: contagem / população estimada do respectivo ano × 100. Agregados usam somente população com dados válidos, sem arredondamento intermediário. Cobertura: ${isDifference ? paired : totals.metricCount} de ${features.length} municípios${isDifference ? ' com dados nos dois anos' : ''}. Zero é válido; ausência é “Sem dados”. Totais dos programas são os fornecidos pela fonte, sem presumir soma ou pessoas únicas.`;
+      methodology.textContent = 'Percentuais: contagem / população estimada do respectivo ano × 100. Agregados usam somente população com dados válidos, sem arredondamento intermediário.';
     }
     ['selectedCity', 'activeTab', 'pobIndicator', 'pobPbfAno', 'progPrograma', 'progStatus', 'progMetrica', 'progPlesMetrica', 'progMetricaModo', 'searchTerm', 'riskFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, updateMethodology));
 

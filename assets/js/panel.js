@@ -3,7 +3,7 @@ import { fmtPtbrInt, fmtPtbrNum, PROGRAMAS, PLES_COLUMN_LABELS, PALETAS, MAX_VAL
 import { MapModule } from './map.js';
       const PanelModule = (function() {
           const panel = document.getElementById('side-panel'), closeBtn = document.getElementById('btn-close-panel'), centerBtn = document.getElementById('btn-center-city'), centerCityStatus = document.getElementById('center-city-status'), cityNameEl = document.getElementById('panel-city-name'), gridMain = document.getElementById('panel-grid-main'), chartTitle = document.getElementById('chart-title'), chartCanvas = document.getElementById('comparison-chart'), chartContainer = document.getElementById('chart-container'), pobChartModeToggle = document.getElementById('pob-chart-mode-toggle'), pobGoiasBtn = document.getElementById('pob-chart-goias'), pobCompara2019Btn = document.getElementById('pob-chart-comparativo-2019'), povertyPieSection = document.getElementById('panel-poverty-pie-section'), povertyPieCanvas = document.getElementById('poverty-pie-chart'), radarSection = document.getElementById('panel-radar-section'), radarCanvas = document.getElementById('program-comparison-chart'), radarContainer = document.getElementById('radar-container'), radarExpandBtn = document.getElementById('btn-radar-expand'), radarDialog = document.getElementById('radar-dialog'), radarDialogCloseBtn = document.getElementById('btn-close-radar'), radarDialogTitle = document.getElementById('radar-dialog-title'), radarDialogContext = document.getElementById('radar-dialog-context'), radarExpandedContainer = document.getElementById('radar-expanded-container');
-        const panelSubtitle = document.getElementById('panel-subtitle'), openPanelBtn = document.getElementById('btn-open-panel'), collapsedLabel = document.getElementById('collapsed-panel-label'), collapsedPopulation = document.getElementById('collapsed-population'), collapsedIndicatorCount = document.getElementById('collapsed-indicator-count'), collapsedIndicatorPercent = document.getElementById('collapsed-indicator-percent'), rankingHighButton = document.getElementById('panel-ranking-high'), rankingLowButton = document.getElementById('panel-ranking-low'), overviewSection = document.getElementById('panel-overview-section'), overviewGrid = document.getElementById('panel-overview-grid'), overviewRanking = document.getElementById('panel-overview-ranking'), overviewRankingTitle = document.getElementById('panel-overview-ranking-title'), cityDetails = document.getElementById('panel-city-details');
+        const panelSubtitle = document.getElementById('panel-subtitle'), openPanelBtn = document.getElementById('btn-open-panel'), collapsedLabel = document.getElementById('collapsed-panel-label'), collapsedSelectedIndicator = document.getElementById('collapsed-selected-indicator'), collapsedPopulation = document.getElementById('collapsed-population'), collapsedIndicatorCount = document.getElementById('collapsed-indicator-count'), collapsedIndicatorPercent = document.getElementById('collapsed-indicator-percent'), rankingHighButton = document.getElementById('panel-ranking-high'), rankingLowButton = document.getElementById('panel-ranking-low'), overviewSection = document.getElementById('panel-overview-section'), overviewGrid = document.getElementById('panel-overview-grid'), overviewRanking = document.getElementById('panel-overview-ranking'), overviewRankingTitle = document.getElementById('panel-overview-ranking-title'), cityDetails = document.getElementById('panel-city-details');
         
          let chartInstance = null, chartType = null, chartContext = null, povertyPieChartInstance = null, radarChartInstance = null, radarDialogOpen = false, isPanelCollapsed = false, overviewRankDirection = 'high';
 
@@ -23,50 +23,8 @@ import { MapModule } from './map.js';
           });
           const legend = config.options.plugins?.legend;
           if (legend) legend.labels = { ...legend.labels, color };
-          let details = document.getElementById(`${canvas.id}-data`);
-          if (!details) {
-            details = document.createElement('details');
-            details.id = `${canvas.id}-data`;
-            details.className = 'chart-data';
-            const summary = document.createElement('summary');
-            summary.tabIndex = 0;
-            summary.textContent = 'Consultar todos os dados do gráfico';
-            details.append(summary, document.createElement('table'));
-            canvas.parentElement.after(details);
-          }
           canvas.setAttribute('role', 'img');
           canvas.setAttribute('aria-label', title);
-          canvas.setAttribute('aria-describedby', details.id);
-          const table = details.querySelector('table');
-          const caption = document.createElement('caption');
-          caption.textContent = title;
-          const head = document.createElement('thead');
-          const header = document.createElement('tr');
-          ['Categoria', ...config.data.datasets.map(dataset => dataset.label || 'Quantidade e participação no total')].forEach(label => {
-            const cell = document.createElement('th');
-            cell.scope = 'col';
-            cell.textContent = label;
-            header.append(cell);
-          });
-          head.append(header);
-          const body = document.createElement('tbody');
-          config.data.labels.forEach((label, index) => {
-            const row = document.createElement('tr');
-            const name = document.createElement('th');
-            name.scope = 'row';
-            name.textContent = PROGRAMAS[label] || label;
-            row.append(name);
-            config.data.datasets.forEach(dataset => {
-              const cell = document.createElement('td');
-              const raw = dataset.data[index];
-              const callback = config.options.plugins?.tooltip?.callbacks?.label;
-              cell.textContent = raw === null || raw === undefined ? 'Sem dados' : callback
-                ? callback({ raw, label, dataset, dataIndex: index }) : fmtPtbrNum(raw);
-              row.append(cell);
-            });
-            body.append(row);
-          });
-          table.replaceChildren(caption, head, body);
         }
 
         function getRadarContext(state) {
@@ -92,9 +50,12 @@ import { MapModule } from './map.js';
           const isPbfDiff = state.activeTab === 'pob' && state.pobIndicator === 'norm_pob_p1_p2' && state.pobPbfAno === 'diff';
           const percentage = totals.metricCount && population > 0 ? (totals.totalMetric / population) * 100 : null;
           const indicatorValue = isPbfDiff ? DataSelectors.getPbfVariation(features) : percentage;
-          const selectedIndicator = city ? city.name : getSelectedIndicatorLabel(state, metric);
-          collapsedLabel.textContent = selectedIndicator;
-          collapsedLabel.title = selectedIndicator;
+          const selectedIndicator = getSelectedIndicatorLabel(state, metric);
+          collapsedLabel.textContent = city ? city.name : selectedIndicator;
+          collapsedLabel.title = collapsedLabel.textContent;
+          collapsedSelectedIndicator.textContent = city ? selectedIndicator : '';
+          collapsedSelectedIndicator.title = selectedIndicator;
+          collapsedSelectedIndicator.classList.toggle('hidden', !city);
           collapsedPopulation.textContent = `População: ${fmtPtbrInt(totals.scopePopulation)}`;
           collapsedPopulation.title = collapsedPopulation.textContent;
           collapsedIndicatorCount.textContent = totals.metricCount ? fmtPtbrInt(totals.totalMetric) : 'Sem dados';
@@ -207,8 +168,6 @@ import { MapModule } from './map.js';
         function moveRadarCanvas(target) {
           if (!target || !radarCanvas || radarCanvas.parentElement === target) return;
           target.appendChild(radarCanvas);
-          const details = document.getElementById(`${radarCanvas.id}-data`);
-          if (details) target.after(details);
           if (radarChartInstance) window.requestAnimationFrame(() => radarChartInstance.resize());
         }
 

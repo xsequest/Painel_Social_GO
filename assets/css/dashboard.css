@@ -2,12 +2,6 @@
     :focus-visible { outline: 3px solid #047857 !important; outline-offset: 3px; }
     .dark :focus-visible { outline-color: #6ee7b7 !important; }
     button:disabled { cursor: not-allowed; opacity: .55; }
-    .chart-data { margin-top: 12px; font-size: .75rem; overflow-wrap: anywhere; }
-    .chart-data summary { cursor: pointer; padding: 8px 4px; font-weight: 700; }
-    .chart-data table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    .chart-data th, .chart-data td { padding: 8px; border: 1px solid #cbd5e1; text-align: left; vertical-align: top; }
-    .chart-data caption { padding: 8px 0; text-align: left; font-weight: 700; }
-    .dark .chart-data th, .dark .chart-data td { border-color: #475569; }
     .carto-api-key-warning,
     .carto-banner-error {
       display: none !important;
@@ -49,7 +43,7 @@
       #chart-container { position: relative; height: 220px; width: 100%; }
       #poverty-pie-container { position: relative; height: 260px; width: 100%; }
        #radar-container, #radar-expanded-container { position: relative; width: 100%; }
-       #radar-container { height: 360px; }
+        #radar-container { height: 320px; }
        #radar-expanded-container { height: min(72vh, 680px); min-height: 360px; }
        #radar-container canvas, #radar-expanded-container canvas { width: 100% !important; height: 100% !important; }
         #scatter-chart-container { position: relative; min-height: 0; flex: 1 1 auto; width: 100%; overflow: auto; }
