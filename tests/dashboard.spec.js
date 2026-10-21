@@ -187,6 +187,13 @@ test('charts omit the data table option and keep hover tooltips interactive', as
   const box = await canvas.boundingBox();
   await page.mouse.move(box.x + point.x, box.y + point.y);
   await expect.poll(() => canvas.evaluate(element => window.Chart.getChart(element).tooltip.opacity)).toBeGreaterThan(0);
+  const rowPosition = await canvas.evaluate(element => {
+    const chart = window.Chart.getChart(element);
+    const { y } = chart.getDatasetMeta(0).data[0].getCenterPoint();
+    return { x: chart.chartArea.left + 4, y };
+  });
+  await page.mouse.move(box.x + rowPosition.x, box.y + rowPosition.y);
+  await expect.poll(() => canvas.evaluate(element => window.Chart.getChart(element).tooltip.opacity)).toBeGreaterThan(0);
 });
 
 test('selected municipality shows charts and selected indicator in collapsed panel', async ({ page }) => {
@@ -203,16 +210,31 @@ test('selected municipality shows charts and selected indicator in collapsed pan
   await expect(comparison).toBeVisible();
   await expect(radar).toBeVisible();
   const chartPositions = await page.evaluate(() => {
+    const details = document.querySelector('#panel-city-details');
+    const dataTitle = details.querySelector('h5').getBoundingClientRect();
     const comparisonRect = document.querySelector('#comparison-chart').getBoundingClientRect();
     const radarRect = document.querySelector('#program-comparison-chart').getBoundingClientRect();
-    return { comparisonBottom: comparisonRect.bottom, radarBottom: radarRect.bottom, viewportHeight: innerHeight };
+    return { dataTitleTop: dataTitle.top, comparisonTop: comparisonRect.top, comparisonHeight: comparisonRect.height, radarHeight: radarRect.height };
   });
-  expect(chartPositions.comparisonBottom).toBeLessThan(chartPositions.radarBottom);
-  expect(chartPositions.radarBottom).toBeLessThanOrEqual(chartPositions.viewportHeight);
+  expect(chartPositions.dataTitleTop).toBeLessThan(chartPositions.comparisonTop);
+  expect(chartPositions.comparisonHeight).toBeGreaterThan(0);
+  expect(chartPositions.radarHeight).toBeGreaterThan(0);
+
+  const radarPoint = await radar.evaluate(element => {
+    const chart = window.Chart.getChart(element);
+    const index = chart.data.datasets[0].data.findIndex(value => Number.isFinite(value));
+    const { x, y } = chart.getDatasetMeta(0).data[index].getCenterPoint();
+    return { x, y };
+  });
+  await radar.scrollIntoViewIfNeeded();
+  const radarBox = await radar.boundingBox();
+  await page.mouse.move(radarBox.x + radarPoint.x, radarBox.y + radarPoint.y);
+  await expect.poll(() => radar.evaluate(element => window.Chart.getChart(element).tooltip.opacity)).toBeGreaterThan(0);
 
   await page.locator('#btn-close-panel').click();
   await expect(page.locator('#collapsed-panel-label')).toHaveText('Abadiânia');
   await expect(page.locator('#collapsed-selected-indicator')).toContainText('Benefícios');
+  await expect(page.locator('#panel-methodology')).toHaveCount(0);
   const fillOpacity = await page.locator('#map .leaflet-overlay-pane path').first().evaluate(path => Number(path.getAttribute('fill-opacity')));
   expect(fillOpacity).toBeGreaterThanOrEqual(0.95);
 });

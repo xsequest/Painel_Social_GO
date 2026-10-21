@@ -424,9 +424,10 @@ import { MapModule } from './map.js';
                maxBarThickness: 50
              }]
            },
-           options: {
-             indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-             plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.label}: ${Utils.fmtPtbrPct(ctx.raw)}` } } },
+            options: {
+              indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+              interaction: { mode: 'index', axis: 'y', intersect: false },
+              plugins: { legend: { display: false }, tooltip: { enabled: true, mode: 'index', axis: 'y', intersect: false, callbacks: { label: ctx => `${ctx.label}: ${Utils.fmtPtbrPct(ctx.raw)}` } } },
              scales: {
                x: { beginAtZero: true, max: Math.max(dataMax * 1.2, 10), title: { display: true, text: '% da População Municipal', font: { size: 12, weight: 'bold' } }, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { callback: value => Utils.fmtPtbrPct(value), font: { size: 11 } } },
                y: { grid: { display: false }, ticks: { font: { size: 12, weight: 'bold' } } }
@@ -485,9 +486,10 @@ import { MapModule } from './map.js';
          const config = {
           type: 'bar',
           data: { labels, datasets: [{ label: indicatorLabel, data, backgroundColor: colors, borderRadius: 6, barThickness: 40, maxBarThickness: 50 }] },
-          options: {
-            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${formatChartValue(ctx.raw)}` } } },
+           options: {
+             indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+             interaction: { mode: 'index', axis: 'y', intersect: false },
+             plugins: { legend: { display: false }, tooltip: { enabled: true, mode: 'index', axis: 'y', intersect: false, callbacks: { label: ctx => `${ctx.dataset.label}: ${formatChartValue(ctx.raw)}` } } },
             scales: {
                x: { beginAtZero: true, max: Math.max(dataMax * 1.2, 10), title: { display: true, text: indicatorLabel, font: { size: 12, weight: 'bold' } }, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 11 } } },
               y: { grid: { display: false }, ticks: { font: { size: 12, weight: 'bold' } } }
@@ -514,17 +516,21 @@ import { MapModule } from './map.js';
                hoverOffset: 6
              }]
            },
-           options: {
-             responsive: true,
-             maintainAspectRatio: false,
-             plugins: {
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: { mode: 'nearest', intersect: false },
+              plugins: {
                legend: {
                  display: true,
                  position: 'bottom',
                  labels: { font: { size: 12, weight: 'bold' }, padding: 16 }
-               },
-               tooltip: {
-                 callbacks: {
+                },
+                tooltip: {
+                  enabled: true,
+                  mode: 'nearest',
+                  intersect: false,
+                  callbacks: {
                    label: context => {
                      if (context.raw === null || context.raw === undefined) return `${context.label}: Sem dados`;
                      const value = Number(context.raw);
@@ -690,16 +696,19 @@ import { MapModule } from './map.js';
               pointHoverBackgroundColor: '#ffffff',
               pointHoverBorderColor: '#10b981',
               borderWidth: 2,
-              pointRadius: 3
+              pointRadius: 3,
+              pointHoverRadius: 6,
+              pointHitRadius: 18
             }]
           },
            plugins: [radarLabelTooltipPlugin],
            options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: { mode: 'nearest', intersect: false },
             plugins: {
               legend: { display: false },
-              tooltip: { callbacks: { label: ctx => `${ctx.label}: ${metric.formatDisplay(ctx.raw)}` } }
+              tooltip: { enabled: true, mode: 'nearest', intersect: false, callbacks: { label: ctx => `${ctx.label}: ${metric.formatDisplay(ctx.raw)}` } }
             },
             scales: {
               r: {

@@ -51,17 +51,6 @@ import './panel.js';
        });
       })();
 
-    const methodology = document.createElement('p');
-    methodology.id = 'panel-methodology';
-    methodology.className = 'text-xs leading-relaxed text-slate-500 dark:text-slate-400';
-    document.getElementById('side-panel').append(methodology);
-    function updateMethodology() {
-      const state = State.getState();
-      const features = state.selectedCity ? [{ properties: state.selectedCity }] : DataSelectors.getFilteredFeatures(state);
-      methodology.textContent = 'Percentuais: contagem / população estimada do respectivo ano × 100. Agregados usam somente população com dados válidos, sem arredondamento intermediário.';
-    }
-    ['selectedCity', 'activeTab', 'pobIndicator', 'pobPbfAno', 'progPrograma', 'progStatus', 'progMetrica', 'progPlesMetrica', 'progMetricaModo', 'searchTerm', 'riskFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, updateMethodology));
-
      // 4.8 Filter Module
      const FilterModule = (function() {
         const inputSearch = document.getElementById('filter-search'), selRisk = document.getElementById('filter-risk'), selPop = document.getElementById('filter-pop'), btnReset = document.getElementById('btn-reset-filters'), customPopFilter = document.getElementById('custom-population-filter'), inputPopMin = document.getElementById('filter-pop-min'), inputPopMax = document.getElementById('filter-pop-max'), customPopError = document.getElementById('custom-population-error');
