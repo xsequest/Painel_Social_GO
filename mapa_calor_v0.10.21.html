@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapas Goiás - Dashboard Interativo</title>
+  
+  <link rel="stylesheet" href="assets/vendor/leaflet.css">
+  <link rel="stylesheet" href="assets/css/utilities.css">
+  <script defer src="assets/vendor/leaflet.js"></script>
+  <script defer src="assets/vendor/chroma.min.js"></script>
+  <script defer src="assets/vendor/chart.umd.js"></script>
+  <script defer src="assets/vendor/topojson-client.min.js"></script>
+
+
+
+
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200 h-full flex flex-col overflow-hidden">
+
+  <header id="app-header" class="hidden" aria-hidden="true"></header>
+
+  <div class="flex-1 flex flex-col md:flex-row overflow-hidden" id="main-layout">
+    <aside id="sidebar" class="w-full md:w-[320px] p-5 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col gap-5 overflow-y-auto flex-shrink-0" aria-label="Configurações do mapa">
+      <div id="sidebar-top">
+        <div class="flex min-w-0 items-center gap-3">
+          <div class="rounded-lg bg-emerald-600 p-2 font-bold text-white">GO</div>
+          <div class="min-w-0">
+            <h1 class="text-base font-black tracking-tight">Painel Goiás</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Dashboard Interativo</p>
+          </div>
+        </div>
+        <div class="flex shrink-0 items-center">
+          <button id="btn-collapse-sidebar" type="button" class="panel-collapse-button" aria-controls="sidebar-options" aria-expanded="true" aria-label="Recolher configurações" title="Recolher configurações">−</button>
+        </div>
+      </div>
+      <div id="dashboard-tabs" class="flex flex-col gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-800" role="tablist" aria-label="Painéis do dashboard">
+        <button id="tab-pob" type="button" role="tab" aria-controls="panel-pob" aria-selected="true" tabindex="0" class="tab-btn flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all bg-white dark:bg-slate-950 text-emerald-600 dark:text-emerald-400 shadow" data-tab="pob">CadÚnico</button>
+        <button id="tab-prog" type="button" role="tab" aria-controls="panel-prog" aria-selected="false" tabindex="-1" class="tab-btn flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900" data-tab="prog">Programas Sociais</button>
+      </div>
+      <div id="sidebar-options" class="flex flex-col gap-5">
+      <div>
+        <h2 class="flex items-center gap-2 font-bold mb-4 text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>Configurações</h2>
+        
+        <div id="panel-pob" role="tabpanel" aria-labelledby="tab-pob" class="space-y-4">
+          <div><label for="sel-pob-ind" class="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2">Indicador Social</label>
+            <select id="sel-pob-ind" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm">
+               <option value="norm_ext" title="Faixa da renda familiar per capita até R$ 109.">Extrema Pobreza %</option><option value="norm_pob" title="Faixa da renda familiar per capita de R$ 109 a R$ 218">Pobreza %</option><option value="norm_pob_p1_p2" title="Linha administrativa de elegibilidade do Programa Bolsa Família - até R$ 218.">Pobreza PBF %</option>
+            </select>
+          </div>
+          <div><label for="sel-pob-pal" class="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2">Paleta de Cores</label>
+            <select id="sel-pob-pal" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm">
+              <option value="RdYlGn_r">Verde → Vermelho (Padrão)</option><option value="viridis_r">Viridis</option><option value="plasma_r">Plasma Invertido</option><option value="YlOrRd">Amarelo → Vermelho</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="panel-prog" role="tabpanel" aria-labelledby="tab-prog" class="hidden space-y-4">
+          <section class="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+            <div><label for="sel-prog-programa" class="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2">Programa Social</label>
+              <select id="sel-prog-programa" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm">
+                <option value="TODS">Todos Programas</option>
+                <option value="MAES">Mães de Goiás</option>
+                <option value="AFUT">Aprendiz do Futuro</option>
+                <option value="DIGN">Dignidade</option>
+                <option value="GPEL">Goiás Por Elas</option>
+                <option value="GINC">Goiás + Inclusivo</option>
+                <option value="PLES">Passe Livre Estudantil</option>
+                <option value="CAUT">Carteira de Identificação do Autista</option>
+                <option value="PLPD">Passe Livre da Pessoa com Deficiência</option>
+                <option value="PPID">Passaporte da Pessoa Idosa</option>
+              </select>
+            </div>
+            <div id="prog-status-control"><label for="sel-prog-status" class="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2">Status do Programa</label>
+              <select id="sel-prog-status" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm">
+                 <option value="Acumulado" title="Soma de Beneficiários Ativos + Descredenciados.">Acumulado</option>
+                 <option value="Ativo">Ativo</option>
+                 <option value="Descredenciado" title="Beneficiários que passaram pelo programa.">Descredenciado</option>
+              </select>
+            </div>
+            <div id="prog-metrica-control"><label for="sel-prog-metrica" class="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2">Métrica do Programa</label>
+              <select id="sel-prog-metrica" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm">
+                <option value="Beneficios" title="Pessoa ou Responsável habilitado para o recebimento do benefício.">Benefícios</option>
+                <option value="Pessoas" title="Responsável + Grupo Familiar.">Pessoas</option>
+              </select>
+            </div>
+            <div id="prog-ples-metrica-control" class="hidden">
+              <label for="sel-prog-ples-metrica" class="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2">Modalidade do Passe Livre Estudantil</label>
+              <select id="sel-prog-ples-metrica" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm"></select>
+            </div>
+          </section>
+          <div><label for="sel-prog-pal" class="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2">Paleta de Cores</label>
+            <select id="sel-prog-pal" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm">
+              <option value="viridis_r">Viridis Invertido</option>
+               <option value="RdYlGn_r">Vermelho → Verde</option>
+               <option value="Oranges">Laranja (Gradual)</option>
+               <option value="plasma_r">Plasma Invertido</option>
+             </select>
+          </div>
+        </div>
+      </div>
+       <div class="mt-4">
+          <span id="view-mode-label" class="block text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2">Visualização</span>
+          <div class="flex flex-col bg-slate-100 dark:bg-slate-800 rounded-xl p-1" role="group" aria-labelledby="view-mode-label">
+           <div class="flex">
+              <button id="view-mapa" type="button" aria-pressed="true" aria-controls="map-container" class="view-btn flex-1 flex justify-center items-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all bg-white dark:bg-slate-900 shadow text-emerald-600 dark:text-emerald-400" data-view="mapa">
+              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.14 3.42 21 8v12.58l-6.86-4.58-6.14 4-5-3.33V4l5 3.33z"/><path d="M9 7v14"/><path d="M15 3v14"/></svg>Mapa
+             </button>
+              <button id="view-tabela" type="button" aria-pressed="false" aria-controls="table-container" class="view-btn flex-1 flex justify-center items-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all text-slate-500" data-view="tabela">
+               <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M3 12h18"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>Tabela
+             </button>
+           </div>
+            <button id="view-scatter" type="button" aria-pressed="false" aria-controls="scatter-container" class="view-btn hidden w-full justify-center items-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all text-slate-500" data-view="scatter">
+            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16"/><path d="M5 18V5"/><circle cx="8" cy="14" r="1.5"/><circle cx="11" cy="10" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="18" cy="7" r="1.5"/></svg>Correlação
+            </button>
+          </div>
+       </div>
+      <section class="mt-2 space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/40">
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="text-sm font-black uppercase tracking-[.16em] text-slate-500 dark:text-slate-400">Filtros</h3>
+          <button id="btn-reset-filters" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors">Limpar</button>
+        </div>
+         <div>
+           <label for="filter-search" class="mb-2 block text-sm font-bold text-slate-600 dark:text-slate-300">Município <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">(filtro global)</span></label>
+            <input type="text" id="filter-search" placeholder="Buscar no mapa e na tabela..." aria-label="Buscar município no mapa e na tabela" aria-describedby="global-search-help" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-900" />
+            <p id="global-search-help" class="mt-1 text-xs text-slate-500 dark:text-slate-400">Filtra os municípios em todas as visualizações.</p>
+         </div>
+            <div><label for="filter-risk" class="mb-2 block text-sm font-bold text-slate-600 dark:text-slate-300">Status do indicador</label>
+            <select id="filter-risk" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-900">
+             <option value="all">Todos</option><option value="critico">Crítico</option><option value="alerta">Alerta</option><option value="estavel">Estável</option><option value="semdados">Sem dados</option>
+            </select>
+           </div>
+        <div><label for="filter-pop" class="mb-2 block text-sm font-bold text-slate-600 dark:text-slate-300">Faixa populacional</label>
+          <select id="filter-pop" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-900">
+            <option value="all">Todas as faixas</option><option value="lt20k">Até 20 mil</option><option value="b20k100k">20 mil a 100 mil</option><option value="gt100k">Acima de 100 mil</option><option value="custom">Faixa personalizada</option>
+          </select>
+        </div>
+        <div id="custom-population-filter" class="hidden space-y-2 rounded-xl border border-slate-200 bg-white/70 p-3 dark:border-slate-700 dark:bg-slate-900/70">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="filter-pop-min" class="mb-1 block text-xs font-bold text-slate-600 dark:text-slate-300">Mínimo</label>
+              <input type="text" id="filter-pop-min" inputmode="numeric" autocomplete="off" placeholder="Ex.: 50.000" aria-label="População mínima" aria-describedby="custom-population-help" class="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+            </div>
+            <div>
+              <label for="filter-pop-max" class="mb-1 block text-xs font-bold text-slate-600 dark:text-slate-300">Máximo</label>
+              <input type="text" id="filter-pop-max" inputmode="numeric" autocomplete="off" placeholder="Ex.: 200.000" aria-label="População máxima" aria-describedby="custom-population-help" class="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+            </div>
+          </div>
+          <p id="custom-population-help" class="text-xs text-slate-400 dark:text-slate-500">Deixe um campo vazio para não limitar esse lado. Use números inteiros, como 50.000.</p>
+          <p id="custom-population-error" class="hidden text-xs font-bold text-rose-600 dark:text-rose-400" role="alert"></p>
+        </div>
+      </section>
+      
+      <div class="mt-auto pt-3 border-t border-slate-200 dark:border-slate-800">
+        <div class="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">Fonte: IBGE Sidra e Tabcad.<br/>Data Base: Junho/2026<br/>Competência CadÚnico: Junho/2026<br/>Versão: v0.10.21 - prog_sociais_luna</div>
+      </div>
+      </div>
+    </aside>
+
+     <main class="relative flex-1 flex flex-col md:flex-row overflow-hidden p-4 gap-4 min-w-0" id="main-content">
+      <div class="flex-1 flex flex-col min-w-0 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden relative shadow-sm" id="main-map-area">
+        <div class="hidden" aria-hidden="true">
+          <h3 id="main-title">Indicador social</h3>
+          <span id="dynamic-badge"></span>
+        </div>
+        <div id="map-container" class="flex-1 relative p-4 bg-slate-50 dark:bg-slate-900 hidden">
+          <div class="relative w-full h-full rounded-2xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800">
+            <div id="map" class="w-full h-full"></div>
+            <div id="map-controls-legend" role="group" aria-label="Controles e legenda do mapa">
+              <div id="map-zoom-reframe">
+                <div id="map-zoom-control" role="group" aria-label="Controles de zoom do mapa"></div>
+                <button id="btn-reset-view" type="button" aria-label="Reenquadrar mapa de Goiás" title="Reenquadrar o mapa">Reenquadrar</button>
+                <div id="map-display-controls" role="group" aria-label="Aparência e apresentação do mapa">
+                  <button id="btn-dark-toggle" type="button" aria-pressed="false" class="rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800" aria-label="Tema escuro" title="Alternar tema">
+                    <svg id="icon-sun" class="w-5 h-5 hidden dark:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                    <svg id="icon-moon" class="w-5 h-5 block dark:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                  </button>
+                  <div id="kiosk-btn-container">
+                    <button id="btn-kiosk" type="button" aria-pressed="false" class="rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-sm transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800" aria-label="Modo Apresentação" title="Modo Apresentação (Tela Cheia)">
+                      <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div id="map-legend-host"></div>
+            </div>
+            <div id="map-attribution-host" role="contentinfo" aria-label="Créditos do mapa"></div>
+          </div>
+        </div>
+         <div id="table-container" class="flex-1 overflow-hidden p-4 flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="text-sm font-bold text-slate-600 dark:text-slate-300">Busca global por município:</span>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+              <div class="relative w-full sm:w-80">
+                <input type="text" id="search-input" placeholder="Buscar no mapa e na tabela..." aria-label="Buscar município no mapa e na tabela" title="Sincronizado com o filtro lateral" class="w-full pl-10 pr-4 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400" />
+                <svg class="absolute left-3.5 top-2.5 w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              </div>
+              <button id="btn-export" class="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>Exportar .xlsx
+              </button>
+            </div>
+          </div>
+          <div class="flex-1 overflow-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-inner">
+            <table class="w-full text-left border-collapse text-sm" id="data-table">
+              <thead class="bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+                <tr id="table-head"></tr>
+              </thead>
+              <tbody id="table-body" class="divide-y divide-slate-200 dark:divide-slate-800"></tbody>
+            </table>
+           </div>
+         </div>
+          <div id="scatter-container" class="hidden flex-1 min-h-0 flex-col overflow-hidden p-4 bg-slate-50 dark:bg-slate-900">
+            <div class="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-inner dark:border-slate-800 dark:bg-slate-950">
+              <div class="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+                <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <h4 class="font-extrabold tracking-tight text-slate-800 dark:text-slate-200">Vulnerabilidade x Cobertura de Benefícios</h4>
+                    <p id="scatter-context" class="max-w-3xl text-xs leading-relaxed text-slate-500 dark:text-slate-400">Cada ponto representa um município. As linhas tracejadas indicam as médias estaduais dos dois indicadores.</p>
+                  </div>
+                  <div class="flex flex-wrap items-center justify-end gap-2">
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+                      Município
+                      <select id="scatter-municipio-select" class="rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                        <option value="">Todos os municípios</option>
+                      </select>
+                    </label>
+                    <button id="scatter-clear-municipality" type="button" class="rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs font-bold text-slate-600 transition-colors hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-emerald-700 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-300" aria-label="Limpar município selecionado na análise de correlação" title="Limpar município selecionado">Limpar</button>
+                     <div class="flex items-center rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900" role="group" aria-label="Controles de zoom do gráfico">
+                       <button id="scatter-zoom-out" type="button" class="px-2.5 py-2 text-sm font-black text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white" aria-label="Reduzir zoom do gráfico" title="Reduzir zoom">−</button>
+                       <button id="scatter-zoom-reset" type="button" class="min-w-[52px] border-x border-slate-200 px-2 py-2 text-[11px] font-extrabold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white" aria-label="Restaurar zoom do gráfico" title="Restaurar zoom">100%</button>
+                       <button id="scatter-zoom-in" type="button" class="px-2.5 py-2 text-sm font-black text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white" aria-label="Aumentar zoom do gráfico" title="Aumentar zoom">+</button>
+                     </div>
+                     <button id="scatter-expand" type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-2 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-950/70" aria-label="Abrir análise de correlação ampliada" aria-haspopup="dialog" aria-controls="scatter-dialog" aria-expanded="false" title="Abrir gráfico ampliado">
+                       <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+                       Ampliar
+                     </button>
+                   </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-rose-600"></span>Prioridade máxima</span>
+                  <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-emerald-600"></span>Cobertura adequada</span>
+                  <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>Baixa cobertura</span>
+                  <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-blue-600"></span>Baixa vulnerabilidade</span>
+                </div>
+              </div>
+              <div id="scatter-chart-container" class="p-4">
+                <div id="scatter-chart-scroll" class="min-h-full overflow-x-auto">
+                  <svg id="scatter-chart-svg" role="img" aria-label="Correlação entre extrema pobreza e cobertura de benefícios"></svg>
+                </div>
+                <div id="scatter-tooltip" class="hidden absolute z-20 max-w-xs rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-700 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"></div>
+                <p id="scatter-empty" class="hidden h-full items-center justify-center text-center text-sm font-semibold text-slate-400 dark:text-slate-500">Não há dados suficientes para construir a análise no recorte atual.</p>
+                <details id="scatter-table-details" class="mt-5 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+                  <summary class="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm font-extrabold text-slate-700 transition-colors hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-900">
+                    <span>Listagem detalhada da correlação por município</span>
+                    <span class="text-xs font-semibold text-slate-400">Expandir / recolher</span>
+                  </summary>
+                  <p id="scatter-correlation-summary" class="border-t border-slate-200 px-4 py-3 text-xs font-semibold text-slate-500 dark:border-slate-800 dark:text-slate-400"></p>
+                  <div class="overflow-x-auto border-t border-slate-200 dark:border-slate-800">
+                    <table id="scatter-table" class="w-full min-w-[920px] border-collapse text-xs">
+                      <thead id="scatter-table-head" class="bg-slate-100 text-slate-600 dark:bg-slate-900 dark:text-slate-300"></thead>
+                      <tbody id="scatter-table-body" class="divide-y divide-slate-200 dark:divide-slate-800"></tbody>
+                    </table>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </div>
+          <div id="map-loading-overlay" class="hidden absolute inset-0 z-[1000] items-center justify-center bg-white/70 dark:bg-slate-950/70 backdrop-blur-[1px]" role="status" aria-live="polite" aria-label="Atualizando visualização">
+          <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 shadow-lg dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+            <span class="h-5 w-5 animate-spin rounded-full border-2 border-emerald-200 border-t-emerald-600 dark:border-emerald-900 dark:border-t-emerald-400" aria-hidden="true"></span>
+            <span>Atualizando visualização...</span>
+          </div>
+        </div>
+      </div>
+      <aside id="side-panel" class="w-full md:w-[380px] flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-lg p-6 gap-5 overflow-y-auto hidden animate-fade-in flex-shrink-0" aria-label="Informações do recorte">
+         <div id="panel-header" class="flex justify-between items-start gap-3">
+           <div id="panel-heading-content" class="flex min-w-0 flex-1 items-center gap-3">
+             <button id="btn-center-city" type="button" class="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-emerald-600 shadow-sm transition-colors hover:bg-emerald-100 dark:border-emerald-900/70 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-950/80" aria-label="Localizar município selecionado no mapa" title="Localizar no mapa">
+               <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+             </button>
+             <div class="min-w-0 flex-1">
+               <h4 id="panel-city-name" class="truncate text-xl font-black tracking-tight text-slate-800 dark:text-slate-100">Goiás</h4>
+               <p id="panel-subtitle" class="truncate text-xs uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mt-1">Resumo estadual</p>
+               <span id="center-city-status" class="hidden mt-1 inline-flex w-fit shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/50 dark:text-emerald-300">Estável</span>
+             </div>
+           </div>
+           <button id="btn-close-panel" type="button" class="rounded-lg border border-slate-200 bg-white p-2 text-slate-500 shadow-sm transition-colors hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-rose-900/70 dark:hover:bg-rose-950/60 dark:hover:text-rose-300" aria-label="Recolher painel de informações" aria-controls="side-panel" title="Recolher painel">
+             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/></svg>
+           </button>
+          </div>
+          <div id="panel-collapsed-summary" class="hidden items-center gap-3">
+             <div class="min-w-0 flex-1">
+                <strong id="collapsed-panel-label" class="block truncate text-sm font-extrabold text-slate-800 dark:text-slate-100">Indicador social</strong>
+                <div id="collapsed-indicator-stats" class="mt-1 flex items-baseline gap-3 text-xs">
+                  <span aria-label="Contagem geral do indicador" class="text-slate-500 dark:text-slate-400">Qtd. <strong id="collapsed-indicator-count" class="font-extrabold text-slate-700 dark:text-slate-200">-</strong></span>
+                  <span aria-label="Percentual do indicador" class="text-slate-500 dark:text-slate-400"><strong id="collapsed-indicator-percent" class="font-extrabold text-slate-700 dark:text-slate-200">-</strong></span>
+                </div>
+                <span id="collapsed-population" class="mt-1 block truncate text-xs text-slate-500 dark:text-slate-400">População</span>
+             </div>
+           <button id="btn-open-panel" type="button" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800" aria-controls="side-panel" aria-expanded="false" aria-label="Mostrar informações" title="Mostrar informações">Mostrar</button>
+         </div>
+         <section id="panel-overview-section" class="hidden space-y-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-950/50">
+            <div id="panel-overview-grid" class="grid grid-cols-2 gap-2"></div>
+            <div class="border-t border-slate-200 pt-3 dark:border-slate-800">
+              <div class="mb-2 flex items-center justify-between gap-2">
+                <h5 id="panel-overview-ranking-title" class="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Valores do indicador</h5>
+                <div id="panel-overview-ranking-toggle" class="flex shrink-0 rounded-xl bg-slate-100 p-1 dark:bg-slate-800" role="group" aria-label="Ordenação dos municípios">
+                  <button id="panel-ranking-high" type="button" aria-controls="panel-overview-ranking" aria-pressed="true" class="flex-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold transition-all bg-white dark:bg-slate-900 shadow text-emerald-600 dark:text-emerald-400">Maiores</button>
+                  <button id="panel-ranking-low" type="button" aria-controls="panel-overview-ranking" aria-pressed="false" class="flex-1 rounded-lg px-2.5 py-1.5 text-[11px] font-bold transition-all text-slate-500 dark:text-slate-400">Menores</button>
+                </div>
+              </div>
+              <div id="panel-overview-ranking" class="space-y-2"></div>
+           </div>
+         </section>
+         <div id="panel-city-details" class="space-y-4">
+          <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800 pb-2">Dados Consolidados</h5>
+          <div class="grid grid-cols-2 gap-3" id="panel-grid-main"></div>
+          
+             <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+               <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mb-3" id="chart-title">Comparativo com Goiás</h5>
+                 <div id="pob-chart-mode-toggle" class="hidden mb-3 flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1" role="group" aria-label="Tipo de comparativo do indicador de pobreza">
+                   <button id="pob-chart-goias" type="button" aria-pressed="true" aria-controls="chart-container" class="flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all bg-white dark:bg-slate-900 shadow text-emerald-600 dark:text-emerald-400">Goiás</button>
+                   <button id="pob-chart-comparativo-2019" type="button" aria-pressed="false" aria-controls="chart-container" class="flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all text-slate-500 dark:text-slate-400">Comparativo com 2019</button>
+                 </div>
+                 <div id="chart-container"><canvas id="comparison-chart" role="img" aria-label="Comparativo do município com Goiás ou com 2019">Os dados completos estão na tabela após o gráfico.</canvas></div>
+            </div>
+            <div id="panel-poverty-pie-section" class="hidden pt-4 border-t border-slate-100 dark:border-slate-800">
+             <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mb-3">Pobreza PBF - Município</h5>
+             <div id="poverty-pie-container"><canvas id="poverty-pie-chart" role="img" aria-label="Composição da pobreza PBF no município">Os dados completos estão na tabela após o gráfico.</canvas></div>
+           </div>
+             <div id="panel-radar-section" class="pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div class="mb-3 flex items-start justify-between gap-3">
+                <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">Composição dos Programas Sociais no Município</h5>
+                <button id="btn-radar-expand" type="button" class="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[11px] font-bold text-emerald-700 transition-colors hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-950/70" aria-label="Abrir gráfico de radar ampliado" aria-haspopup="dialog" aria-controls="radar-dialog" aria-expanded="false" title="Abrir gráfico ampliado">
+                  <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+                  Ampliar
+                </button>
+              </div>
+              <div id="radar-container"><canvas id="program-comparison-chart" role="img" aria-label="Composição dos programas sociais no município">Os dados completos estão na tabela após o gráfico.</canvas></div>
+           </div>
+         </div>
+       </aside>
+     </main>
+   </div>
+
+    <div id="radar-dialog" class="fixed inset-0 z-[1300] hidden items-center justify-center bg-slate-950/65 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="radar-dialog-title" aria-describedby="radar-dialog-context" aria-hidden="true">
+      <section class="flex max-h-[calc(100vh-2rem)] w-full max-w-6xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+        <div class="flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-emerald-50 to-white px-5 py-4 dark:border-slate-800 dark:from-emerald-950/40 dark:to-slate-900">
+          <div>
+            <div class="mb-1 flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="7" cy="17" r="2.5"/><circle cx="12" cy="9" r="4"/><circle cx="18" cy="14" r="3"/><path d="M3 21h18"/></svg>
+              <h2 id="radar-dialog-title" class="text-lg font-black tracking-tight text-slate-900 dark:text-slate-100">Composição dos Programas Sociais</h2>
+            </div>
+            <p id="radar-dialog-context" class="text-xs leading-relaxed text-slate-500 dark:text-slate-400">Visualização ampliada do município selecionado.</p>
+          </div>
+          <button id="btn-close-radar" type="button" class="rounded-xl p-2 text-slate-400 transition-colors hover:bg-white hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200" aria-label="Fechar gráfico de radar ampliado">
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div class="min-h-0 overflow-y-auto p-4 sm:p-6">
+          <div id="radar-expanded-container"></div>
+        </div>
+      </section>
+    </div>
+
+    <div id="scatter-dialog" class="fixed inset-0 z-[1300] hidden items-center justify-center bg-slate-950/65 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="scatter-dialog-title" aria-describedby="scatter-dialog-context" aria-hidden="true">
+      <section class="flex max-h-[calc(100vh-2rem)] w-full max-w-[95vw] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+        <div class="flex items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-emerald-50 to-white px-5 py-4 dark:border-slate-800 dark:from-emerald-950/40 dark:to-slate-900">
+          <div>
+            <div class="mb-1 flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19h16"/><path d="M5 18V5"/><circle cx="8" cy="14" r="1.5"/><circle cx="11" cy="10" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="18" cy="7" r="1.5"/></svg>
+              <h2 id="scatter-dialog-title" class="text-lg font-black tracking-tight text-slate-900 dark:text-slate-100">Vulnerabilidade x Cobertura de Benefícios</h2>
+            </div>
+            <p id="scatter-dialog-context" class="text-xs leading-relaxed text-slate-500 dark:text-slate-400">Visualização ampliada da análise de correlação.</p>
+          </div>
+          <div class="flex flex-wrap items-center justify-end gap-2">
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+              Município
+              <select id="scatter-dialog-municipio-select" class="rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                <option value="">Todos os municípios</option>
+              </select>
+            </label>
+            <button id="scatter-dialog-clear" type="button" class="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-600 transition-colors hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-emerald-700 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-300" aria-label="Limpar município selecionado na análise de correlação">Limpar</button>
+            <div class="flex items-center rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900" role="group" aria-label="Controles de zoom do gráfico ampliado">
+              <button id="scatter-dialog-zoom-out" type="button" class="px-2.5 py-2 text-sm font-black text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white" aria-label="Reduzir zoom do gráfico ampliado" title="Reduzir zoom">−</button>
+              <button id="scatter-dialog-zoom-reset" type="button" class="min-w-[52px] border-x border-slate-200 px-2 py-2 text-[11px] font-extrabold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white" aria-label="Restaurar zoom do gráfico ampliado" title="Restaurar zoom">100%</button>
+              <button id="scatter-dialog-zoom-in" type="button" class="px-2.5 py-2 text-sm font-black text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white" aria-label="Aumentar zoom do gráfico ampliado" title="Aumentar zoom">+</button>
+            </div>
+            <button id="scatter-dialog-close" type="button" class="rounded-xl p-2 text-slate-400 transition-colors hover:bg-white hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200" aria-label="Fechar análise de correlação ampliada">
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-slate-100 px-5 py-3 text-xs font-semibold text-slate-500 dark:border-slate-800 dark:text-slate-400">
+          <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-rose-600"></span>Prioridade máxima</span>
+          <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-emerald-600"></span>Cobertura adequada</span>
+          <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>Baixa cobertura</span>
+          <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-blue-600"></span>Baixa vulnerabilidade</span>
+        </div>
+        <div id="scatter-expanded-chart-container" class="p-4 sm:p-6"></div>
+      </section>
+    </div>
+
+  <script type="module" src="assets/js/bootstrap.js"></script>
+</body>
+</html>
