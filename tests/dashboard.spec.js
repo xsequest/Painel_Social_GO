@@ -309,7 +309,7 @@ test('Pobreza PBF city panel combines enrolment and rate above the population ca
   await ready(page);
   await page.locator('#sel-pob-ind').selectOption('norm_pob_p1_p2');
   const city = await page.evaluate(async () => {
-    const { State } = await import('./assets/js/core.js');
+    const { State, Utils } = await import('./assets/js/core.js');
     const { geojsonData } = await import('./assets/js/data.js');
     const properties = geojsonData.features.find(feature => feature.properties.name === 'Goiânia').properties;
     State.set('selectedCity', properties);
@@ -320,7 +320,9 @@ test('Pobreza PBF city panel combines enrolment and rate above the population ca
       count2026: Intl.NumberFormat('pt-BR').format(properties.pob_p1_p2),
       population2019: Intl.NumberFormat('pt-BR').format(properties.população_2019),
       population2026: Intl.NumberFormat('pt-BR').format(properties.população),
-      rateDifference: properties.norm_pob_p1_p2 * 100 - properties.norm_PBF_2019 * 100
+      rateDifference: properties.norm_pob_p1_p2 * 100 - properties.norm_PBF_2019 * 100,
+      populationVariationPct: Utils.getPopulationVariationPct(properties),
+      populationVariationAboveAverage: Utils.isPopulationVariationAboveAverage(properties)
     };
   });
   const cards = page.locator('#panel-grid-main .pbf-comparison-card');
@@ -342,6 +344,11 @@ test('Pobreza PBF city panel combines enrolment and rate above the population ca
   await expect(populationCard.locator('.pbf-year-2026')).toContainText(city.population2026);
   await expect(populationCard.locator('.pbf-comparison-difference')).toContainText('pessoas');
   await expect(populationCard.locator('.pbf-comparison-difference strong')).not.toHaveClass(/text-(rose|emerald)/);
+  const populationPct = `${city.populationVariationPct > 0 ? '+' : city.populationVariationPct < 0 ? '−' : ''}${Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.abs(city.populationVariationPct))}%`;
+  const populationPctNote = populationCard.locator('.pbf-difference-note');
+  await expect(populationPctNote).toHaveText(populationPct);
+  if (city.populationVariationAboveAverage) await expect(populationPctNote).toHaveClass(/is-above-average/);
+  else await expect(populationPctNote).not.toHaveClass(/is-above-average/);
   const positions = await Promise.all([enrolledCard, populationCard].map(card => card.boundingBox()));
   expect(Math.abs(positions[0].x - positions[1].x)).toBeLessThan(2);
   expect(Math.abs(positions[0].width - positions[1].width)).toBeLessThan(2);
@@ -366,6 +373,24 @@ test('Pobreza PBF city panel combines enrolment and rate above the population ca
   expect(Math.abs(mobilePositions[0].x - mobilePositions[1].x)).toBeLessThan(2);
   expect(Math.abs(mobilePositions[0].width - mobilePositions[1].width)).toBeLessThan(2);
   expect(mobilePositions[1].y).toBeGreaterThan(mobilePositions[0].y);
+});
+
+test('population percentage is highlighted for above-average increase and decrease', async ({ page }) => {
+  await ready(page);
+  await page.locator('#sel-pob-ind').selectOption('norm_pob_p1_p2');
+  const setPopulation = population2026 => page.evaluate(async value => {
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
+    const city = geojsonData.features.find(feature => feature.properties.name === 'Goiânia').properties;
+    State.set('selectedCity', { ...city, população_2019: 100000, população: value });
+  }, population2026);
+  await setPopulation(1);
+  const note = page.locator('#panel-grid-main .pbf-comparison-card').nth(1).locator('.pbf-difference-note');
+  await expect(note).toHaveText('−100,00%');
+  await expect(note).toHaveClass(/is-above-average/);
+  await setPopulation(100000000);
+  await expect(note).toHaveText('+99.900,00%');
+  await expect(note).toHaveClass(/is-above-average/);
 });
 
 test('large population decline and growth warnings appear in all PBF year modes', async ({ page }) => {

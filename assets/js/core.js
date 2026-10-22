@@ -474,7 +474,7 @@ function numberFormatter(decimals) {
         const isProgram = state.activeTab === 'prog';
         const isPbfDiff = !isProgram && state.pobIndicator === 'norm_pob_p1_p2' && state.pobPbfAno === 'diff';
         const label = isPbfDiff ? 'Pobreza PBF (2026)' : isProgram ? `${PROGRAMAS[state.progPrograma]}: ${metric.label}` : metric.label;
-        const lines = [`Criticidade do indicador: ${label}`];
+        const lines = [`Criticidade do indicador: ${label}\nA classificação é comparativa, não uma avaliação de impacto social.`];
         if (city) {
           const value = metric.statusValue(city);
           lines.push(`${city.name}: ${metric.getStatus(city, reference).label}. Proporção usada: ${value === null || value === undefined ? 'sem dados' : Utils.fmtPtbrPct(value * 100)}.`);
@@ -483,10 +483,10 @@ function numberFormatter(decimals) {
           ? 'Usa a métrica dividida pela população municipal, mesmo no modo absoluto. Menor proporção recebe maior criticidade.'
           : 'Maior proporção da população no indicador recebe maior criticidade.');
         lines.push(isProgram
-          ? 'Crítico: até 40% da referência. Alerta: acima de 40% até 75%. Estável: acima de 75%.'
-          : 'Estável: até 40% da referência. Alerta: acima de 40% até 75%. Crítico: acima de 75%.');
-        lines.push(`Referência: ${Utils.fmtPtbrPct(reference * 100)}, calculada pelo percentil 95 dos valores positivos da base completa, ou pelo valor padrão quando indisponível. Os filtros não alteram essa referência.`);
-        lines.push('Sem dados: valor ausente. Zero é válido. A classificação é comparativa, não uma avaliação de impacto social.');
+          ? 'Crítico: até 40% da referência.\nAlerta: acima de 40% até 75%.\nEstável: acima de 75%.'
+          : 'Estável: até 40% da referência.\nAlerta: acima de 40% até 75%.\nCrítico: acima de 75%.');
+        lines.push(`Referência: ${Utils.fmtPtbrPct(reference * 100)}\nCalculada pelo percentil 95 dos valores positivos da base completa, ou pelo valor padrão quando indisponível. Os filtros não alteram essa referência.`);
+        lines.push('Sem dados: valor ausente. Zero é válido.');
         if (isProgram) lines.push('Não confundir com o status cadastral do programa.');
         if (isPbfDiff) lines.push('No modo Diff, o status usa o indicador de 2026, não a diferença em pontos percentuais nem a faixa sem preenchimento do mapa.');
         return lines.join('\n\n');

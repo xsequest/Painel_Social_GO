@@ -292,14 +292,14 @@ import { MapModule } from './map.js';
                   : variation < 0
                     ? 'text-emerald-600 font-black'
                     : 'text-slate-600 dark:text-slate-400';
-              const comparisonCard = (title, value2019, value2026, secondary2019, secondary2026, secondaryClass2019, secondaryClass2026, difference, differenceClass) => safeHtml`
+              const comparisonCard = (title, value2019, value2026, secondary2019, secondary2026, secondaryClass2019, secondaryClass2026, difference, differenceClass, differenceNote = '', differenceNoteClass = '', differenceNoteTitle = '') => safeHtml`
                 <section class="pbf-comparison-card rounded-xl border border-slate-100 bg-slate-50 p-3 dark:border-slate-800/50 dark:bg-slate-950">
                   <span class="pbf-comparison-title">${title}</span>
                   <div class="pbf-comparison-years">
                     <div class="pbf-year-2019"><span>2019</span><strong>${value2019}</strong><small class="pbf-year-secondary ${secondaryClass2019}">${secondary2019 || ''}</small></div>
                     <div class="pbf-year-2026"><span>2026</span><strong>${value2026}</strong><small class="pbf-year-secondary ${secondaryClass2026}">${secondary2026 || ''}</small></div>
                   </div>
-                  <div class="pbf-comparison-difference ${differenceClass}"><span>Diferença 2026 − 2019</span><strong>${difference}</strong></div>
+                  <div class="pbf-comparison-difference ${differenceClass}"><span>Diferença 2026 − 2019</span><strong>${difference}</strong><small class="pbf-difference-note ${differenceNoteClass}" title="${differenceNoteTitle}">${differenceNote}</small></div>
                 </section>
               `;
               const pbfRateDifference = pbfVariation === null
@@ -308,6 +308,11 @@ import { MapModule } from './map.js';
               const populationDifference = populationVariation === null
                 ? '-'
                 : `${populationVariation > 0 ? '↑ +' : populationVariation < 0 ? '↓ ' : '→ '}${fmtPtbrInt(populationVariation)} pessoas`;
+              const populationVariationPct = Utils.getPopulationVariationPct(city);
+              const populationVariationAboveAverage = Utils.isPopulationVariationAboveAverage(city);
+              const populationVariationPctLabel = populationVariationPct === null
+                ? ''
+                : `${populationVariationPct > 0 ? '+' : populationVariationPct < 0 ? '−' : ''}${fmtPtbrNum(Math.abs(populationVariationPct))}%`;
 
               gridMain.innerHTML = comparisonCard(
                 'Inscritos em Pob. PBF', fmtPtbrInt(city.PBF_2019), fmtPtbrInt(city.pob_p1_p2),
@@ -315,8 +320,11 @@ import { MapModule } from './map.js';
                 Utils.getSignalTextColorClass(city.norm_PBF_2019, maxPobVal), Utils.getSignalTextColorClass(city.norm_pob_p1_p2, maxPobVal),
                 pbfRateDifference, variationColor(pbfVariation)
               ) + comparisonCard(
-                'População Total', fmtPtbrInt(city.população_2019), fmtPtbrInt(city.população),
-                '', '', '', '', populationDifference, 'text-slate-600 dark:text-slate-300'
+                'População Municipal', fmtPtbrInt(city.população_2019), fmtPtbrInt(city.população),
+                '', '', '', '', populationDifference, 'text-slate-600 dark:text-slate-300',
+                populationVariationPctLabel,
+                populationVariationAboveAverage ? 'is-above-average' : '',
+                populationVariationAboveAverage ? 'Variação percentual acima da média estadual.' : ''
               );
             } else {
               const corExt = Utils.getSignalTextColorClass(city.norm_ext, maxPobVal);

@@ -67,6 +67,11 @@
        #panel-grid-main .pbf-comparison-difference span { color: #64748b; font-size: 11px; }
        .dark #panel-grid-main .pbf-comparison-difference span { color: #94a3b8; }
        #panel-grid-main .pbf-comparison-difference strong { font-size: 13px; font-variant-numeric: tabular-nums; line-height: 1.25; }
+       #panel-grid-main .pbf-comparison-difference .pbf-difference-note { display: block; min-height: 0; color: #64748b; font-size: 12px; font-weight: 700; line-height: 1.25; }
+       #panel-grid-main .pbf-comparison-difference .pbf-difference-note:empty { display: none; }
+       #panel-grid-main .pbf-comparison-difference .pbf-difference-note.is-above-average { color: #c2410c; font-weight: 900; }
+       .dark #panel-grid-main .pbf-comparison-difference .pbf-difference-note { color: #94a3b8; }
+       .dark #panel-grid-main .pbf-comparison-difference .pbf-difference-note.is-above-average { color: #fdba74; }
       #poverty-pie-container { position: relative; height: 260px; width: 100%; }
        #radar-container, #radar-expanded-container { position: relative; width: 100%; }
         #radar-container { height: 320px; }
