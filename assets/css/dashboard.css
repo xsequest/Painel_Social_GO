@@ -33,7 +33,7 @@
     .legend-mode-toggle.is-column .legend-mode-row .legend-mode-button:first-child { border-radius: 6px 0 0 0 !important; }
     .legend-mode-toggle.is-column .legend-mode-row .legend-mode-button:last-child { margin-left: -1px; border-radius: 0 6px 0 0 !important; }
     .legend-mode-toggle.is-column > .legend-mode-button:last-child { width: 100%; border-radius: 0 0 6px 6px !important; }
-    body.kiosk-mode #sidebar, body.kiosk-mode #table-container, body.kiosk-mode header { display: none !important; }
+    body.kiosk-mode #table-container, body.kiosk-mode header { display: none !important; }
     body.kiosk-mode #main-map-area { width: 100% !important; height: 100vh !important; border-radius: 0 !important; border: none !important; }
     body.kiosk-mode #map-container { height: 100vh !important; border-radius: 0 !important; }
     body.kiosk-mode .leaflet-control-zoom { display: none !important; }
@@ -102,8 +102,10 @@
         #collapsed-indicator-stats span { white-space: nowrap; }
         #panel-overview-section:not(.hidden) { display: block; }
         #panel-overview-ranking > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 3px 8px; }
-        #panel-overview-ranking .overview-rank-name { overflow: hidden; color: #475569; font-size: 12px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+        #panel-overview-ranking .overview-rank-name { overflow: hidden; padding: 0; border: 0; background: transparent; color: #475569; font-size: 12px; font-weight: 700; text-align: left; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+        #panel-overview-ranking .overview-rank-name:hover { color: #047857; text-decoration: underline; }
         .dark #panel-overview-ranking .overview-rank-name { color: #cbd5e1; }
+        .dark #panel-overview-ranking .overview-rank-name:hover { color: #6ee7b7; }
         #panel-overview-ranking .overview-rank-value { color: #334155; font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
         .dark #panel-overview-ranking .overview-rank-value { color: #e2e8f0; }
         #panel-overview-ranking .overview-rank-track { grid-column: 1 / -1; height: 6px; overflow: hidden; border-radius: 99px; background: rgba(148, 163, 184, .2); }
@@ -117,7 +119,6 @@
         #table-container:not(.hidden), #scatter-container:not(.hidden) { position: absolute; inset: 0; display: flex; min-width: 0; min-height: 0; overflow: auto; padding: 94px 410px 24px 370px; background: transparent; }
         #table-container:not(.hidden) > .flex-1 { min-height: 0; }
         #scatter-container:not(.hidden) { z-index: 2; }
-        body.kiosk-mode #sidebar, body.kiosk-mode #side-panel { display: none !important; }
         body.kiosk-mode #main-content, body.kiosk-mode #main-map-area, body.kiosk-mode #map-container { width: 100% !important; height: 100vh !important; }
         body.kiosk-mode #map-controls-legend { right: 16px; bottom: 32px; }
         body.kiosk-mode #map-attribution-host { right: 6px; bottom: 4px; }

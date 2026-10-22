@@ -77,6 +77,14 @@ import { MapModule } from './map.js';
          const selectedOption = selPobInd.options[selPobInd.selectedIndex];
          selPobInd.title = selectedOption ? selectedOption.title : '';
        }
+       function setSidebarCollapsed(isCollapsed) {
+         sidebar.classList.toggle('sidebar-collapsed', isCollapsed);
+         const label = isCollapsed ? 'Reabrir configurações' : 'Recolher configurações';
+         collapseSidebarButton.textContent = isCollapsed ? '+' : '−';
+         collapseSidebarButton.setAttribute('aria-expanded', String(!isCollapsed));
+         collapseSidebarButton.setAttribute('aria-label', label);
+         collapseSidebarButton.title = label;
+       }
       function updateActiveTab(activeTab) {
         Object.keys(tabs).forEach(k => { 
           const a = k === activeTab; 
@@ -123,6 +131,7 @@ import { MapModule } from './map.js';
       // Reset de município ao trocar aba
         State.subscribe('activeTab', (val) => { updateActiveTab(val); updateScatterVisibility(val); State.set('selectedCity', null); });
        State.subscribe('viewMode', updateViewMode);
+       State.subscribe('isKiosk', setSidebarCollapsed);
       
        State.subscribe('pobIndicator', v => { selPobInd.value = v; syncPovertyIndicatorDescription(); }); State.subscribe('pobPalette', v => selPobPal.value = v);
        State.subscribe('progPrograma', v => { selProgProg.value = v; updateProgramControls(v); }); State.subscribe('progStatus', v => selProgStatus.value = v); State.subscribe('progMetrica', v => selProgMetrica.value = v); State.subscribe('progPlesMetrica', v => { if (selProgPlesMetrica) selProgPlesMetrica.value = v; }); State.subscribe('progPalette', v => selProgPal.value = v);
@@ -141,15 +150,10 @@ import { MapModule } from './map.js';
          State.set('activeTab', next);
          tabs[next].focus();
        }));
-      collapseSidebarButton.addEventListener('click', () => {
-        const isCollapsed = sidebar.classList.toggle('sidebar-collapsed');
-        const label = isCollapsed ? 'Reabrir configurações' : 'Recolher configurações';
-        collapseSidebarButton.textContent = isCollapsed ? '+' : '−';
-        collapseSidebarButton.setAttribute('aria-expanded', String(!isCollapsed));
-        collapseSidebarButton.setAttribute('aria-label', label);
-        collapseSidebarButton.title = label;
-        window.dispatchEvent(new Event('resize'));
-      });
+       collapseSidebarButton.addEventListener('click', () => {
+         setSidebarCollapsed(!sidebar.classList.contains('sidebar-collapsed'));
+         window.dispatchEvent(new Event('resize'));
+       });
         viewBtns.mapa.addEventListener('click', () => State.set('viewMode', 'mapa')); 
         viewBtns.tabela.addEventListener('click', () => State.set('viewMode', 'tabela'));
         viewBtns.scatter.addEventListener('click', () => State.set('viewMode', 'scatter'));

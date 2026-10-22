@@ -72,9 +72,8 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
            const mapBounds = mapEl.getBoundingClientRect();
            const sidebar = document.getElementById('sidebar');
            const sidePanel = document.getElementById('side-panel');
-           const panelsVisible = !document.body.classList.contains('kiosk-mode');
-           const sidebarBounds = sidebar && panelsVisible ? sidebar.getBoundingClientRect() : null;
-           const panelBounds = sidePanel && !sidePanel.classList.contains('hidden') && panelsVisible ? sidePanel.getBoundingClientRect() : null;
+            const sidebarBounds = sidebar && !sidebar.classList.contains('hidden') ? sidebar.getBoundingClientRect() : null;
+            const panelBounds = sidePanel && !sidePanel.classList.contains('hidden') ? sidePanel.getBoundingClientRect() : null;
            if (window.innerWidth <= 767) {
              return {
                paddingTopLeft: [16, sidebarBounds ? Math.max(16, sidebarBounds.bottom - mapBounds.top + 16) : 16],
@@ -83,7 +82,12 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
                 animate: !window.matchMedia('(prefers-reduced-motion: reduce)').matches
              };
            }
-            return { padding: [16, 16], maxZoom: State.get('isKiosk') ? 7 : 8, animate: !window.matchMedia('(prefers-reduced-motion: reduce)').matches };
+            return {
+              paddingTopLeft: [sidebarBounds ? Math.max(16, sidebarBounds.right - mapBounds.left + 16) : 16, 16],
+              paddingBottomRight: [panelBounds ? Math.max(16, mapBounds.right - panelBounds.left + 16) : 16, 16],
+              maxZoom: State.get('isKiosk') ? 7 : 8,
+              animate: !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            };
          }
          function getFullStateBounds() {
            if (fullStateBounds) return fullStateBounds;
@@ -98,7 +102,7 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
              if (!bounds || !bounds.isValid()) return;
              map.stop();
              map.invalidateSize({ pan: false, debounceMoveend: true });
-             map.fitBounds(bounds, { padding: [24, 24], maxZoom: 7, animate: false });
+              map.fitBounds(bounds, { ...getFitBoundsOptions(), maxZoom: 7, animate: false });
              adjustMapControlsPosition();
            }));
          }
@@ -115,7 +119,7 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
            mapControlsContainer.style.removeProperty('bottom');
            mapAttributionHost.style.removeProperty('right');
            mapAttributionHost.style.removeProperty('bottom');
-           if (containerEl.classList.contains('hidden') || document.body.classList.contains('kiosk-mode')) return;
+            if (containerEl.classList.contains('hidden')) return;
            const sidePanel = document.getElementById('side-panel');
            if (!sidePanel || sidePanel.classList.contains('hidden')) return;
            const panelBounds = sidePanel.getBoundingClientRect();
@@ -253,7 +257,7 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
          const centerMapOnCity = () => {
            if (!map) return;
            map.invalidateSize();
-            map.fitBounds(bounds, { ...getFitBoundsOptions(), maxZoom: 12 });
+             map.fitBounds(bounds, { ...getFitBoundsOptions(), maxZoom: 8 });
          };
 
          if (State.get('viewMode') !== 'mapa') {

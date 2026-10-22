@@ -118,7 +118,7 @@ import { MapModule } from './map.js';
             return card;
           };
           overviewGrid.replaceChildren(
-            makeCard('População', fmtPtbrInt(totals.scopePopulation), `População com indicador válido: ${fmtPtbrInt(denominator)}`),
+            makeCard('População', fmtPtbrInt(totals.scopePopulation)),
             makeCard('Quantidade absoluta', totals.metricCount ? fmtPtbrInt(totals.totalMetric) : 'Sem dados', isPbfDiff ? 'Total do PBF em 2026' : metric.label),
             makeCard(isPbfDiff ? 'Variação do indicador' : 'Percentual do indicador', indicatorValue === null ? 'Sem dados' : isPbfDiff ? metric.formatDisplay(indicatorValue) : Utils.fmtPtbrPct(indicatorValue))
           );
@@ -128,7 +128,7 @@ import { MapModule } from './map.js';
           const ranked = features.map(feature => {
             const properties = feature.properties;
             const value = metric.displayValue(properties);
-            return value === null || value === undefined || !Number.isFinite(Number(value)) ? null : { name: properties.name, value: Number(value) };
+            return value === null || value === undefined || !Number.isFinite(Number(value)) ? null : { name: properties.name, value: Number(value), properties };
           }).filter(Boolean).sort((a, b) => isRankingHigh ? b.value - a.value : a.value - b.value).slice(0, 5);
           if (!ranked.length) {
             const empty = document.createElement('p');
@@ -140,10 +140,17 @@ import { MapModule } from './map.js';
           const maximum = Math.max(...ranked.map(row => Math.abs(row.value)), 0.0001);
           overviewRanking.replaceChildren(...ranked.map(row => {
             const item = document.createElement('div');
-            const name = document.createElement('span');
+            const name = document.createElement('button');
+            name.type = 'button';
             name.className = 'overview-rank-name';
             name.textContent = row.name;
             name.title = row.name;
+            name.setAttribute('aria-label', `Exibir ${row.name} no mapa`);
+            name.addEventListener('click', () => {
+              if (State.get('viewMode') !== 'mapa') State.set('viewMode', 'mapa');
+              State.set('selectedCity', row.properties);
+              window.requestAnimationFrame(() => window.requestAnimationFrame(() => MapModule.centerOnCity(row.properties)));
+            });
             const value = document.createElement('strong');
             value.className = 'overview-rank-value';
             value.textContent = metric.formatDisplay(row.value);
@@ -772,7 +779,17 @@ import { MapModule } from './map.js';
         });
         centerBtn.addEventListener('click', () => MapModule.centerOnCity(State.get('selectedCity')));
         const refreshPanel = () => renderPanel(State.get('selectedCity'));
-        State.subscribe('selectedCity', refreshPanel);
+        let previousSelectedCity = State.get('selectedCity');
+        State.subscribe('selectedCity', city => {
+          if (previousSelectedCity && !city) isPanelCollapsed = false;
+          previousSelectedCity = city;
+          refreshPanel();
+        });
+         State.subscribe('isKiosk', isKiosk => {
+           isPanelCollapsed = isKiosk && Boolean(State.get('selectedCity'));
+           renderPanel(State.get('selectedCity'));
+           window.dispatchEvent(new Event('resize'));
+         });
         State.subscribe('viewMode', refreshPanel);
         ['isDark', 'isKiosk', 'pobPalette', 'progPalette', 'activeTab', 'pobIndicator', 'pobPbfAno', 'pobChartMode', 'progPrograma', 'progStatus', 'progMetrica', 'progPlesMetrica', 'progMetricaModo', 'searchTerm', 'riskFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, refreshPanel));
         reducedMotion.addEventListener('change', refreshPanel);

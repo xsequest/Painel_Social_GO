@@ -349,7 +349,7 @@ test('leaving custom population reconciles discarded edits with applied limits',
   expect(await page.evaluate(async () => (await import('./assets/js/core.js')).State.get('populationMin'))).toBe(10000);
 });
 
-test('unknown indicator never becomes a zero statewide; population stays visible', async ({ page }) => {
+test('unknown indicator never becomes a zero statewide; population stays visible without valid-population detail', async ({ page }) => {
   await page.route('**/output/info_tabcad.json', async route => {
     const response = await route.fetch();
     const json = await response.json();
@@ -358,6 +358,7 @@ test('unknown indicator never becomes a zero statewide; population stays visible
   });
   await ready(page);
   await expect(page.locator('#panel-overview-grid .overview-card').first()).toContainText('População');
+  await expect(page.locator('#panel-overview-grid')).not.toContainText('População com indicador válido');
   const totalPopulation = await page.evaluate(async () => (await import('./assets/js/data.js')).geojsonData.features.reduce((sum, feature) => sum + feature.properties.população, 0));
   await expect(page.locator('#panel-overview-grid .overview-card').first()).toContainText(new Intl.NumberFormat('pt-BR').format(totalPopulation));
   await page.evaluate(async () => {
@@ -367,6 +368,37 @@ test('unknown indicator never becomes a zero statewide; population stays visible
   });
   await expect.poll(() => page.evaluate(() => window.Chart.getChart('comparison-chart')?.data.datasets[0].data)).toEqual([null, null]);
   await expect(page.locator('#collapsed-population')).toContainText('22.918');
+});
+
+test('overview municipality names select and locate the city on the map', async ({ page }) => {
+  await ready(page);
+  await expect(page.locator('#side-panel')).not.toHaveClass(/is-collapsed/);
+  const cityButton = page.locator('#panel-overview-ranking .overview-rank-name').first();
+  const cityName = await cityButton.textContent();
+  await cityButton.click();
+  await expect(page.locator('#panel-city-name')).toHaveText(cityName);
+  await expect(page.locator('#map .leaflet-overlay-pane path[aria-pressed="true"]')).toHaveAttribute('aria-label', `Selecionar município ${cityName}`);
+});
+
+test('fullscreen keeps panels visible and collapses them for a selected municipality', async ({ page }) => {
+  await ready(page);
+  await expect(page.locator('#side-panel')).toBeVisible();
+  await expect(page.locator('#side-panel')).not.toHaveClass(/is-collapsed/);
+  const city = page.getByRole('button', { name: 'Selecionar município Goiânia', exact: true });
+  await city.focus();
+  await city.press('Enter');
+  await page.locator('#btn-kiosk').click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement === document.body)).toBe(true);
+  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('#sidebar')).toHaveClass(/sidebar-collapsed/);
+  await expect(page.locator('#side-panel')).toBeVisible();
+  await expect(page.locator('#side-panel')).toHaveClass(/is-collapsed/);
+  await page.evaluate(async () => (await import('./assets/js/core.js')).State.set('selectedCity', null));
+  await expect(page.locator('#side-panel')).not.toHaveClass(/is-collapsed/);
+  await expect(page.locator('#btn-close-panel')).toBeVisible();
+  await page.locator('#btn-kiosk').click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement === null)).toBe(true);
+  await expect(page.locator('#side-panel')).not.toHaveClass(/is-collapsed/);
 });
 
 test('fullscreen control is disabled when the browser has no support', async ({ page }) => {
