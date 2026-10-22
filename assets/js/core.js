@@ -1,5 +1,6 @@
 import { geojsonData } from './data.js';
-const numberFormatters = new Map();
+  const numberFormatters = new Map();
+  let averageAbsolutePopulationVariationPct = null;
 function numberFormatter(decimals) {
   if (!numberFormatters.has(decimals)) numberFormatters.set(decimals, new Intl.NumberFormat('pt-BR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }));
   return numberFormatters.get(decimals);
@@ -345,6 +346,25 @@ function numberFormatter(decimals) {
       calcPctExtPob: p => Utils.calcPctSeguro(p.ext_pob, p.população),
       calcPctPob: p => Utils.calcPctSeguro(p.pob, p.população),
       getPbfPopulation: (p, year) => year === '2019' ? p.população_2019 : p.população,
+      getPopulationVariationPct: p => {
+        if (!Number.isFinite(p?.população_2019) || p.população_2019 <= 0 || !Number.isFinite(p.população)) return null;
+        return ((p.população - p.população_2019) / p.população_2019) * 100;
+      },
+      getAverageAbsolutePopulationVariationPct: () => {
+        if (averageAbsolutePopulationVariationPct !== null) return averageAbsolutePopulationVariationPct;
+        const variations = geojsonData.features
+          .map(feature => Utils.getPopulationVariationPct(feature.properties))
+          .filter(value => value !== null)
+          .map(Math.abs);
+        averageAbsolutePopulationVariationPct = variations.length
+          ? variations.reduce((sum, value) => sum + value, 0) / variations.length
+          : 0;
+        return averageAbsolutePopulationVariationPct;
+      },
+      isPopulationVariationAboveAverage: p => {
+        const variation = Utils.getPopulationVariationPct(p);
+        return variation !== null && Math.abs(variation) > Utils.getAverageAbsolutePopulationVariationPct();
+      },
       calcPbfPercentual: (p, year) => Utils.calcPctSeguro(
         year === '2019' ? p.PBF_2019 : p.pob_p1_p2,
         Utils.getPbfPopulation(p, year)
@@ -446,6 +466,30 @@ function numberFormatter(decimals) {
           });
         }
         return Utils.getPercentileMax(values, 1);
+      },
+
+      getCriticityDescription: (state, city) => {
+        const metric = MetricSelectors.get(state);
+        const reference = Utils.getCriticityMax(state);
+        const isProgram = state.activeTab === 'prog';
+        const isPbfDiff = !isProgram && state.pobIndicator === 'norm_pob_p1_p2' && state.pobPbfAno === 'diff';
+        const label = isPbfDiff ? 'Pobreza PBF (2026)' : isProgram ? `${PROGRAMAS[state.progPrograma]}: ${metric.label}` : metric.label;
+        const lines = [`Criticidade do indicador: ${label}`];
+        if (city) {
+          const value = metric.statusValue(city);
+          lines.push(`${city.name}: ${metric.getStatus(city, reference).label}. Proporção usada: ${value === null || value === undefined ? 'sem dados' : Utils.fmtPtbrPct(value * 100)}.`);
+        }
+        lines.push(isProgram
+          ? 'Usa a métrica dividida pela população municipal, mesmo no modo absoluto. Menor proporção recebe maior criticidade.'
+          : 'Maior proporção da população no indicador recebe maior criticidade.');
+        lines.push(isProgram
+          ? 'Crítico: até 40% da referência. Alerta: acima de 40% até 75%. Estável: acima de 75%.'
+          : 'Estável: até 40% da referência. Alerta: acima de 40% até 75%. Crítico: acima de 75%.');
+        lines.push(`Referência: ${Utils.fmtPtbrPct(reference * 100)}, calculada pelo percentil 95 dos valores positivos da base completa, ou pelo valor padrão quando indisponível. Os filtros não alteram essa referência.`);
+        lines.push('Sem dados: valor ausente. Zero é válido. A classificação é comparativa, não uma avaliação de impacto social.');
+        if (isProgram) lines.push('Não confundir com o status cadastral do programa.');
+        if (isPbfDiff) lines.push('No modo Diff, o status usa o indicador de 2026, não a diferença em pontos percentuais nem a faixa sem preenchimento do mapa.');
+        return lines.join('\n\n');
       },
 
       // Fica consistente sem quebrar

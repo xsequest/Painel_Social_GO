@@ -11,7 +11,9 @@ test('loads local data, keeps geometry and camera, updates indicator table, expo
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await ready(page);
-  await page.locator('.leaflet-control-zoom-in').click();
+  await expect(page.locator('.leaflet-control-zoom')).toHaveCount(0);
+  await page.locator('#map').focus();
+  await page.keyboard.press('Equal');
   await expect(page.locator('#map')).not.toHaveClass(/leaflet-zoom-anim/);
   const camera = await page.locator('#map .leaflet-map-pane').evaluate(element => element.style.transform);
   await page.evaluate(() => { window.firstPolygon = document.querySelector('#map .leaflet-overlay-pane path'); });
@@ -303,6 +305,105 @@ test('municipal charts redraw after selecting a different city on a narrow panel
   }
 });
 
+test('Pobreza PBF city panel combines enrolment and rate above the population card', async ({ page }) => {
+  await ready(page);
+  await page.locator('#sel-pob-ind').selectOption('norm_pob_p1_p2');
+  const city = await page.evaluate(async () => {
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
+    const properties = geojsonData.features.find(feature => feature.properties.name === 'Goiânia').properties;
+    State.set('selectedCity', properties);
+    return {
+      rate2019: Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(properties.norm_PBF_2019 * 100) + '%',
+      rate2026: Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(properties.norm_pob_p1_p2 * 100) + '%',
+      count2019: Intl.NumberFormat('pt-BR').format(properties.PBF_2019),
+      count2026: Intl.NumberFormat('pt-BR').format(properties.pob_p1_p2),
+      population2019: Intl.NumberFormat('pt-BR').format(properties.população_2019),
+      population2026: Intl.NumberFormat('pt-BR').format(properties.população),
+      rateDifference: properties.norm_pob_p1_p2 * 100 - properties.norm_PBF_2019 * 100
+    };
+  });
+  const cards = page.locator('#panel-grid-main .pbf-comparison-card');
+  await expect(cards).toHaveCount(2);
+  const enrolledCard = cards.nth(0), populationCard = cards.nth(1);
+  await expect(enrolledCard).toContainText('Inscritos em Pob. PBF');
+  await expect(enrolledCard.locator('.pbf-year-2019')).toContainText(city.count2019);
+  await expect(enrolledCard.locator('.pbf-year-2019')).toContainText(city.rate2019);
+  await expect(enrolledCard.locator('.pbf-year-2019')).not.toContainText('Taxa');
+  await expect(enrolledCard.locator('.pbf-year-2026')).toContainText(city.count2026);
+  await expect(enrolledCard.locator('.pbf-year-2026')).toContainText(city.rate2026);
+  await expect(enrolledCard.locator('.pbf-year-2026')).not.toContainText('Taxa');
+  await expect(enrolledCard.locator('.pbf-year-2019 .pbf-year-secondary')).toHaveClass(/text-(emerald|rose|amber)/);
+  await expect(enrolledCard.locator('.pbf-year-2026 .pbf-year-secondary')).toHaveClass(/text-(emerald|rose|amber)/);
+  const expectedRateDifference = `${city.rateDifference > 0 ? '↑ +' : city.rateDifference < 0 ? '↓ −' : '→ '}${Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.abs(city.rateDifference))} p.p.`;
+  await expect(enrolledCard.locator('.pbf-comparison-difference strong')).toHaveText(expectedRateDifference);
+  await expect(populationCard).toContainText('População Total');
+  await expect(populationCard.locator('.pbf-year-2019')).toContainText(city.population2019);
+  await expect(populationCard.locator('.pbf-year-2026')).toContainText(city.population2026);
+  await expect(populationCard.locator('.pbf-comparison-difference')).toContainText('pessoas');
+  await expect(populationCard.locator('.pbf-comparison-difference strong')).not.toHaveClass(/text-(rose|emerald)/);
+  const positions = await Promise.all([enrolledCard, populationCard].map(card => card.boundingBox()));
+  expect(Math.abs(positions[0].x - positions[1].x)).toBeLessThan(2);
+  expect(Math.abs(positions[0].width - positions[1].width)).toBeLessThan(2);
+  expect(positions[1].y).toBeGreaterThan(positions[0].y);
+  const yearStyles = await page.evaluate(() => ({
+    secondary: getComputedStyle(document.querySelector('.pbf-year-2019 strong')).color,
+    primary: getComputedStyle(document.querySelector('.pbf-year-2026 strong')).fontWeight
+  }));
+  expect(yearStyles.primary).toBe('900');
+  expect(yearStyles.secondary).not.toBe('rgb(30, 41, 59)');
+  const titleSize = await enrolledCard.locator('.pbf-comparison-title').evaluate(element => parseFloat(getComputedStyle(element).fontSize));
+  expect(titleSize).toBeGreaterThanOrEqual(15);
+  const contentSizes = await enrolledCard.evaluate(element => [
+    parseFloat(getComputedStyle(element.querySelector('.pbf-year-2019 strong')).fontSize),
+    parseFloat(getComputedStyle(element.querySelector('.pbf-year-2026 strong')).fontSize),
+    parseFloat(getComputedStyle(element.querySelector('.pbf-year-secondary')).fontSize)
+  ]);
+  expect(contentSizes).toEqual([17, 21, 12]);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  const mobilePositions = await Promise.all([enrolledCard, populationCard].map(card => card.boundingBox()));
+  expect(Math.abs(mobilePositions[0].x - mobilePositions[1].x)).toBeLessThan(2);
+  expect(Math.abs(mobilePositions[0].width - mobilePositions[1].width)).toBeLessThan(2);
+  expect(mobilePositions[1].y).toBeGreaterThan(mobilePositions[0].y);
+});
+
+test('large population decline and growth warnings appear in all PBF year modes', async ({ page }) => {
+  await ready(page);
+  await page.locator('#sel-pob-ind').selectOption('norm_pob_p1_p2');
+  const cityPath = page.getByRole('button', { name: 'Selecionar município Goiânia', exact: true });
+  await page.evaluate(async () => {
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
+    const properties = geojsonData.features.find(feature => feature.properties.name === 'Goiânia').properties;
+    properties.população_2019 = 100000;
+    properties.população = 1;
+  });
+  const mapTooltip = page.locator('.leaflet-tooltip');
+  for (const year of ['2019', '2026', 'diff']) {
+    await page.evaluate(async selectedYear => (await import('./assets/js/core.js')).State.set('pobPbfAno', selectedYear), year);
+    await expect.poll(async () => page.evaluate(async () => (await import('./assets/js/core.js')).State.get('pobPbfAno'))).toBe(year);
+    await page.mouse.move(0, 0);
+    await cityPath.hover();
+    await expect(mapTooltip).toContainText('Queda populacional acentuada (-100,00%)');
+    await expect(mapTooltip).not.toContainText('acima da média estadual');
+  }
+  await page.evaluate(async () => {
+    const { State } = await import('./assets/js/core.js');
+    const { geojsonData } = await import('./assets/js/data.js');
+    geojsonData.features.find(feature => feature.properties.name === 'Goiânia').properties.população = 100000000;
+    State.set('pobPbfAno', '2026');
+  });
+  await page.mouse.move(0, 0);
+  await cityPath.hover();
+  await expect(mapTooltip).toContainText('Crescimento populacional acentuado (+');
+  await expect(mapTooltip).not.toContainText('acima da média estadual');
+  await page.locator('#sel-pob-ind').selectOption('norm_ext');
+  await page.mouse.move(0, 0);
+  await cityPath.hover();
+  await expect(mapTooltip).not.toContainText('Crescimento populacional acentuado');
+});
+
 test('theme refreshes chart colors and reduced motion disables animations', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await ready(page);
@@ -378,6 +479,107 @@ test('overview municipality names select and locate the city on the map', async 
   await cityButton.click();
   await expect(page.locator('#panel-city-name')).toHaveText(cityName);
   await expect(page.locator('#map .leaflet-overlay-pane path[aria-pressed="true"]')).toHaveAttribute('aria-label', `Selecionar município ${cityName}`);
+});
+
+test('absolute quantity card puts the selected indicator above the number', async ({ page }) => {
+  await ready(page);
+  const card = page.locator('#panel-overview-grid .overview-card').nth(1);
+  await expect(card.locator(':scope > :first-child')).toHaveText('Extrema Pobreza');
+  await expect(card.locator(':scope > :last-child')).toHaveText('Quantidade absoluta');
+  await expect(card.locator(':scope > :nth-child(2)')).toHaveJSProperty('tagName', 'STRONG');
+  await page.locator('#tab-prog').click();
+  await page.locator('#sel-prog-programa').selectOption('MAES');
+  await expect(card.locator(':scope > :first-child')).toContainText('Mães de Goiás');
+  await expect(card.locator(':scope > :last-child')).toHaveText('Quantidade absoluta');
+  await page.locator('#tab-pob').click();
+  await page.locator('#sel-pob-ind').selectOption('norm_pob_p1_p2');
+  await page.locator('[data-pbf-ano="diff"]').click();
+  await expect(card.locator(':scope > :first-child')).toHaveText('Total do PBF em 2026');
+  await expect(card.locator(':scope > :last-child')).toHaveText('Quantidade absoluta');
+});
+
+test('dark map uses near-white municipality borders and preserves selected outlines', async ({ page }) => {
+  await ready(page);
+  const city = page.getByRole('button', { name: 'Selecionar município Goiânia', exact: true });
+  await expect(city).toHaveAttribute('stroke', '#4b5563');
+  await page.locator('#btn-dark-toggle').click();
+  await expect(city).toHaveAttribute('stroke', '#fafaf9');
+  await city.focus();
+  await city.press('Enter');
+  await expect(city).toHaveAttribute('stroke', '#34d399');
+  await page.evaluate(async () => (await import('./assets/js/core.js')).State.set('selectedCity', null));
+  await expect(city).toHaveAttribute('stroke', '#fafaf9');
+  await page.locator('#filter-search').fill('Anápolis');
+  await expect(page.getByRole('button', { name: 'Selecionar município Goiânia', exact: true, includeHidden: true })).toHaveAttribute('stroke', '#fafaf9');
+  await page.locator('#btn-reset-filters').click();
+  await page.locator('#btn-dark-toggle').click();
+  await expect(city).toHaveAttribute('stroke', '#4b5563');
+});
+
+test('criticity help supports keyboard and contextual explanations in both panels', async ({ page }) => {
+  await ready(page);
+  await expect(page.locator('#center-city-status')).toBeHidden();
+  const help = page.locator('#filter-risk-help');
+  const tooltip = page.locator('#criticity-tooltip');
+  await help.scrollIntoViewIfNeeded();
+  await help.focus();
+  await expect(tooltip).toBeVisible();
+  await expect(help).toHaveAttribute('aria-describedby', 'criticity-tooltip');
+  await expect(tooltip).toContainText('Maior proporção');
+  await expect(tooltip).toContainText('percentil 95');
+  await page.keyboard.press('Escape');
+  await expect(tooltip).toBeHidden();
+  await expect(help).toBeFocused();
+  await help.hover();
+  await expect(tooltip).toBeVisible();
+  await tooltip.hover();
+  await expect(tooltip).toBeVisible();
+  await page.keyboard.press('Escape');
+  await help.click();
+  await expect(tooltip).toBeVisible();
+  await page.locator('#sel-pob-ind').selectOption('norm_pob_p1_p2');
+  await page.locator('[data-pbf-ano="diff"]').click();
+  await help.click();
+  await expect(tooltip).toContainText('status usa o indicador de 2026, não a diferença');
+  await page.locator('#tab-prog').click();
+  await help.click();
+  await expect(tooltip).toContainText('Menor proporção');
+  await expect(tooltip).toContainText('mesmo no modo absoluto');
+  const city = page.getByRole('button', { name: 'Selecionar município Goiânia', exact: true });
+  await city.focus();
+  await city.press('Enter');
+  const status = page.locator('#center-city-status');
+  expect(await status.evaluate(element => getComputedStyle(element, '::after').content)).toBe('none');
+  await status.focus();
+  await expect(tooltip).toBeVisible();
+  await expect(tooltip).toContainText('Goiânia:');
+  await expect(tooltip).toContainText(`Goiânia: ${await status.textContent()}`);
+  await page.keyboard.press('Escape');
+  await expect(tooltip).toBeHidden();
+});
+
+test.describe('mobile criticity help', () => {
+  test.use({ hasTouch: true, viewport: { width: 360, height: 800 } });
+
+  test('tooltip fits the viewport and opens with touch in fullscreen', async ({ page }) => {
+    await ready(page);
+    await page.locator('#filter-risk-help').tap();
+    const tooltip = page.locator('#criticity-tooltip');
+    await expect(tooltip).toBeVisible();
+    const box = await tooltip.boundingBox();
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(360);
+    expect(box.y).toBeGreaterThanOrEqual(0);
+    expect(box.y + box.height).toBeLessThanOrEqual(800);
+    await page.locator('#sidebar-top h1').tap();
+    await expect(tooltip).toBeHidden();
+    await page.locator('#btn-kiosk').tap();
+    await expect.poll(() => page.evaluate(() => document.fullscreenElement === document.body)).toBe(true);
+    await page.locator('#btn-collapse-sidebar').tap();
+    await page.locator('#filter-risk-help').tap();
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toContainText('Criticidade do indicador');
+  });
 });
 
 test('fullscreen keeps panels visible and collapses them for a selected municipality', async ({ page }) => {

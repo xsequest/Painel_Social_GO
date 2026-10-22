@@ -104,3 +104,32 @@ test('poverty charts preserve animation defaults and keep hover after motion cha
   }
   expect(errors).toEqual([]);
 });
+
+test('municipal charts paint and update after opening the panel in fullscreen', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('index.html');
+  await expect(page.locator('#map .leaflet-overlay-pane path')).toHaveCount(246);
+  await page.locator('#btn-kiosk').click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement === document.body)).toBe(true);
+  await page.locator('#btn-collapse-sidebar').click();
+  await page.locator('#tab-prog').click();
+  const firstCity = page.getByRole('button', { name: 'Selecionar município Goiânia', exact: true });
+  await firstCity.focus();
+  await firstCity.press('Enter');
+  await page.locator('#btn-close-panel').click();
+  await page.locator('#btn-open-panel').click();
+  for (const id of ['comparison-chart', 'program-comparison-chart']) await expectPaintAndHover(page, id, 'Goiânia');
+  const secondCity = page.getByRole('button', { name: 'Selecionar município Anápolis', exact: true });
+  await secondCity.focus();
+  await secondCity.press('Enter');
+  for (const id of ['comparison-chart', 'program-comparison-chart']) await expectPaintAndHover(page, id, 'Anápolis');
+  await page.locator('#tab-pob').click();
+  await secondCity.focus();
+  await secondCity.press('Enter');
+  for (const id of ['comparison-chart', 'poverty-pie-chart']) await expectPaintAndHover(page, id, 'Anápolis');
+  await page.locator('#btn-kiosk').click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement === null)).toBe(true);
+  for (const id of ['comparison-chart', 'poverty-pie-chart']) await expectPaintAndHover(page, id, 'Anápolis');
+  expect(errors).toEqual([]);
+});

@@ -119,7 +119,7 @@ import { MapModule } from './map.js';
           };
           overviewGrid.replaceChildren(
             makeCard('População', fmtPtbrInt(totals.scopePopulation)),
-            makeCard('Quantidade absoluta', totals.metricCount ? fmtPtbrInt(totals.totalMetric) : 'Sem dados', isPbfDiff ? 'Total do PBF em 2026' : metric.label),
+            makeCard(isPbfDiff ? 'Total do PBF em 2026' : getSelectedIndicatorLabel(state, metric), totals.metricCount ? fmtPtbrInt(totals.totalMetric) : 'Sem dados', 'Quantidade absoluta'),
             makeCard(isPbfDiff ? 'Variação do indicador' : 'Percentual do indicador', indicatorValue === null ? 'Sem dados' : isPbfDiff ? metric.formatDisplay(indicatorValue) : Utils.fmtPtbrPct(indicatorValue))
           );
 
@@ -271,6 +271,7 @@ import { MapModule } from './map.js';
           if (activeTab === 'prog') updateRadarDialogContent(city, state);
          const status = metric.getStatus(city, maxVal);
          centerCityStatus.textContent = status.label;
+         centerCityStatus.setAttribute('aria-label', `Criticidade de ${city.name}: ${status.label}. Ver critérios`);
          centerCityStatus.className = `mt-1 inline-flex w-fit shrink-0 self-start rounded-full border border-transparent px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide ${status.color}`;
          centerBtn.setAttribute('aria-label', `Localizar ${city.name}, código ${city.id || 'indisponível'}, status ${status.label}, no mapa`);
         
@@ -281,47 +282,42 @@ import { MapModule } from './map.js';
               const pbf2019Pct = Utils.calcPbfPercentual(city, '2019');
               const pbf2026Pct = Utils.calcPbfPercentual(city, '2026');
               const pbfVariation = Utils.getPbfVariacao2026x2019(city);
-              const populationLabel = state.pobPbfAno === '2019'
-                ? 'População 2019'
-                : state.pobPbfAno === 'diff'
-                  ? 'População 2019 / 2026'
-                  : 'População 2026';
-              const populationValue = state.pobPbfAno === 'diff'
-                ? `${fmtPtbrInt(city.população_2019)} / ${fmtPtbrInt(city.população)}`
-                : fmtPtbrInt(Utils.getPbfPopulation(city, state.pobPbfAno));
-              const pbfVariationLabel = pbfVariation === null
-                ? '-'
-                : `${pbfVariation > 0 ? '+' : ''}${fmtPtbrNum(pbfVariation)} p.p.`;
-              const pbfVariationColor = pbfVariation === null
+              const populationVariation = Number.isFinite(city.população_2019) && Number.isFinite(city.população)
+                ? city.população - city.população_2019
+                : null;
+              const variationColor = variation => variation === null
                 ? 'text-slate-400'
-                : pbfVariation > 0
+                : variation > 0
                   ? 'text-rose-500 font-black'
-                  : pbfVariation < 0
+                  : variation < 0
                     ? 'text-emerald-600 font-black'
                     : 'text-slate-600 dark:text-slate-400';
-              const pbf2019Color = Utils.getSignalTextColorClass(city.norm_PBF_2019, maxPobVal);
-              const pbf2026Color = Utils.getSignalTextColorClass(city.norm_pob_p1_p2, maxPobVal);
-
-              gridMain.innerHTML = safeHtml`
-                <div class="p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800/50">
-                  <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">${populationLabel}</span>
-                  <strong class="text-base text-slate-800 dark:text-slate-200">${populationValue}</strong>
-                </div>
-                <div class="p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800/50">
-                  <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Diferença 2026-2019</span>
-                  <strong class="text-base ${pbfVariationColor}">${pbfVariationLabel}</strong>
-                </div>
-                <div class="p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800/50">
-                  <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Pobreza PBF 2019</span>
-                  <strong class="text-base text-slate-800 dark:text-slate-200">${fmtPtbrInt(city.PBF_2019)}</strong>
-                  <span class="text-xs block ${pbf2019Color} font-semibold mt-0.5">(${Utils.fmtPtbrPct(pbf2019Pct)})</span>
-                </div>
-                <div class="p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800/50">
-                  <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Pobreza PBF 2026</span>
-                  <strong class="text-base text-slate-800 dark:text-slate-200">${fmtPtbrInt(city.pob_p1_p2)}</strong>
-                  <span class="text-xs block ${pbf2026Color} font-semibold mt-0.5">(${Utils.fmtPtbrPct(pbf2026Pct)})</span>
-                </div>
+              const comparisonCard = (title, value2019, value2026, secondary2019, secondary2026, secondaryClass2019, secondaryClass2026, difference, differenceClass) => safeHtml`
+                <section class="pbf-comparison-card rounded-xl border border-slate-100 bg-slate-50 p-3 dark:border-slate-800/50 dark:bg-slate-950">
+                  <span class="pbf-comparison-title">${title}</span>
+                  <div class="pbf-comparison-years">
+                    <div class="pbf-year-2019"><span>2019</span><strong>${value2019}</strong><small class="pbf-year-secondary ${secondaryClass2019}">${secondary2019 || ''}</small></div>
+                    <div class="pbf-year-2026"><span>2026</span><strong>${value2026}</strong><small class="pbf-year-secondary ${secondaryClass2026}">${secondary2026 || ''}</small></div>
+                  </div>
+                  <div class="pbf-comparison-difference ${differenceClass}"><span>Diferença 2026 − 2019</span><strong>${difference}</strong></div>
+                </section>
               `;
+              const pbfRateDifference = pbfVariation === null
+                ? '-'
+                : `${pbfVariation > 0 ? '↑ +' : pbfVariation < 0 ? '↓ −' : '→ '}${fmtPtbrNum(Math.abs(pbfVariation))} p.p.`;
+              const populationDifference = populationVariation === null
+                ? '-'
+                : `${populationVariation > 0 ? '↑ +' : populationVariation < 0 ? '↓ ' : '→ '}${fmtPtbrInt(populationVariation)} pessoas`;
+
+              gridMain.innerHTML = comparisonCard(
+                'Inscritos em Pob. PBF', fmtPtbrInt(city.PBF_2019), fmtPtbrInt(city.pob_p1_p2),
+                `(${Utils.fmtPtbrPct(pbf2019Pct)})`, `(${Utils.fmtPtbrPct(pbf2026Pct)})`,
+                Utils.getSignalTextColorClass(city.norm_PBF_2019, maxPobVal), Utils.getSignalTextColorClass(city.norm_pob_p1_p2, maxPobVal),
+                pbfRateDifference, variationColor(pbfVariation)
+              ) + comparisonCard(
+                'População Total', fmtPtbrInt(city.população_2019), fmtPtbrInt(city.população),
+                '', '', '', '', populationDifference, 'text-slate-600 dark:text-slate-300'
+              );
             } else {
               const corExt = Utils.getSignalTextColorClass(city.norm_ext, maxPobVal);
               const corPob = Utils.getSignalTextColorClass(city.norm_pob, maxPobVal);
@@ -391,7 +387,7 @@ import { MapModule } from './map.js';
          }
 
           // Wait for layout; collapsed parents cannot provide usable chart dimensions.
-          if (!isPanelCollapsed && !state.isKiosk) chartFrame = requestAnimationFrame(() => {
+          if (!isPanelCollapsed) chartFrame = requestAnimationFrame(() => {
             chartFrame = null;
             if (chartContainer.clientWidth <= 0 || chartContainer.clientHeight <= 0) return;
             renderChart(city, metric, activeTab, maxVal);

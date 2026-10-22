@@ -2,7 +2,7 @@ import { geojsonData } from './data.js';
 import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, MetricSelectors, DataSelectors } from './core.js';
     const MapModule = (function() {
         let map = null, geoJsonLayer = null, legendControl = null, legendElement = null, tileLayer = null, highlightedLayer = null, renderFrame = null, clickInMunicipality = false, fullStateBounds = null;
-        const mapEl = document.getElementById('map'), containerEl = document.getElementById('map-container'), btnResetView = document.getElementById('btn-reset-view'), loadingOverlay = document.getElementById('map-loading-overlay'), mapControlsContainer = document.getElementById('map-controls-legend'), mapZoomControlHost = document.getElementById('map-zoom-control'), mapLegendHost = document.getElementById('map-legend-host'), mapAttributionHost = document.getElementById('map-attribution-host');
+        const mapEl = document.getElementById('map'), containerEl = document.getElementById('map-container'), btnResetView = document.getElementById('btn-reset-view'), loadingOverlay = document.getElementById('map-loading-overlay'), mapControlsContainer = document.getElementById('map-controls-legend'), mapLegendHost = document.getElementById('map-legend-host'), mapAttributionHost = document.getElementById('map-attribution-host');
        function setLoading(isLoading) {
          if (!loadingOverlay) return;
          loadingOverlay.classList.toggle('hidden', !isLoading);
@@ -57,8 +57,6 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
          function initMap() {
             if (map || !mapEl || containerEl.classList.contains('hidden') || State.get('viewMode') !== 'mapa' || State.get('dataError')) return;
             map = L.map(mapEl, { zoomControl: false }).setView([-15.8, -49.8], 6);
-           const zoomControl = L.control.zoom({ position: 'bottomright' }).addTo(map);
-           mapZoomControlHost.append(zoomControl.getContainer());
            if (map.attributionControl) mapAttributionHost.append(map.attributionControl.getContainer());
             L.DomEvent.disableClickPropagation(mapControlsContainer);
            map.on('click', () => {
@@ -302,7 +300,7 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
               }
               else fillColor = (val === null || val === undefined || isNaN(val)) ? '#cccccc' : colorScale(val).hex();
            }
-            return { fillColor, weight: isVisible ? 0.9 : 0.2, color: isDark ? (isVisible ? '#374151' : '#1f2937') : (isVisible ? '#4b5563' : '#e5e7eb'), fillOpacity: isVisible ? 0.96 : 0.1 };
+            return { fillColor, weight: isVisible ? 0.9 : 0.2, color: isDark ? '#fafaf9' : (isVisible ? '#4b5563' : '#e5e7eb'), fillOpacity: isVisible ? 0.96 : 0.1 };
          };
          const isInitialRender = !geoJsonLayer;
          if (!geoJsonLayer) geoJsonLayer = L.geoJSON(geojsonData, {
@@ -366,6 +364,13 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
                    html += `<div><span class="opacity-80">Ext. pobreza:</span> <strong class="ml-1">${fmtPtbrInt(p.ext_pob)} <span class="${getSignalClass(p.norm_ext)}">(${Utils.fmtPtbrPct(Utils.calcPctExtPob(p))})</span></strong></div>`;
                    html += `<div><span class="opacity-80">Pobreza:</span> <strong class="ml-1">${fmtPtbrInt(p.pob)} <span class="${getSignalClass(p.norm_pob)}">(${Utils.fmtPtbrPct(Utils.calcPctPob(p))})</span></strong></div>`;
                    html += `<div><span class="opacity-80">Pobreza PBF:</span> <strong class="ml-1">${fmtPtbrInt(p.pob_p1_p2)} <span class="${getSignalClass(p.norm_pob_p1_p2)}">(${Utils.fmtPtbrPct(Utils.calcPctPobP1P2(p))})</span></strong></div>`;
+                  }
+                  if (activeTab === 'pob' && state.pobIndicator === 'norm_pob_p1_p2' && Utils.isPopulationVariationAboveAverage(p)) {
+                    const populationVariation = Utils.getPopulationVariationPct(p);
+                    const warning = populationVariation < 0
+                      ? `Queda populacional acentuada (${fmtPtbrNum(populationVariation)}%)`
+                      : `Crescimento populacional acentuado (+${fmtPtbrNum(populationVariation)}%)`;
+                    html += `<div class="mt-2 border-t border-amber-200 pt-2 text-sm font-bold text-amber-700 dark:border-amber-800 dark:text-amber-300">${warning}</div>`;
                   }
                } else {
                  // TOOLTIP DO MAPA PARA PROG

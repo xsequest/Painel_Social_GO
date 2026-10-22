@@ -1,4 +1,4 @@
-import { State, PLES_COLUMN_KEYS, PLES_COLUMN_LABELS } from './core.js';
+import { State, Utils, PLES_COLUMN_KEYS, PLES_COLUMN_LABELS } from './core.js';
 import { MapModule } from './map.js';
     const HeaderModule = (function() {
       const btnDark = document.getElementById('btn-dark-toggle'), iconSun = document.getElementById('icon-sun'), iconMoon = document.getElementById('icon-moon'), btnKiosk = document.getElementById('btn-kiosk'), htmlEl = document.documentElement;
@@ -179,5 +179,56 @@ import { MapModule } from './map.js';
         selProgPal.value = State.get('progPalette');
         syncPovertyIndicatorDescription();
      })();
+
+    const CriticityHelpModule = (function() {
+      const tooltip = document.getElementById('criticity-tooltip');
+      let trigger = null, closeTimer = null;
+
+      function hide() {
+        clearTimeout(closeTimer);
+        tooltip.hidePopover();
+        trigger = null;
+      }
+      function render() {
+        if (!trigger) return;
+        if (!trigger.getClientRects().length) { hide(); return; }
+        const state = State.getState();
+        tooltip.textContent = Utils.getCriticityDescription(state, trigger.id === 'center-city-status' ? state.selectedCity : null);
+        tooltip.showPopover();
+        const bounds = trigger.getBoundingClientRect();
+        const box = tooltip.getBoundingClientRect();
+        const left = Math.max(12, Math.min(bounds.left, window.innerWidth - box.width - 12));
+        const preferredTop = bounds.bottom + box.height + 20 <= window.innerHeight ? bounds.bottom + 8 : bounds.top - box.height - 8;
+        const top = Math.max(12, Math.min(preferredTop, window.innerHeight - box.height - 12));
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${top}px`;
+      }
+      function scheduleHide() {
+        clearTimeout(closeTimer);
+        closeTimer = setTimeout(() => {
+          if (document.activeElement !== trigger && !tooltip.matches(':hover')) hide();
+        }, 120);
+      }
+      document.querySelectorAll('[data-criticity-help]').forEach(button => {
+        const show = () => { clearTimeout(closeTimer); trigger = button; render(); };
+        button.addEventListener('mouseenter', show);
+        button.addEventListener('focus', show);
+        button.addEventListener('click', show);
+        button.addEventListener('mouseleave', scheduleHide);
+        button.addEventListener('blur', scheduleHide);
+      });
+      tooltip.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+      tooltip.addEventListener('mouseleave', scheduleHide);
+      document.addEventListener('pointerdown', event => {
+        if (trigger && !trigger.contains(event.target) && !tooltip.contains(event.target)) hide();
+      });
+      document.addEventListener('keydown', event => { if (event.key === 'Escape' && trigger) hide(); });
+      document.addEventListener('scroll', event => {
+        if (!tooltip.contains(event.target)) render();
+      }, true);
+      document.addEventListener('fullscreenchange', hide);
+      window.addEventListener('resize', render);
+      ['activeTab', 'pobIndicator', 'pobPbfAno', 'progPrograma', 'progStatus', 'progMetrica', 'progPlesMetrica', 'progMetricaModo', 'selectedCity'].forEach(key => State.subscribe(key, render));
+    })();
 
 export { HeaderModule, SidebarModule };

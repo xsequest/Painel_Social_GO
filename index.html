@@ -126,7 +126,11 @@
            <label for="filter-search" class="mb-2 block text-sm font-bold text-slate-600 dark:text-slate-300">Município <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">(filtro global)</span></label>
              <input type="text" id="filter-search" placeholder="Buscar no mapa e na tabela..." aria-label="Buscar município no mapa e na tabela" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-900" />
          </div>
-            <div><label for="filter-risk" class="mb-2 block text-sm font-bold text-slate-600 dark:text-slate-300">Status do indicador</label>
+            <div>
+            <div class="mb-2 flex items-center gap-2">
+              <label for="filter-risk" class="text-sm font-bold text-slate-600 dark:text-slate-300">Status do indicador</label>
+              <button id="filter-risk-help" type="button" class="criticity-help-button" data-criticity-help aria-label="Entenda a criticidade do indicador" aria-describedby="criticity-tooltip">?</button>
+            </div>
             <select id="filter-risk" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-900">
              <option value="all">Todos</option><option value="critico">Crítico</option><option value="alerta">Alerta</option><option value="estavel">Estável</option><option value="semdados">Sem dados</option>
             </select>
@@ -169,7 +173,6 @@
             <div id="map" class="w-full h-full"></div>
             <div id="map-controls-legend" role="group" aria-label="Controles e legenda do mapa">
               <div id="map-zoom-reframe">
-                <div id="map-zoom-control" role="group" aria-label="Controles de zoom do mapa"></div>
                 <button id="btn-reset-view" type="button" aria-label="Reenquadrar mapa de Goiás" title="Reenquadrar o mapa">Reenquadrar</button>
                 <div id="map-display-controls" role="group" aria-label="Aparência e apresentação do mapa">
                   <button id="btn-dark-toggle" type="button" aria-pressed="false" class="rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800" aria-label="Tema escuro" title="Alternar tema">
@@ -282,7 +285,7 @@
              <div class="min-w-0 flex-1">
                <h4 id="panel-city-name" class="truncate text-xl font-black tracking-tight text-slate-800 dark:text-slate-100">Goiás</h4>
                <p id="panel-subtitle" class="truncate text-xs uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mt-1">Resumo estadual</p>
-               <span id="center-city-status" class="hidden mt-1 inline-flex w-fit shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/50 dark:text-emerald-300">Estável</span>
+                <button id="center-city-status" type="button" data-criticity-help aria-label="Entenda a criticidade do município" aria-describedby="criticity-tooltip" class="hidden mt-1 inline-flex w-fit shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/50 dark:text-emerald-300">Estável</button>
              </div>
            </div>
            <button id="btn-close-panel" type="button" class="rounded-lg border border-slate-200 bg-white p-2 text-slate-500 shadow-sm transition-colors hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-rose-900/70 dark:hover:bg-rose-950/60 dark:hover:text-rose-300" aria-label="Recolher painel de informações" aria-controls="side-panel" title="Recolher painel">
@@ -321,7 +324,7 @@
               <h5 class="text-sm uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mb-3" id="chart-title">Comparativo com Goiás</h5>
               <div id="pob-chart-mode-toggle" class="hidden mb-3 flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1" role="group" aria-label="Tipo de comparativo do indicador de pobreza">
                 <button id="pob-chart-goias" type="button" aria-pressed="true" aria-controls="chart-container" class="flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all bg-white dark:bg-slate-900 shadow text-emerald-600 dark:text-emerald-400">Goiás</button>
-                <button id="pob-chart-comparativo-2019" type="button" aria-pressed="false" aria-controls="chart-container" class="flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all text-slate-500 dark:text-slate-400">Comparativo com 2019</button>
+                <button id="pob-chart-comparativo-2019" type="button" aria-pressed="false" aria-controls="chart-container" class="flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all text-slate-500 dark:text-slate-400">2026 - 2019</button>
               </div>
               <div id="chart-container"><canvas id="comparison-chart" role="img" aria-label="Comparativo do município com Goiás ou com 2019">Os dados completos estão na tabela após o gráfico.</canvas></div>
             </div>
@@ -402,6 +405,7 @@
       </section>
     </div>
 
+  <div id="criticity-tooltip" popover="manual" role="tooltip"></div>
   <script type="module" src="assets/js/bootstrap.js"></script>
 </body>
 </html>
