@@ -158,6 +158,10 @@
       
       <div class="mt-auto pt-3 border-t border-slate-200 dark:border-slate-800">
         <div class="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">Fonte: IBGE Sidra e Tabcad.<br/>Base Programas Sociais: Julho/2026<br/>Competência CadÚnico: Agosto/2026<br/>Versão: 2026.10.22 - reestruturado</div>
+        <button id="btn-about" type="button" class="mt-2 inline-flex items-center gap-2 py-1.5 text-left text-xs font-bold text-emerald-600 transition-colors hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300" aria-haspopup="dialog" aria-controls="about-dialog" aria-expanded="false">
+          <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7v1"/></svg>
+          Sobre o painel e metodologia
+        </button>
       </div>
       </div>
     </aside>
@@ -346,6 +350,221 @@
        </aside>
      </main>
    </div>
+
+    <div id="about-dialog" class="fixed inset-0 z-[1300] hidden items-center justify-center bg-slate-950/65 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="about-dialog-title" aria-describedby="about-dialog-description" aria-hidden="true">
+      <div class="about-window flex h-[min(820px,calc(100dvh-2rem))] min-h-0 w-full max-w-6xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white text-slate-600 shadow-2xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+        <header class="about-header flex shrink-0 items-start justify-between gap-4 border-b border-slate-200 bg-gradient-to-r from-emerald-50 to-white px-5 py-4 dark:border-slate-800 dark:from-emerald-950/40 dark:to-slate-900">
+          <div>
+            <p class="about-eyebrow">Guia de uso e metodologia</p>
+            <h2 id="about-dialog-title" class="text-lg font-black tracking-tight text-slate-900 dark:text-slate-100">Painel Goiás</h2>
+            <p id="about-dialog-description" class="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">Conheça os recursos, as fontes e os critérios de leitura dos indicadores municipais.</p>
+          </div>
+          <button id="btn-close-about" type="button" class="shrink-0 rounded-xl p-2 text-slate-400 transition-colors hover:bg-white hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200" aria-label="Fechar informações do painel">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </header>
+        <div class="grid min-h-0 flex-1 grid-cols-1 grid-rows-[auto_minmax(0,1fr)] md:grid-cols-[240px_minmax(0,1fr)] md:grid-rows-1">
+          <div class="about-nav flex min-h-0 min-w-0 gap-1 overflow-x-auto border-b border-slate-200 bg-slate-100 p-1 md:flex-col md:overflow-y-auto md:border-b-0 md:border-r md:p-3 dark:border-slate-800 dark:bg-slate-800" role="tablist" aria-label="Tópicos sobre o painel" aria-orientation="vertical">
+            <button id="about-tab-overview" type="button" role="tab" aria-selected="true" aria-controls="about-overview" tabindex="0"><span aria-hidden="true">01</span>Visão Geral</button>
+            <button id="about-tab-navigation" type="button" role="tab" aria-selected="false" aria-controls="about-navigation" tabindex="-1"><span aria-hidden="true">02</span>Navegação e Recursos</button>
+            <button id="about-tab-sources" type="button" role="tab" aria-selected="false" aria-controls="about-sources" tabindex="-1"><span aria-hidden="true">03</span>Fontes e Mapeamento</button>
+            <button id="about-tab-calculations" type="button" role="tab" aria-selected="false" aria-controls="about-calculations" tabindex="-1"><span aria-hidden="true">04</span>Cálculo e Validações</button>
+            <button id="about-tab-analysis" type="button" role="tab" aria-selected="false" aria-controls="about-analysis" tabindex="-1"><span aria-hidden="true">05</span>Classificação e Análise Espacial</button>
+          </div>
+          <div class="about-content min-h-0 min-w-0 overflow-y-auto overscroll-contain p-4 sm:p-6">
+            <section id="about-overview" class="about-section" role="tabpanel" aria-labelledby="about-tab-overview" tabindex="0">
+              <p class="about-eyebrow">O que é o painel</p>
+              <h3>Visão Geral</h3>
+              <p class="about-lead">Exploração de indicadores municipais do Cadastro Único e de programas sociais de Goiás, reunindo mapa, tabela, gráficos e comparações históricas de Pobreza PBF.</p>
+              <div class="about-cards">
+                <div class="about-card"><strong>246 municípios</strong><p>Leitura comparativa do território goiano, com filtros e seleção municipal compartilhados entre as visualizações.</p></div>
+                <div class="about-card"><strong>Dados locais</strong><p>As bases JSON e a malha municipal TopoJSON acompanham a aplicação. Os portais de origem não são consultados durante a navegação.</p></div>
+              </div>
+              <h4>Finalidade</h4>
+              <p>Apoiar a comparação dos indicadores e a identificação de municípios que merecem investigação adicional.</p>
+              <h4>Como funciona</h4>
+              <p>A aplicação é estática: HTML, CSS e módulos JavaScript executados no navegador. Não há backend, banco de dados ou etapa de execução em Python. O mapa-base utiliza imagens externas do Esri World Light Gray Base.</p>
+              <aside class="about-note"><strong>Uso exploratório</strong><p>As cores e os alertas não são diagnósticos oficiais, avaliações de impacto dos programas ou comprovação de causas. Interprete os resultados junto às fontes e às limitações metodológicas.</p></aside>
+            </section>
+
+            <section id="about-navigation" class="about-section" role="tabpanel" aria-labelledby="about-tab-navigation" tabindex="0" hidden>
+              <p class="about-eyebrow">Guia de uso</p>
+              <h3>Navegação e Recursos</h3>
+              <h4>Abas e visualizações</h4>
+              <div class="about-table-wrap" role="region" aria-label="Abas e visualizações disponíveis" tabindex="0"><table>
+                <thead><tr><th scope="col">Aba</th><th scope="col">Indicadores e controles</th><th scope="col">Visualizações</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">CadÚnico</th><td>Extrema Pobreza, Pobreza e Pobreza PBF; escolha de paleta.</td><td>Mapa e Tabela</td></tr>
+                  <tr><th scope="row">Programas Sociais</th><td>Programa, status cadastral, métrica e paleta; modalidade própria para PLES.</td><td>Mapa, Tabela e Correlação</td></tr>
+                </tbody>
+              </table></div>
+              <p>O painel inicia em CadÚnico, Extrema Pobreza, Mapa e tema claro. As configurações não são persistidas entre recarregamentos.</p>
+              <p>Na legenda do mapa, Pobreza PBF alterna entre <strong>2019, 2026 e Diff 2026–2019</strong>. Em Programas Sociais, <strong>#</strong> e <strong>%</strong> alternam quantidade absoluta e proporção populacional. Retorne ao Mapa para alterar esses controles.</p>
+              <h4>Mapa e painel direito</h4>
+              <ul>
+                <li>O mapa é <strong>coroplético</strong>: cada polígono é um município colorido pelo indicador, não uma superfície contínua de calor.</li>
+                <li>Passe o ponteiro ou focalize um município para consultar o tooltip. Clique ou use <kbd>Enter</kbd> ou <kbd>Espaço</kbd> para selecioná-lo e abrir seus dados.</li>
+                <li><strong>Localizar no mapa</strong> enquadra o município; <strong>Reenquadrar</strong> retorna ao estado inteiro. A seleção do polígono não exige mudança da câmera.</li>
+                <li>Sem seleção, o painel mostra o agregado do recorte e os cinco maiores ou menores valores. Os nomes do ranking selecionam e localizam o município.</li>
+                <li>Com seleção, aparecem dados municipais, criticidade e gráficos. O selo de criticidade e a ajuda em Filtros explicam a classificação.</li>
+                <li>Em Pobreza PBF, os cards comparam inscritos, percentuais e população de 2019 e 2026, distinguindo pontos percentuais, pessoas e variação percentual.</li>
+                <li>Há comparação município × Goiás e, em Pobreza PBF, a alternativa <strong>2026 - 2019</strong>. A pizza aparece no CadÚnico com seleção, mas fica oculta no modo PBF 2019. O radar aparece em Programas Sociais e pode ser ampliado.</li>
+                <li>Recolher painéis não apaga a seleção. Na tela cheia, orientada ao mapa, as configurações iniciam recolhidas; o painel municipal também é recolhido se já houver município selecionado.</li>
+              </ul>
+              <p>No tema escuro, um filtro visual é aplicado às imagens do mapa-base e as bordas municipais ficam mais claras.</p>
+              <h4>Programas sociais</h4>
+              <p>Os controles gerais oferecem <strong>Acumulado, Ativo e Descredenciado</strong> e métricas <strong>Benefícios ou Pessoas</strong>. O estado inicial é Ativo/Benefícios, em quantidade absoluta. Todos Programas e Acumulado são lidos da base consolidada, não recompostos por soma durante a navegação.</p>
+              <p><strong>PLES</strong> usa modalidades das colunas <code>PLES_*</code>, ocultando os controles gerais de status e métrica. <strong>CAUT</strong> permite somente Ativo.</p>
+              <details><summary>Programas disponíveis</summary><p>Todos Programas; Mães de Goiás; Aprendiz do Futuro; Dignidade; Goiás Por Elas; Goiás + Inclusivo; Passe Livre Estudantil; Carteira de Identificação do Autista; Passe Livre da Pessoa com Deficiência; Passaporte da Pessoa Idosa.</p></details>
+              <h4>Filtros e seleção</h4>
+              <p>Busca por nome, status do indicador e população são combinados entre as visualizações. A busca ignora acentos e maiúsculas/minúsculas; não busca pelo código IBGE.</p>
+              <ul>
+                <li>Faixas: menos de 20.000; de 20.000 a 100.000, inclusive; acima de 100.000; ou intervalo personalizado. Apesar do rótulo “Até 20 mil”, exatamente 20.000 pertence à faixa intermediária.</li>
+                <li>Limites personalizados são inclusivos e opcionais. Entradas inválidas preservam os últimos limites válidos.</li>
+                <li>No PBF 2019, o filtro usa a população de 2019. Em 2026, Diff e demais indicadores, usa a população atual.</li>
+                <li>Selecionar não é filtrar: a seleção pode permanecer fora do recorte. A Correlação informa isso no seletor; a tabela permite selecionar, mas não realça a linha como o mapa realça o polígono.</li>
+                <li><strong>Limpar</strong> redefine busca, criticidade e população, sem mudar indicador, programa ou seleção. Trocar a aba principal ou clicar no fundo do mapa limpa a seleção municipal.</li>
+              </ul>
+              <h4>Tabela e exportação</h4>
+              <p>A tabela permite ordenação por cabeçalho, busca sincronizada e seleção municipal. Nos programas, mostra benefícios, pessoas e percentual de pessoas, independentemente da métrica da cor do mapa. PLES e os modos históricos de PBF têm colunas próprias.</p>
+              <p>A exportação <strong>XLSX</strong> respeita filtros, configuração e ordenação, gerando <code>Dados Numericos</code>, <code>Formatado</code> e <code>Metadados</code>. A biblioteca é carregada sob demanda. Exporta as colunas da tabela, não todos os gráficos. Não há exportação nativa de imagens, CSV ou PDF.</p>
+            </section>
+
+            <section id="about-sources" class="about-section" role="tabpanel" aria-labelledby="about-tab-sources" tabindex="0" hidden>
+              <p class="about-eyebrow">Origem e integração dos dados</p>
+              <h3>Fontes e Mapeamento</h3>
+              <p>O painel utiliza arquivos locais preparados a partir das bases. Os links abaixo são referências de origem, não consultas realizadas durante a navegação.</p>
+              <h4>Fontes declaradas</h4>
+              <div class="about-table-wrap" role="region" aria-label="Fontes dos indicadores" tabindex="0"><table>
+                <thead><tr><th scope="col">Informação</th><th scope="col">Referência</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Extrema Pobreza e Pobreza</th><td><a href="https://cecad.cidadania.gov.br/tab_cad.php" target="_blank" rel="noopener noreferrer">TabCad / CECAD <span class="about-new-tab">(nova aba)</span></a></td></tr>
+                  <tr><th scope="row">Pobreza PBF 2019</th><td><a href="https://dados.gov.br/dados/conjuntos-dados/pessoas-inscritas-no-cadastro-unico-por-faixa-de-renda-per-capita" target="_blank" rel="noopener noreferrer">Pessoas inscritas no Cadastro Único por faixa de renda per capita <span class="about-new-tab">(nova aba)</span></a>, Portal Brasileiro de Dados Abertos</td></tr>
+                  <tr><th scope="row">População dos cenários 2019 e 2026</th><td><a href="https://sidra.ibge.gov.br/tabela/6579" target="_blank" rel="noopener noreferrer">Tabela SIDRA 6579: População residente estimada <span class="about-new-tab">(nova aba)</span></a>, IBGE</td></tr>
+                  <tr><th scope="row">Programas sociais estaduais</th><td>Base consolidada local <code>output/info_Programas_Sociais.json</code></td></tr>
+                  <tr><th scope="row">Limites municipais temáticos</th><td>Malha local <code>output/municipios_GO.topojson</code></td></tr>
+                </tbody>
+              </table></div>
+              <h4>Junção por código IBGE</h4>
+              <p>Os três JSONs de indicadores são objetos indexados por código municipal, como <code>5200050</code>, não arrays. A chave da geometria é obtida, nesta ordem, de <code>properties.id</code>, <code>properties.code_muni</code> ou <code>feature.id</code>, convertida para string no padrão <code>^52\d{5}$</code>.</p>
+              <p>Cada geometria deve ter registro nas três bases, e todo registro deve ter geometria correspondente. <strong>Nomes não são chaves de junção.</strong> O nome final prioriza <code>município</code> do TabCad, depois <code>municipio</code> dos programas e os nomes da geometria. O histórico não altera essa precedência.</p>
+              <details><summary>Arquivos e campos de entrada</summary>
+                <div class="about-table-wrap" role="region" aria-label="Mapeamento dos campos de entrada" tabindex="0"><table>
+                  <thead><tr><th scope="col">Arquivo em output/</th><th scope="col">Entrada</th><th scope="col">Uso interno</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">info_tabcad.json</th><td><code>município</code></td><td>Nome municipal preferencial</td></tr>
+                    <tr><th scope="row">info_tabcad.json</th><td><code>populacao_estimada</code></td><td><code>população</code>, cenário atual/2026</td></tr>
+                    <tr><th scope="row">info_tabcad.json</th><td><code>ext_pob</code>, <code>pob</code></td><td>Contagens de extrema pobreza e pobreza</td></tr>
+                    <tr><th scope="row">info_tabcad.json</th><td><code>pob_pbf</code></td><td><code>pob_p1_p2</code>, Pobreza PBF</td></tr>
+                    <tr><th scope="row">info_2019.json</th><td><code>populacao_estimada_2019</code></td><td><code>população_2019</code></td></tr>
+                    <tr><th scope="row">info_2019.json</th><td><code>pob_pbf_2019</code></td><td><code>PBF_2019</code></td></tr>
+                    <tr><th scope="row">info_Programas_Sociais.json</th><td><code>municipio</code>, campos de programas e <code>PLES_*</code></td><td>Nome alternativo e medidas dos programas</td></tr>
+                    <tr><th scope="row">municipios_GO.topojson</th><td>Objeto <code>municipios</code>; código e nome</td><td>Polígonos convertidos para GeoJSON no carregamento</td></tr>
+                  </tbody>
+                </table></div>
+              </details>
+              <h4>Contrato dos programas</h4>
+              <p>Campos regulares seguem <code>{programa}_{status}_{métrica}</code>, por exemplo <code>MAES_Ativo_Beneficios</code>.</p>
+              <ul>
+                <li><strong>Programas:</strong> <code>MAES</code>, <code>AFUT</code>, <code>DIGN</code>, <code>GPEL</code>, <code>GINC</code>, <code>CAUT</code>, <code>PLPD</code>, <code>PPID</code> e <code>TODS</code>.</li>
+                <li><strong>Status:</strong> <code>Acumulado</code>, <code>Ativo</code> e <code>Descredenciado</code>.</li>
+                <li><strong>Métricas:</strong> <code>Beneficios</code> e <code>Pessoas</code>.</li>
+              </ul>
+              <p>PLES possui nove campos próprios obrigatórios: <code>PLES_Ativo_Beneficios</code> e oito modalidades de ensino, como <code>PLES_FUNDAMENTAL</code>, <code>PLES_MÉDIO</code> e <code>PLES_SUPERIOR - GRADUAÇÃO</code>. Grafia, espaços e acentos são preservados; a lista completa está em <code>assets/js/data.js</code>.</p>
+            </section>
+
+            <section id="about-calculations" class="about-section" role="tabpanel" aria-labelledby="about-tab-calculations" tabindex="0" hidden>
+              <p class="about-eyebrow">Como os números são obtidos</p>
+              <h3>Cálculo e Validações</h3>
+              <h4>Contagens e proporções</h4>
+              <p>Os campos <code>norm_*</code> são razões por população, não normalização min–max, escore-z ou densidade por área.</p>
+              <div class="about-formula">
+                <p><code>norm_ext = ext_pob / população</code></p>
+                <p><code>norm_pob = pob / população</code></p>
+                <p><code>norm_pob_p1_p2 = pob_p1_p2 / população</code></p>
+                <p><code>norm_PBF_2019 = PBF_2019 / população_2019</code></p>
+                <p><strong>Percentual exibido = razão × 100</strong></p>
+                <p>Programa em <strong>#</strong> = quantidade da coluna selecionada</p>
+                <p>Programa em <strong>%</strong> = 100 × quantidade / população municipal</p>
+              </div>
+              <p><strong>Zero é conhecido; <code>null</code> é desconhecido</strong> e não vira zero. Populações precisam ser positivas. As razões não são limitadas artificialmente a 100%, nem toda contagem é garantidamente menor que a população. A precisão é preservada no cálculo; o arredondamento ocorre na exibição brasileira, normalmente com duas casas para percentuais.</p>
+              <h4>Pobreza PBF: 2026 e 2019</h4>
+              <div class="about-formula">
+                <p>Taxa 2019 = 100 × PBF_2019 / população_2019</p>
+                <p>Taxa 2026 = 100 × pob_p1_p2 / população</p>
+                <p><strong>Diferença em p.p. = Taxa 2026 − Taxa 2019</strong></p>
+              </div>
+              <p>Cada ano usa sua própria população. A diferença é em <strong>pontos percentuais</strong>, não crescimento relativo nem diferença em pessoas.</p>
+              <aside class="about-note"><strong>Exemplo: Abadia de Goiás</strong><p>A contagem sobe de 4.841 para 7.270, mas a população usada passa de 8.773 para 22.918. A taxa cai de aproximadamente 55,18% para 31,72%: redução de 23,46 p.p., apesar do aumento da contagem.</p></aside>
+              <h4>Agregados</h4>
+              <div class="about-formula"><p><strong>Percentual agregado = 100 × soma dos valores conhecidos / soma das populações correspondentes</strong></p></div>
+              <p>Não é a média simples das taxas municipais. Zero participa; indicador <code>null</code> exclui a população daquele município do denominador desse indicador. Por isso, o card de população de todo o recorte pode diferir da população usada no percentual.</p>
+              <p>No Diff agregado, só entram municípios com as duas populações e as duas contagens válidas. Calculam-se as duas razões agregadas na amostra pareada e depois sua diferença, não a média dos deltas municipais.</p>
+              <h4>Variação populacional</h4>
+              <div class="about-formula">
+                <p>v = 100 × (população 2026 − população 2019) / população 2019</p>
+                <p>L = média aritmética de |v| dos municípios com variação válida</p>
+                <p><strong>Destaque ou aviso quando |v| &gt; L</strong></p>
+              </div>
+              <p>A referência usa a base completa, sem ponderação populacional e sem depender dos filtros, calculada uma vez por carregamento. Igualdade ao limiar não dispara destaque.</p>
+              <p>O critério sinaliza tanto crescimento quanto queda: destaca o percentual no card e exibe aviso no tooltip PBF. Não é taxa anualizada, variação do total de Goiás ou teste estatístico de anomalia. Chama atenção para o denominador, sem explicar causas ou comprovar erro.</p>
+              <details><summary>Validações de entrada e seus limites</summary>
+                <ul>
+                  <li>JSONs devem ser objetos, com registros municipais e campos obrigatórios.</li>
+                  <li>Contagens conhecidas devem ser inteiros seguros não negativos; strings numéricas não são aceitas. <code>null</code> é permitido para contagens, não para população.</li>
+                  <li>Populações devem ser inteiros seguros positivos; o nome final deve ser uma string não vazia.</li>
+                  <li>Códigos geométricos devem seguir o padrão, sem repetição, com correspondência completa entre geometria e as três bases.</li>
+                  <li>Polígonos ou multipolígonos devem ter coordenadas finitas nos limites de longitude/latitude, com anéis fechados de pelo menos quatro posições.</li>
+                  <li>Falhas HTTP, JSON inválido ou violações do contrato interrompem a inicialização com erro, em vez de descartar municípios silenciosamente.</li>
+                </ul>
+                <p>O padrão do código não valida dígito verificador nem consulta cadastro oficial. A validação geométrica não garante ausência de autointerseções, lacunas ou sobreposições. Não há detector próprio de chaves duplicadas nos JSONs antes do parser, diferentemente da detecção de IDs geométricos repetidos.</p>
+              </details>
+              <details><summary>Auditoria de totais dos programas</summary>
+                <p>No console do navegador, <code>window.runProgramTotalsDryRun()</code> produz diagnósticos de campos, somas e composição de <code>TODS</code>. Pode receber totais estaduais esperados; na inicialização, roda sem referência oficial.</p>
+                <p>Não substitui conciliação com a fonte nem comprova que <code>TODS</code> seja soma simples, que <code>Acumulado = Ativo + Descredenciado</code> ou que não exista sobreposição de pessoas.</p>
+              </details>
+            </section>
+
+            <section id="about-analysis" class="about-section" role="tabpanel" aria-labelledby="about-tab-analysis" tabindex="0" hidden>
+              <p class="about-eyebrow">Como interpretar os resultados</p>
+              <h3>Classificação e Análise Espacial</h3>
+              <h4>Criticidade</h4>
+              <p>O status compara a proporção municipal com uma referência da base completa: no CadÚnico, indicador / população; nos programas, métrica selecionada / população, <strong>mesmo no modo absoluto do mapa</strong>.</p>
+              <p>A referência é o <strong>P95 dos valores positivos válidos</strong>, selecionando o índice <code>min(n - 1, floor(n × 0,95))</code> na lista ordenada, sem interpolação. Sem referência positiva utilizável, o padrão é <code>0,6</code> para pobreza e <code>1</code> para programas. Zero é classificável, mas não integra a amostra positiva do P95.</p>
+              <div class="about-formula"><p><strong>r = proporção municipal / referência</strong></p></div>
+              <div class="about-table-wrap" role="region" aria-label="Limiares da classificação de criticidade" tabindex="0"><table>
+                <thead><tr><th scope="col">Status</th><th scope="col">CadÚnico</th><th scope="col">Programas Sociais</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Estável</th><td>r ≤ 0,40</td><td>r &gt; 0,75</td></tr>
+                  <tr><th scope="row">Alerta</th><td>0,40 &lt; r ≤ 0,75</td><td>0,40 &lt; r ≤ 0,75</td></tr>
+                  <tr><th scope="row">Crítico</th><td>r &gt; 0,75</td><td>r ≤ 0,40</td></tr>
+                  <tr><th scope="row">Sem Dados</th><td>Valor ausente</td><td>Valor ausente</td></tr>
+                </tbody>
+              </table></div>
+              <p>40% e 75% são frações da referência, não percentuais diretos da população. Filtros não recalculam a referência. <strong>No Diff PBF, o status classifica a proporção de 2026, não a diferença histórica.</strong></p>
+              <aside class="about-note"><strong>Status do indicador não é status cadastral</strong><p>Nos programas, menor proporção significa maior criticidade também em Descredenciado. Os rótulos não medem automaticamente bom desempenho, elegibilidade ou impacto.</p></aside>
+              <h4>Cores do mapa e variações</h4>
+              <ul>
+                <li>Escalas comuns usam referência baseada no P95 da métrica, sem excluir municípios acima do teto. A paleta é alterável; as cores do selo de criticidade são fixas.</li>
+                <li>Alguns percentuais textuais de pobreza usam referência fixa de <code>0,6</code>, enquanto mapa e status usam referências dinâmicas. A cor do texto nem sempre equivale ao status. A legenda representa escala contínua, não classes estatísticas.</li>
+                <li>No Diff PBF, a escala é simétrica pelas magnitudes em p.p. De <strong>−2 a +2 p.p., inclusive, não há preenchimento</strong>. É regra visual, não intervalo de confiança ou teste de significância. Ausências recebem tratamento próprio.</li>
+                <li>Variações PBF positivas usam rosa/vermelho; negativas, verde. A diferença populacional em pessoas é neutra; o percentual fica laranja acima da referência de magnitude. O tooltip avisa mudanças populacionais acentuadas nos modos 2019, 2026 e Diff.</li>
+              </ul>
+              <h4>Correlação descritiva</h4>
+              <div class="about-formula">
+                <p>X = 100 × extrema pobreza / população municipal</p>
+                <p>Y = 100 × métrica selecionada do programa / população municipal</p>
+              </div>
+              <p>O eixo Y é sempre percentual, mesmo com mapa absoluto. Só entram municípios com ambos os valores válidos.</p>
+              <p>As linhas dos quadrantes são médias aritméticas municipais da base completa com pares válidos, sem ponderação populacional. Filtros alteram os pontos, não as referências. Igualdade à média entra na categoria alta. Os quadrantes combinam alta/baixa extrema pobreza com alta/baixa proporção do programa no próprio município.</p>
+              <p>A listagem calcula <strong>Pearson para o recorte exibido</strong>, indisponível com menos de dois pares ou variância nula. Permite ordenação por coluna; seleção e Limpar controlam o município compartilhado, não os filtros. Há tooltips, ampliação e zoom visual de 75% a 250%, restaurável para 100%.</p>
+              <aside class="about-note"><strong>Alcance e limitações</strong><p>A análise espacial é a visualização coroplética municipal. Não há Moran global/local, LISA, matriz de vizinhança, defasagem espacial ou testes de agrupamentos. A correlação não realiza regressão, cálculo de p-valor ou intervalo de confiança e não comprova causalidade.</p></aside>
+            </section>
+          </div>
+        </div>
+        <footer class="flex shrink-0 justify-between gap-3 border-t border-slate-200 px-5 py-3 text-[10px] text-slate-400 dark:border-slate-800 dark:text-slate-500"><span>Conteúdo organizado a partir do README do projeto.</span><span class="hidden sm:inline"><kbd>Esc</kbd> para fechar</span></footer>
+      </div>
+    </div>
 
     <div id="radar-dialog" class="fixed inset-0 z-[1300] hidden items-center justify-center bg-slate-950/65 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="radar-dialog-title" aria-describedby="radar-dialog-context" aria-hidden="true">
       <section class="flex max-h-[calc(100vh-2rem)] w-full max-w-6xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">

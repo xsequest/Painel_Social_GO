@@ -180,6 +180,62 @@ import { MapModule } from './map.js';
         syncPovertyIndicatorDescription();
      })();
 
+    const AboutModule = (function() {
+      const trigger = document.getElementById('btn-about'), dialog = document.getElementById('about-dialog'), closeButton = document.getElementById('btn-close-about');
+      const tablist = dialog.querySelector('[role="tablist"]'), tabs = Array.from(tablist.querySelectorAll('[role="tab"]')), content = dialog.querySelector('.about-content');
+      const mobile = window.matchMedia('(max-width: 767px)');
+
+      function selectTab(tab) {
+        tabs.forEach(button => {
+          const active = button === tab;
+          button.setAttribute('aria-selected', String(active));
+          button.tabIndex = active ? 0 : -1;
+          document.getElementById(button.getAttribute('aria-controls')).hidden = !active;
+        });
+        content.scrollTop = 0;
+        tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+      function close() {
+        dialog.classList.add('hidden');
+        dialog.classList.remove('flex');
+        dialog.setAttribute('aria-hidden', 'true');
+        trigger.setAttribute('aria-expanded', 'false');
+        // Release the background before restoring focus; the shared modal observer runs asynchronously.
+        document.getElementById('main-layout').inert = false;
+        trigger.focus();
+      }
+      trigger.addEventListener('click', () => {
+        dialog.classList.remove('hidden');
+        dialog.classList.add('flex');
+        dialog.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        selectTab(tabs[0]);
+        closeButton.focus();
+      });
+      closeButton.addEventListener('click', close);
+      dialog.addEventListener('click', event => { if (event.target === dialog) close(); });
+      dialog.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { event.preventDefault(); close(); }
+      });
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => selectTab(tab));
+        tab.addEventListener('keydown', event => {
+          let next;
+          if (event.key === (mobile.matches ? 'ArrowRight' : 'ArrowDown')) next = (index + 1) % tabs.length;
+          else if (event.key === (mobile.matches ? 'ArrowLeft' : 'ArrowUp')) next = (index + tabs.length - 1) % tabs.length;
+          else if (event.key === 'Home') next = 0;
+          else if (event.key === 'End') next = tabs.length - 1;
+          else return;
+          event.preventDefault();
+          selectTab(tabs[next]);
+          tabs[next].focus();
+        });
+      });
+      const updateOrientation = () => tablist.setAttribute('aria-orientation', mobile.matches ? 'horizontal' : 'vertical');
+      mobile.addEventListener('change', updateOrientation);
+      updateOrientation();
+    })();
+
     const CriticityHelpModule = (function() {
       const tooltip = document.getElementById('criticity-tooltip');
       let trigger = null, closeTimer = null;

@@ -38,7 +38,7 @@
     .legend-mode-toggle.is-column .legend-mode-row .legend-mode-button:first-child { border-radius: 6px 0 0 0 !important; }
     .legend-mode-toggle.is-column .legend-mode-row .legend-mode-button:last-child { margin-left: -1px; border-radius: 0 6px 0 0 !important; }
     .legend-mode-toggle.is-column > .legend-mode-button:last-child { width: 100%; border-radius: 0 0 6px 6px !important; }
-    body.kiosk-mode #table-container, body.kiosk-mode header { display: none !important; }
+    body.kiosk-mode #table-container, body.kiosk-mode #app-header { display: none !important; }
     body.kiosk-mode #main-map-area { width: 100% !important; height: 100vh !important; border-radius: 0 !important; border: none !important; }
     body.kiosk-mode #map-container { height: 100vh !important; border-radius: 0 !important; }
      .animate-fade-in { animation: fadeIn 0.2s ease-out; }

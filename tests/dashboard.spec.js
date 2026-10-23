@@ -7,6 +7,147 @@ async function ready(page) {
   await expect(page.locator('#map-loading-overlay')).toBeHidden();
 }
 
+test('about guide opens below the version, navigates by keyboard and restores focus', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await ready(page);
+  const trigger = page.getByRole('button', { name: 'Sobre o painel e metodologia' });
+  const dialog = page.getByRole('dialog', { name: 'Painel Goiás', exact: true });
+  await expect(trigger.locator('xpath=preceding-sibling::*[1]')).toContainText('Versão: 2026.10.22 - reestruturado');
+  await trigger.click();
+  await expect(dialog).toBeVisible();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#main-layout')).toHaveJSProperty('inert', true);
+  const close = dialog.getByRole('button', { name: 'Fechar informações do painel' });
+  await expect(close).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(dialog.getByRole('tabpanel')).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(close).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(dialog.getByRole('tab', { name: 'Visão Geral', exact: true })).toBeFocused();
+  const headings = ['Navegação e Recursos', 'Fontes e Mapeamento', 'Cálculo e Validações', 'Classificação e Análise Espacial'];
+  for (const name of headings) {
+    await page.keyboard.press('ArrowDown');
+    await expect(dialog.getByRole('tab', { name, exact: true })).toBeFocused();
+    await expect(dialog.getByRole('heading', { name, exact: true })).toBeVisible();
+    await expect(dialog.getByRole('tabpanel')).toHaveCount(1);
+  }
+  await expect(dialog.getByRole('heading', { name: /Executar|Estrutura|Requisitos|Build e Prévia/ })).toHaveCount(0);
+  await page.keyboard.press('ArrowUp');
+  const audit = dialog.locator('summary').last();
+  await audit.focus();
+  await page.keyboard.press('Enter');
+  await expect(dialog.locator('details').last()).toHaveAttribute('open', '');
+  await page.keyboard.press('Tab');
+  await expect(close).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('#main-layout')).toHaveJSProperty('inert', false);
+  await trigger.click();
+  await expect(dialog.getByRole('heading', { name: 'Visão Geral', exact: true })).toBeVisible();
+  await expect(dialog.getByRole('heading', { name: 'Cálculo e Validações', exact: true })).toBeHidden();
+  await close.click();
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await page.locator('#about-dialog').click({ position: { x: 2, y: 2 } });
+  await expect(dialog).toBeHidden();
+  expect(errors).toEqual([]);
+});
+
+for (const width of [360, 768, 1366]) {
+  test(`about guide fits ${width}px in both themes and preserves dashboard state`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await ready(page);
+    await page.locator('#filter-search').fill('Abadia');
+    await expect.poll(() => page.evaluate(async () => (await import('./assets/js/core.js')).State.get('searchTerm'))).toBe('Abadia');
+    for (const dark of [false, true]) {
+      if (dark) await page.locator('#btn-dark-toggle').click();
+      await page.locator('#btn-about').click();
+      const dialog = page.locator('#about-dialog');
+      await expect(dialog.getByRole('heading', { name: 'Painel Goiás', exact: true })).toBeVisible();
+      await expect(dialog.getByRole('tablist')).toHaveAttribute('aria-orientation', width < 768 ? 'horizontal' : 'vertical');
+      for (const tab of await dialog.getByRole('tab').all()) {
+        await tab.click();
+        await expect(tab).toHaveAttribute('aria-selected', 'true');
+        const dimensions = await dialog.evaluate(element => {
+          const window = element.querySelector('.about-window');
+          const box = window.getBoundingClientRect();
+          const content = element.querySelector('.about-content');
+          return { left: box.left, top: box.top, right: box.right, bottom: box.bottom, contentWidth: content.clientWidth, contentScroll: content.scrollWidth, pageWidth: document.documentElement.scrollWidth, viewportWidth: innerWidth, viewportHeight: innerHeight };
+        });
+        expect(dimensions.left).toBeGreaterThanOrEqual(0);
+        expect(dimensions.top).toBeGreaterThanOrEqual(0);
+        expect(dimensions.right).toBeLessThanOrEqual(dimensions.viewportWidth);
+        expect(dimensions.bottom).toBeLessThanOrEqual(dimensions.viewportHeight);
+        expect(dimensions.contentScroll).toBeLessThanOrEqual(dimensions.contentWidth);
+        expect(dimensions.pageWidth).toBeLessThanOrEqual(dimensions.viewportWidth);
+      }
+      await dialog.getByRole('tab', { name: 'Fontes e Mapeamento', exact: true }).click();
+      const links = dialog.getByRole('link');
+      await expect(links).toHaveCount(3);
+      for (const link of await links.all()) {
+        await expect(link).toHaveAttribute('href', /^https:\/\//);
+        await expect(link).toHaveAttribute('target', '_blank');
+        await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+      }
+      const styles = await dialog.evaluate(() => {
+        const read = (selector, properties) => {
+          const computed = getComputedStyle(document.querySelector(selector));
+          return Object.fromEntries(properties.map(property => [property, computed[property]]));
+        };
+        const windowProperties = ['backgroundColor', 'borderColor', 'borderRadius', 'boxShadow'];
+        const titleProperties = ['fontFamily', 'fontSize', 'fontWeight', 'letterSpacing', 'color'];
+        const headerProperties = ['backgroundImage', 'borderBottomColor', 'paddingTop', 'paddingLeft'];
+        const tabProperties = ['backgroundColor', 'color', 'borderRadius'];
+        return {
+          window: read('#about-dialog .about-window', windowProperties),
+          referenceWindow: read('#radar-dialog > section', windowProperties),
+          title: read('#about-dialog-title', titleProperties),
+          referenceTitle: read('#radar-dialog-title', titleProperties),
+          header: read('#about-dialog .about-header', headerProperties),
+          referenceHeader: read('#radar-dialog > section > div', headerProperties),
+          tab: read('#about-dialog [aria-selected="true"]', tabProperties),
+          referenceTab: read('#tab-pob', tabProperties),
+          table: read('#about-sources thead', ['backgroundColor', 'color']),
+          referenceTable: read('#scatter-table-head', ['backgroundColor', 'color'])
+        };
+      });
+      expect(styles.window).toEqual(styles.referenceWindow);
+      expect(styles.title).toEqual(styles.referenceTitle);
+      expect(styles.header).toEqual(styles.referenceHeader);
+      expect(styles.tab).toEqual(styles.referenceTab);
+      expect(styles.table).toEqual(styles.referenceTable);
+      await page.keyboard.press('Escape');
+      await expect(page.locator('#filter-search')).toHaveValue('Abadia');
+    }
+  });
+}
+
+test('about guide keeps its header and keyboard navigation in fullscreen', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await ready(page);
+  await page.locator('#btn-kiosk').click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement === document.body)).toBe(true);
+  await page.locator('#btn-collapse-sidebar').click();
+  await page.locator('#btn-about').click();
+  const dialog = page.locator('#about-dialog');
+  await expect(dialog.locator('.about-header')).toBeVisible();
+  await dialog.getByRole('tab', { name: 'Visão Geral', exact: true }).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(dialog.getByRole('heading', { name: 'Navegação e Recursos', exact: true })).toBeVisible();
+  await page.keyboard.press('End');
+  await expect(dialog.getByRole('heading', { name: 'Classificação e Análise Espacial', exact: true })).toBeVisible();
+  await page.keyboard.press('Home');
+  await expect(dialog.getByRole('heading', { name: 'Visão Geral', exact: true })).toBeVisible();
+  await page.locator('#btn-close-about').click();
+  await page.locator('#btn-kiosk').click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement === null)).toBe(true);
+});
+
 test('loads local data, keeps geometry and camera, updates indicator table, exports lazily', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));

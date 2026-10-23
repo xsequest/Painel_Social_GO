@@ -28,8 +28,8 @@ function installModalAccessibility() {
   document.addEventListener('keydown', event => {
     reconcile();
     if (event.key !== 'Tab' || !activeDialog) return;
-    const focusable = Array.from(activeDialog.querySelectorAll('button, select, input, a[href], [tabindex]:not([tabindex="-1"])'))
-      .filter(element => !element.disabled && !element.closest('[inert]') && element.getClientRects().length);
+    const focusable = Array.from(activeDialog.querySelectorAll('button, select, input, a[href], summary, [tabindex]'))
+      .filter(element => element.tabIndex >= 0 && !element.disabled && !element.closest('[inert]') && element.getClientRects().length);
     if (!focusable.length) { event.preventDefault(); activeDialog.tabIndex = -1; activeDialog.focus(); return; }
     const index = focusable.indexOf(document.activeElement);
     if (index < 0 || (!event.shiftKey && index === focusable.length - 1) || (event.shiftKey && index === 0)) {
