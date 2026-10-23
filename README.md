@@ -95,29 +95,20 @@ A tabela oferece ordenação por cabeçalho, busca sincronizada e seleção muni
 
 A exportação XLSX respeita o recorte, a configuração e a ordenação da tabela e gera as planilhas `Dados Numericos`, `Formatado` e `Metadados`. A biblioteca de exportação é carregada sob demanda. São exportadas as colunas da tabela, não todos os dados de todos os gráficos. Não há exportação nativa de mapa/gráficos para imagem, nem botões CSV ou PDF.
 
-### Acessibilidade e Apresentação
-
-Há navegação por teclado nas abas, polígonos, pontos e tabelas, foco visível, atributos ARIA, diálogos com contenção e retorno de foco e respeito à preferência por movimento reduzido. A ajuda de criticidade pode ser aberta por mouse, teclado ou toque. A tela cheia depende de suporte e permissão do navegador.
-
-Os gráficos Canvas possuem nomes acessíveis, mas não uma representação textual completa equivalente a cada série. Esses recursos não constituem declaração de conformidade integral com WCAG. Telas menores utilizam painéis adaptados e áreas de rolagem; tabelas e dispersão podem exigir rolagem horizontal.
-
 ## Fontes e Mapeamento
 
 ### Fontes Declaradas
 
-As referências abaixo foram informadas pelo responsável pelos dados. O aplicativo utiliza os arquivos locais preparados a partir das bases; não consulta esses portais durante a navegação.
+O aplicativo utiliza os arquivos locais preparados a partir das bases; não consulta esses portais durante a navegação.
 
 | Informação | Referência |
 | --- | --- |
 | CadÚnico: Extrema Pobreza e Pobreza | [TabCad / CECAD](https://cecad.cidadania.gov.br/tab_cad.php) |
 | Série histórica denominada Pobreza PBF 2019 | [Pessoas inscritas no Cadastro Único por faixa de renda per capita](https://dados.gov.br/dados/conjuntos-dados/pessoas-inscritas-no-cadastro-unico-por-faixa-de-renda-per-capita), Portal Brasileiro de Dados Abertos |
 | População estimada utilizada nos cenários 2019 e 2026 | [Tabela SIDRA 6579: População residente estimada](https://sidra.ibge.gov.br/tabela/6579), IBGE |
-| Programas sociais estaduais | Base consolidada local `output/info_Programas_Sociais.json`; o sistema de origem não está registrado nos arquivos analisados |
-| Limites municipais temáticos | Malha local `output/municipios_GO.topojson`; fornecedor, edição e ano não estão registrados no arquivo |
+| Programas sociais estaduais | Base consolidada local `output/info_Programas_Sociais.json` |
+| Limites municipais temáticos | Malha local `output/municipios_GO.topojson` |
 
-O rodapé declara **Programas Sociais: julho/2026** e **CadÚnico: agosto/2026**. O histórico possui campos explicitamente denominados 2019; os campos atuais são associados a 2026 pela aplicação, sem ano no nome original de `populacao_estimada` ou `pob_pbf`.
-
-Os JSONs não guardam competência por registro, data de extração, filtros da consulta, URL de origem nem a edição da estimativa populacional. Portanto, o rótulo 2026 e as competências do rodapé não comprovam, isoladamente, o período publicado na fonte. A rastreabilidade desses recortes deve acompanhar a preparação das bases.
 
 ### Arquivos e Campos
 
@@ -146,13 +137,9 @@ Os campos regulares seguem `{programa}_{status}_{métrica}`, por exemplo `MAES_A
 | --- | --- |
 | Programa | `MAES`, `AFUT`, `DIGN`, `GPEL`, `GINC`, `CAUT`, `PLPD`, `PPID`, `TODS` |
 | Status | `Acumulado`, `Ativo`, `Descredenciado` |
-| Métrica | `Beneficios`, `Pessoas`, `Aptos` |
-
-O carregador exige os 81 campos dessa combinação. `Aptos` é carregado e validado, mas não integra as duas métricas regulares selecionáveis na interface. Mesmo quando CAUT permite somente Ativo na interface, o contrato de entrada mantém os três status.
+| Métrica | `Beneficios`, `Pessoas` |
 
 PLES tem nove campos próprios obrigatórios: `PLES_Ativo_Beneficios` e oito modalidades de ensino. Exemplos são `PLES_FUNDAMENTAL`, `PLES_MÉDIO` e `PLES_SUPERIOR - GRADUAÇÃO`. A grafia, os espaços e os acentos dessas chaves devem ser preservados. A lista completa está em [`assets/js/data.js`](assets/js/data.js).
-
-Contagens de programas não devem ser presumidas como pessoas únicas: a aplicação não deduplica os registros originais e não recalcula `TODS` ou `Acumulado` a partir dos detalhes. A variável denominada Pobreza PBF também não comprova recebimento ou pagamento do Bolsa Família; representa a contagem importada de inscritos/faixa de renda.
 
 ## Cálculo e Validações
 
@@ -277,27 +264,6 @@ A listagem permite ordenação por coluna. O seletor municipal e seu botão Limp
 ### Alcance e Limitações
 
 - A análise espacial implementada é a visualização coroplética por município. Não há Moran global/local, LISA, matriz de vizinhança, defasagem espacial ou testes de agrupamentos espaciais.
-- A cor não descreve a distribuição dentro do município nem comprova agrupamentos entre vizinhos. Uma única malha é usada nos dois anos, sem verificação automática de mudanças territoriais.
-- Os quadrantes da dispersão comparam duas variáveis do mesmo município; não são quadrantes de autocorrelação espacial entre municípios vizinhos.
-- Os rótulos Prioridade máxima e Cobertura adequada indicam posições relativas às médias usadas na dispersão; não comprovam prioridade administrativa, atendimento integral do público-alvo ou adequação legal.
-- Correlação municipal não demonstra causalidade e não permite inferir a situação de indivíduos a partir dos agregados.
-- A chamada cobertura usa a população municipal total como denominador, não o público elegível. Benefícios e pessoas também não são necessariamente unidades intercambiáveis ou contagens de indivíduos únicos.
-- Os dois eixos da dispersão compartilham o denominador populacional, o que deve ser considerado na interpretação da associação.
-- No comparativo município × Goiás, o percentual estadual é uma razão entre somas, não a média simples dos percentuais municipais. O comparativo usa a base estadual completa, mesmo com filtros ativos.
-- A pizza representa a composição entre extrema pobreza e pobreza: seu denominador é a soma dessas duas categorias, não a população municipal. No modo PBF 2019, ela fica oculta.
-- O radar não representa parcelas mutuamente exclusivas nem necessariamente somáveis a 100%. Sua escala pode mudar entre municípios. Fora do contexto PLES, seu eixo usa benefícios ativos e os demais seguem o status/métrica selecionados. Com PLES selecionado, ele usa a modalidade escolhida e os demais eixos usam Ativo/Benefícios. Dependendo da configuração, os eixos não têm unidades ou status homogêneos.
-- A comparação histórica PBF contém dois retratos, não uma série temporal. Mudanças cadastrais e populacionais precisam ser consideradas antes de atribuir uma variação a uma política pública.
-
-## Atualização dos Dados
-
-1. Obtenha as bases nas fontes correspondentes e registre competência, data de extração, filtros aplicados e definição dos campos. Os rótulos 2019 e 2026 não substituem esses metadados.
-2. Prepare os JSONs no formato esperado por `assets/js/data.js`. O repositório não contém um processo de extração automática das fontes oficiais; os scripts de build apenas empacotam o material existente.
-3. Preserve os identificadores municipais e a compatibilidade com os 246 polígonos de Goiás. Não utilize o nome do município como substituto da chave IBGE.
-4. Diferencie zero observado de dado ausente e confira os denominadores de cada ano. Uma ausência não deve ser preenchida com zero para satisfazer o carregamento.
-5. Execute os testes unitários, gere um novo build e rode os testes de navegador. Confira também os totais e as comparações de municípios conhecidos.
-6. Publique a versão regenerada de `dist/`, incluindo as bases e os arquivos de interface correspondentes.
-
-Ao atualizar dados históricos, verifique mudanças de conceitos, limites de renda, critérios cadastrais e referências populacionais. Alterar apenas o título ou o ano exibido sem atualizar os dados e a metodologia pode produzir comparações incorretas.
 
 ## Estrutura
 
@@ -342,41 +308,3 @@ Ao atualizar dados históricos, verifique mudanças de conceitos, limites de ren
 ```
 
 `dist/`, `node_modules/` e os relatórios de testes são artefatos gerados e não constituem a fonte da aplicação.
-
-## Testes
-
-Testes unitários:
-
-```sh
-npm test
-```
-
-Instalação do navegador de testes e execução dos testes funcionais:
-
-```sh
-npx playwright install chromium
-npm run build
-npm run test:browser
-```
-
-Em ambientes Linux de CI, a instalação pode exigir as dependências do sistema: `npx playwright install --with-deps chromium`, como no workflow do projeto.
-
-O Playwright inicia `npm run preview` e acessa `/painel-goias/`. Portanto, a suíte testa `dist/`, não os arquivos-fonte diretamente. Faça um novo build antes de testar qualquer alteração da interface ou dos dados.
-
-Na conferência desta documentação, em 22/10/2026, o build e os 10 testes unitários passaram. Dos 36 testes de navegador, 35 passaram; o cenário de cards PBF falhou porque a interface exibe `População Municipal` e o teste ainda espera `População Total`. Essa divergência de rótulo não foi alterada nesta tarefa de documentação.
-
-## Publicação
-
-O workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) utiliza Node.js 22, instala as dependências, executa os testes unitários, gera o build e roda os testes de navegador. O artefato publicado no GitHub Pages é `dist/`.
-
-O workflow é acionado por pushes e pull requests para `main`, além de execução manual. Pull requests executam as verificações, mas não publicam o site. A publicação depende de configurar o GitHub Pages para usar GitHub Actions e de todas as verificações passarem.
-
-Para outro serviço de hospedagem estática, publique o conteúdo de `dist/` preservando os caminhos relativos de `assets/` e `output/`.
-
-## Dependências e Rede
-
-As principais bibliotecas são Leaflet, TopoJSON Client, Chroma.js, Chart.js, Tailwind CSS e SheetJS. As versões npm estão fixadas em `package.json` e `package-lock.json`; o SheetJS é obtido separadamente pelo script de distribuição.
-
-O build baixa o SheetJS 0.20.3 e verifica seu SHA-256 contra `scripts/vendor-manifest.json`. Uma divergência de integridade interrompe o processo e deve ser investigada, não ignorada. As licenças das distribuições ficam em `assets/vendor/LICENSE-*`.
-
-Os arquivos de indicadores e as bibliotecas são servidos localmente pelo site. Isso não garante operação totalmente offline: a instalação, o build e o carregamento das imagens do mapa-base dependem de rede. As fontes oficiais listadas na documentação são referências para preparação dos dados, não APIs consultadas automaticamente a cada abertura do painel.
