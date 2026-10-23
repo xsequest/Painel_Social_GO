@@ -339,7 +339,7 @@ test('Pobreza PBF city panel combines enrolment and rate above the population ca
   await expect(enrolledCard.locator('.pbf-year-2026 .pbf-year-secondary')).toHaveClass(/text-(emerald|rose|amber)/);
   const expectedRateDifference = `${city.rateDifference > 0 ? '↑ +' : city.rateDifference < 0 ? '↓ −' : '→ '}${Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.abs(city.rateDifference))} p.p.`;
   await expect(enrolledCard.locator('.pbf-comparison-difference strong')).toHaveText(expectedRateDifference);
-  await expect(populationCard).toContainText('População Total');
+  await expect(populationCard).toContainText('População Municipal');
   await expect(populationCard.locator('.pbf-year-2019')).toContainText(city.population2019);
   await expect(populationCard.locator('.pbf-year-2026')).toContainText(city.population2026);
   await expect(populationCard.locator('.pbf-comparison-difference')).toContainText('pessoas');
