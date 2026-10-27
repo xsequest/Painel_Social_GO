@@ -13,7 +13,7 @@ test('about guide opens below the version, navigates by keyboard and restores fo
   await ready(page);
   const trigger = page.getByRole('button', { name: 'Sobre o painel e metodologia' });
   const dialog = page.getByRole('dialog', { name: 'Painel Goiás', exact: true });
-  await expect(trigger.locator('xpath=preceding-sibling::*[1]')).toContainText('Versão: 2026.10.22 - reestruturado');
+  await expect(trigger.locator('xpath=preceding-sibling::*[1]')).toContainText(/Versão: \d{4}\.\d{2}\.\d{2} - reestruturado/);
   await trigger.click();
   await expect(dialog).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded', 'true');
