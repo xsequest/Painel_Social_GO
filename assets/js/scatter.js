@@ -596,7 +596,7 @@ import { fmtPtbrInt, fmtPtbrNum, PROGRAMAS, State, Utils, MetricSelectors, DataS
          dialogCloseButton.addEventListener('click', () => setScatterDialog(false));
          dialog.addEventListener('click', event => { if (event.target === dialog) setScatterDialog(false); });
          document.addEventListener('keydown', event => { if (event.key === 'Escape' && scatterDialogOpen) setScatterDialog(false); });
-          ['selectedCity', 'viewMode', 'activeTab', 'isDark', 'progPrograma', 'progStatus', 'progMetrica', 'progPlesMetrica', 'progMetricaModo', 'searchTerm', 'riskFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, render));
+          ['selectedCity', 'viewMode', 'activeTab', 'isDark', 'progPrograma', 'progStatus', 'progMetrica', 'progPlesMetrica', 'progMetricaModo', 'searchTerm', 'riskFilter', 'mesoregionFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, render));
         return { render };
       })();
 

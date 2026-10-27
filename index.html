@@ -111,8 +111,11 @@
               <button id="view-tabela" type="button" aria-pressed="false" aria-controls="table-container" class="view-btn flex-1 flex justify-center items-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all text-slate-500" data-view="tabela">
                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M3 12h18"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>Tabela
              </button>
-           </div>
-            <button id="view-scatter" type="button" aria-pressed="false" aria-controls="scatter-container" class="view-btn hidden w-full justify-center items-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all text-slate-500" data-view="scatter">
+            </div>
+             <button id="view-estatisticas" type="button" aria-pressed="false" aria-controls="statistics-container" class="view-btn hidden w-full justify-center items-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all text-slate-500" data-view="estatisticas">
+               <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 3v17h17M8 16v-5M13 16V6M18 16V9"/></svg>Estatísticas
+             </button>
+             <button id="view-scatter" type="button" aria-pressed="false" aria-controls="scatter-container" class="view-btn hidden w-full justify-center items-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all text-slate-500" data-view="scatter">
             <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16"/><path d="M5 18V5"/><circle cx="8" cy="14" r="1.5"/><circle cx="11" cy="10" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="18" cy="7" r="1.5"/></svg>Correlação
             </button>
           </div>
@@ -124,8 +127,14 @@
         </div>
          <div>
            <label for="filter-search" class="mb-2 block text-sm font-bold text-slate-600 dark:text-slate-300">Município <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">(filtro global)</span></label>
-             <input type="text" id="filter-search" placeholder="Buscar no mapa e na tabela..." aria-label="Buscar município no mapa e na tabela" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-900" />
-         </div>
+              <input type="text" id="filter-search" placeholder="Buscar no mapa e na tabela..." aria-label="Buscar município no mapa e na tabela" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-900" />
+          </div>
+          <div>
+            <label for="filter-mesoregion" class="mb-2 block text-sm font-bold text-slate-600 dark:text-slate-300">Mesorregião</label>
+            <select id="filter-mesoregion" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-900">
+              <option value="all">Todas as mesorregiões</option>
+            </select>
+          </div>
             <div>
             <div class="mb-2 flex items-center gap-2">
               <label for="filter-risk" class="text-sm font-bold text-slate-600 dark:text-slate-300">Status do indicador</label>
@@ -157,7 +166,7 @@
       </section>
       
       <div class="mt-auto pt-3 border-t border-slate-200 dark:border-slate-800">
-        <div class="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">Fonte: IBGE Sidra e Tabcad.<br/>Base Programas Sociais: Julho/2026<br/>Competência CadÚnico: Agosto/2026<br/>Versão: 2026.10.22 - reestruturado</div>
+        <div class="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">Fonte: IBGE Sidra e Tabcad.<br/>Base Programas Sociais: Julho/2026<br/>Competência CadÚnico: Agosto/2026<br/>Versão: 2026.10.27 - reestruturado</div>
         <button id="btn-about" type="button" class="mt-2 inline-flex items-center gap-2 py-1.5 text-left text-xs font-bold text-emerald-600 transition-colors hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300" aria-haspopup="dialog" aria-controls="about-dialog" aria-expanded="false">
           <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7v1"/></svg>
           Sobre o painel e metodologia
@@ -195,7 +204,54 @@
             <div id="map-attribution-host" role="contentinfo" aria-label="Créditos do mapa"></div>
           </div>
         </div>
-         <div id="table-container" class="flex-1 overflow-hidden p-4 flex flex-col gap-4">
+          <section id="statistics-container" class="hidden" aria-labelledby="statistics-title">
+            <header class="statistics-header">
+              <div>
+                <p class="statistics-eyebrow">CadÚnico / Comparativo municipal</p>
+                <h2 id="statistics-title">Pobreza PBF e população <span>2019 → 2026</span></h2>
+                <p id="statistics-scope" role="status"></p>
+              </div>
+              <button id="statistics-export" type="button" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-lg">Exportar .xlsx</button>
+            </header>
+            <p class="statistics-note">Comparação entre dois retratos, não uma série anual. Pobreza PBF é a população na faixa de renda do indicador, não a quantidade de beneficiários do Bolsa Família. As taxas usam a população de cada ano.</p>
+            <div id="statistics-summary" class="statistics-summary" aria-label="Resumo do recorte"></div>
+            <p id="statistics-empty" class="hidden statistics-note" role="status">Nenhum município encontrado. Revise os filtros para construir a comparação.</p>
+            <div id="statistics-content">
+              <section class="statistics-section" aria-labelledby="statistics-ranking-title">
+                <div class="statistics-section-header">
+                  <div><h3 id="statistics-ranking-title">Variações por município</h3><p>Até 15 municípios por vez. A tabela completa reúne todo o recorte.</p></div>
+                  <div class="statistics-controls">
+                    <label for="statistics-metric">Medida<select id="statistics-metric"><option value="rateDelta">Taxa PBF (p.p.)</option><option value="populationChange">População (%)</option><option value="pbfDelta">Pobreza PBF (pessoas)</option></select></label>
+                    <label for="statistics-order">Ranking<select id="statistics-order"><option value="absolute">Maiores variações absolutas</option><option value="increase">Maiores aumentos</option><option value="decrease">Maiores reduções</option></select></label>
+                  </div>
+                </div>
+                <div class="statistics-chart-scroll"><div id="statistics-ranking-chart" class="statistics-chart"></div></div>
+              </section>
+              <div class="statistics-chart-grid">
+                <section class="statistics-section" aria-labelledby="statistics-waterfall-title">
+                  <div class="statistics-section-header"><div><h3 id="statistics-waterfall-title">De onde vem a diferença PBF</h3><p>Waterfall da variação em pessoas: maiores contribuições municipais e saldo dos demais.</p></div></div>
+                  <div class="statistics-chart-scroll"><div id="statistics-waterfall-chart" class="statistics-chart"></div></div>
+                </section>
+                <section class="statistics-section" aria-labelledby="statistics-correlation-title">
+                  <div class="statistics-section-header">
+                    <div><h3 id="statistics-correlation-title">População × taxa PBF</h3><p id="statistics-correlation-context"></p></div>
+                    <div class="statistics-controls"><label for="statistics-correlation-frame">Enquadramento<select id="statistics-correlation-frame" aria-describedby="statistics-correlation-framing"><option value="1">Todos os pontos (1,00)</option><option value="0.95">Central 95% por eixo (0,95)</option></select></label></div>
+                  </div>
+                  <p id="statistics-correlation-framing" class="statistics-note" role="status"></p>
+                  <div class="statistics-chart-scroll"><div id="statistics-correlation-chart" class="statistics-chart"></div></div>
+                  <p class="statistics-note">Cada ponto é um município. Pearson mede associação linear, não causalidade; valores extremos podem influenciar o resultado. A população também compõe o denominador da taxa PBF, o que pode influenciar a associação.</p>
+                </section>
+              </div>
+              <section class="statistics-section" aria-labelledby="statistics-table-title">
+                <div class="statistics-section-header"><div><h3 id="statistics-table-title">Comparativo completo</h3><p>Ordene pelos cabeçalhos. Δ = 2026 menos 2019; p.p. = pontos percentuais. “–” indica dado ausente ou base zero para variação relativa.</p></div></div>
+                <div class="statistics-table-scroll" tabindex="0" role="region" aria-label="Tabela comparativa municipal com rolagem horizontal">
+                  <table id="statistics-table"><thead><tr id="statistics-table-head"></tr></thead><tbody id="statistics-table-body"></tbody></table>
+                </div>
+              </section>
+            </div>
+            <details class="statistics-section statistics-methodology"><summary>Fontes e leitura dos resultados</summary><p>Fontes: info_2019.json e info_tabcad.json (CadÚnico, agosto/2026). * População 2026 identifica a população estimada usada no cenário atual do painel; o arquivo não explicita seu ano efetivo de referência. O mês da contagem de 2019 não está informado. Não há observações anuais de 2020 a 2025 nesta base. Mudanças de cadastro, de faixa de renda e de estimativa populacional podem afetar a comparação; as diferenças não medem, isoladamente, impacto de políticas públicas.</p><p>Variação relativa = (valor 2026 / valor 2019 − 1) × 100. Taxa PBF = pessoas na faixa de renda / população do ano × 100. A taxa agregada é calculada pelas somas, não pela média simples das taxas municipais. Os agregados comparativos usam apenas municípios com os quatro valores válidos; a tabela preserva dados parciais. Os filtros laterais são aplicados aos dois anos; status e faixa populacional seguem o ano selecionado no painel (2026 no modo Diff).</p></details>
+          </section>
+          <div id="table-container" class="flex-1 overflow-hidden p-4 flex flex-col gap-4">
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
             <span class="text-sm font-bold text-slate-600 dark:text-slate-300">Busca global por município:</span>
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
@@ -625,6 +681,7 @@
     </div>
 
   <div id="criticity-tooltip" popover="manual" role="tooltip"></div>
+  <div id="statistics-tooltip" popover="manual" role="tooltip"></div>
   <script type="module" src="assets/js/bootstrap.js"></script>
 </body>
 </html>

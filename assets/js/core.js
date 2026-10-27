@@ -283,7 +283,7 @@ function numberFormatter(decimals) {
         
          selectedCity: null, sortConfig: { key: 'name', direction: 'asc' },
         isKiosk: false, dataError: !initialGeoDataValidation.valid, dataErrorMessage: initialGeoDataValidation.message,
-          searchTerm: '', riskFilter: 'all', populationBand: 'all', populationMin: null, populationMax: null
+          searchTerm: '', riskFilter: 'all', mesoregionFilter: 'all', populationBand: 'all', populationMin: null, populationMax: null
       };
       const listeners = new Map();
       const pending = new Map();
@@ -495,6 +495,7 @@ function numberFormatter(decimals) {
       // Fica consistente sem quebrar
        isFeatureVisible: (feature, state, maxVal) => {
          const p = feature.properties;
+         if (state.mesoregionFilter && state.mesoregionFilter !== 'all' && p.mesorregiao !== state.mesoregionFilter) return false;
          const normalizedSearchTerm = Utils.normalizeStr(state.searchTerm);
          if (normalizedSearchTerm && !Utils.normalizeStr(p.name).includes(normalizedSearchTerm)) return false;
         if (state.riskFilter !== 'all') {
@@ -708,5 +709,12 @@ function numberFormatter(decimals) {
         });
       }
     };
+
+    State.subscribe('mesoregionFilter', () => {
+      const state = State.getState();
+      if (state.selectedCity && !Utils.isFeatureVisible({ properties: state.selectedCity }, state, Utils.getCriticityMax(state))) {
+        State.set('selectedCity', null);
+      }
+    });
 
 export { fmtPtbrInt, fmtPtbrNum, validateGeoData, initialGeoDataValidation, goiasTotals, PROGRAMAS, PROGRAM_STATUSES, PROGRAM_METRICS, PLES_COLUMN_KEYS, PLES_COLUMN_LABELS, PALETAS, TITULOS_POB, LEGENDAS_POB, MAX_VALUES, POB_COLUMNS, State, Utils, MetricSelectors, ColumnSelectors, DataSelectors, validateProgramTotalsDryRun };

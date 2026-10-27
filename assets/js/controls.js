@@ -66,7 +66,7 @@ import { MapModule } from './map.js';
     const SidebarModule = (function() {
       const tabs = { pob: document.getElementById('tab-pob'), prog: document.getElementById('tab-prog') };
       const panels = { pob: document.getElementById('panel-pob'), prog: document.getElementById('panel-prog') };
-      const viewBtns = { mapa: document.getElementById('view-mapa'), tabela: document.getElementById('view-tabela'), scatter: document.getElementById('view-scatter') };
+      const viewBtns = { mapa: document.getElementById('view-mapa'), tabela: document.getElementById('view-tabela'), scatter: document.getElementById('view-scatter'), estatisticas: document.getElementById('view-estatisticas') };
       const sidebar = document.getElementById('sidebar'), collapseSidebarButton = document.getElementById('btn-collapse-sidebar');
       
        const selPobInd = document.getElementById('sel-pob-ind'), selPobPal = document.getElementById('sel-pob-pal');
@@ -108,7 +108,11 @@ import { MapModule } from './map.js';
           const isProgramMode = activeTab === 'prog';
           viewBtns.scatter.classList.toggle('hidden', !isProgramMode);
           viewBtns.scatter.classList.toggle('flex', isProgramMode);
-          if (!isProgramMode && State.get('viewMode') === 'scatter') State.set('viewMode', 'mapa');
+           if (!isProgramMode && State.get('viewMode') === 'scatter') State.set('viewMode', 'mapa');
+           const isPbf = !isProgramMode && State.get('pobIndicator') === 'norm_pob_p1_p2';
+           viewBtns.estatisticas.classList.toggle('hidden', !isPbf);
+           viewBtns.estatisticas.classList.toggle('flex', isPbf);
+           if (!isPbf && State.get('viewMode') === 'estatisticas') State.set('viewMode', 'mapa');
         }
           function updateProgramControls(programa) {
            const isPles = programa === 'PLES';
@@ -133,7 +137,7 @@ import { MapModule } from './map.js';
        State.subscribe('viewMode', updateViewMode);
        State.subscribe('isKiosk', setSidebarCollapsed);
       
-       State.subscribe('pobIndicator', v => { selPobInd.value = v; syncPovertyIndicatorDescription(); }); State.subscribe('pobPalette', v => selPobPal.value = v);
+       State.subscribe('pobIndicator', v => { selPobInd.value = v; syncPovertyIndicatorDescription(); updateScatterVisibility(State.get('activeTab')); }); State.subscribe('pobPalette', v => selPobPal.value = v);
        State.subscribe('progPrograma', v => { selProgProg.value = v; updateProgramControls(v); }); State.subscribe('progStatus', v => selProgStatus.value = v); State.subscribe('progMetrica', v => selProgMetrica.value = v); State.subscribe('progPlesMetrica', v => { if (selProgPlesMetrica) selProgPlesMetrica.value = v; }); State.subscribe('progPalette', v => selProgPal.value = v);
       
       tabs.pob.addEventListener('click', () => State.set('activeTab', 'pob')); 
@@ -156,7 +160,8 @@ import { MapModule } from './map.js';
        });
         viewBtns.mapa.addEventListener('click', () => State.set('viewMode', 'mapa')); 
         viewBtns.tabela.addEventListener('click', () => State.set('viewMode', 'tabela'));
-        viewBtns.scatter.addEventListener('click', () => State.set('viewMode', 'scatter'));
+         viewBtns.scatter.addEventListener('click', () => State.set('viewMode', 'scatter'));
+         viewBtns.estatisticas.addEventListener('click', () => State.set('viewMode', 'estatisticas'));
       
        selPobInd.addEventListener('change', e => State.set('pobIndicator', e.target.value)); 
       selPobPal.addEventListener('change', e => State.set('pobPalette', e.target.value));

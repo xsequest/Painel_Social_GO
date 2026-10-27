@@ -120,6 +120,7 @@ import { fmtPtbrInt, PROGRAMAS, PLES_COLUMN_LABELS, State, Utils, MetricSelector
            { Campo: 'Indicador do Passe Livre Estudantil', Valor: state.activeTab === 'prog' && state.progPrograma === 'PLES' ? (PLES_COLUMN_LABELS[state.progPlesMetrica] || '-') : '-' },
            { Campo: 'Modo da escala', Valor: scaleMode },
            { Campo: 'Busca por município', Valor: state.searchTerm || '-' },
+           { Campo: 'Mesorregião', Valor: state.mesoregionFilter === 'all' ? 'Todas as mesorregiões' : state.mesoregionFilter },
            { Campo: 'Status do indicador', Valor: state.riskFilter },
           { Campo: 'Faixa populacional', Valor: populationRangeLabel },
           { Campo: 'Registros exportados', Valor: filtered.length },
@@ -142,12 +143,12 @@ import { fmtPtbrInt, PROGRAMAS, PLES_COLUMN_LABELS, State, Utils, MetricSelector
       State.subscribe('viewMode', (mode) => { tableContainer.classList.toggle('hidden', mode !== 'tabela'); if (mode === 'tabela') updateTable(); });
       State.subscribe('pobIndicator', updateTable);
       State.subscribe('activeTab', updateTable); State.subscribe('searchTerm', updateTable); State.subscribe('sortConfig', updateTable); State.subscribe('pobPbfAno', updateTable);
-         State.subscribe('riskFilter', updateTable); State.subscribe('populationBand', updateTable); State.subscribe('populationMin', updateTable); State.subscribe('populationMax', updateTable);
+         State.subscribe('riskFilter', updateTable); State.subscribe('mesoregionFilter', updateTable); State.subscribe('populationBand', updateTable); State.subscribe('populationMin', updateTable); State.subscribe('populationMax', updateTable);
        State.subscribe('progPrograma', updateTable); State.subscribe('progStatus', updateTable); State.subscribe('progMetrica', updateTable); State.subscribe('progPlesMetrica', updateTable); State.subscribe('progMetricaModo', updateTable);
       return { updateTable };
     })();
 
-export { TableModule };
+export { TableModule, loadSpreadsheet };
 
 let spreadsheetPromise;
 function loadSpreadsheet() {

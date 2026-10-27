@@ -60,7 +60,7 @@ export function buildGeoData(topology, tabcad, historical, programs, converter =
     const properties = {
       ...original,
       ...Object.fromEntries([...regularKeys, ...plesKeys].map(key => [key, social[key]])),
-      id: code, name, description: name,
+      id: code, name, description: name, mesorregiao: current.mesorregiao,
       população: current.populacao_estimada,
       população_2019: old.populacao_estimada_2019,
       ext_pob: current.ext_pob, pob: current.pob, pob_p1_p2: current.pob_pbf,

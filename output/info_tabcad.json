@@ -1,6 +1,7 @@
 {
   "5200050":{
     "município":"Abadia de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":22918,
     "ext_pob":3104,
     "pob":4166,
@@ -8,6 +9,7 @@
   },
   "5200100":{
     "município":"Abadiânia",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":17835,
     "ext_pob":1630,
     "pob":1452,
@@ -15,6 +17,7 @@
   },
   "5200134":{
     "município":"Acreúna",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":22161,
     "ext_pob":660,
     "pob":1703,
@@ -22,6 +25,7 @@
   },
   "5200159":{
     "município":"Adelândia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2268,
     "ext_pob":187,
     "pob":190,
@@ -29,6 +33,7 @@
   },
   "5200175":{
     "município":"Água Fria de Goiás",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":4967,
     "ext_pob":913,
     "pob":412,
@@ -36,6 +41,7 @@
   },
   "5200209":{
     "município":"Água Limpa",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":1831,
     "ext_pob":586,
     "pob":55,
@@ -43,6 +49,7 @@
   },
   "5200258":{
     "município":"Águas Lindas de Goiás",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":249978,
     "ext_pob":48536,
     "pob":16079,
@@ -50,6 +57,7 @@
   },
   "5200308":{
     "município":"Alexânia",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":28474,
     "ext_pob":9178,
     "pob":983,
@@ -57,6 +65,7 @@
   },
   "5200506":{
     "município":"Aloândia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":1971,
     "ext_pob":108,
     "pob":206,
@@ -64,6 +73,7 @@
   },
   "5200555":{
     "município":"Alto Horizonte",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":6595,
     "ext_pob":1267,
     "pob":238,
@@ -71,6 +81,7 @@
   },
   "5200605":{
     "município":"Alto Paraíso de Goiás",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":11421,
     "ext_pob":2405,
     "pob":418,
@@ -78,6 +89,7 @@
   },
   "5200803":{
     "município":"Alvorada do Norte",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":8640,
     "ext_pob":1027,
     "pob":998,
@@ -85,6 +97,7 @@
   },
   "5200829":{
     "município":"Amaralina",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":3254,
     "ext_pob":228,
     "pob":639,
@@ -92,6 +105,7 @@
   },
   "5200852":{
     "município":"Americano do Brasil",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":5239,
     "ext_pob":639,
     "pob":522,
@@ -99,6 +113,7 @@
   },
   "5200902":{
     "município":"Amorinópolis",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2861,
     "ext_pob":684,
     "pob":204,
@@ -106,6 +121,7 @@
   },
   "5201108":{
     "município":"Anápolis",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":424647,
     "ext_pob":2091,
     "pob":18093,
@@ -113,6 +129,7 @@
   },
   "5201207":{
     "município":"Anhanguera",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":906,
     "ext_pob":137,
     "pob":30,
@@ -120,6 +137,7 @@
   },
   "5201306":{
     "município":"Anicuns",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":18172,
     "ext_pob":1434,
     "pob":1950,
@@ -127,6 +145,7 @@
   },
   "5201405":{
     "município":"Aparecida de Goiânia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":560996,
     "ext_pob":15147,
     "pob":36410,
@@ -134,6 +153,7 @@
   },
   "5201454":{
     "município":"Aparecida do Rio Doce",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":3078,
     "ext_pob":100,
     "pob":202,
@@ -141,6 +161,7 @@
   },
   "5201504":{
     "município":"Aporé",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":4524,
     "ext_pob":789,
     "pob":190,
@@ -148,6 +169,7 @@
   },
   "5201603":{
     "município":"Araçu",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":3838,
     "ext_pob":476,
     "pob":399,
@@ -155,6 +177,7 @@
   },
   "5201702":{
     "município":"Aragarças",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":18599,
     "ext_pob":2791,
     "pob":1495,
@@ -162,6 +185,7 @@
   },
   "5201801":{
     "município":"Aragoiânia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":13053,
     "ext_pob":3963,
     "pob":677,
@@ -169,6 +193,7 @@
   },
   "5202155":{
     "município":"Araguapaz",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":7122,
     "ext_pob":1648,
     "pob":340,
@@ -176,6 +201,7 @@
   },
   "5202353":{
     "município":"Arenópolis",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":2879,
     "ext_pob":551,
     "pob":204,
@@ -183,6 +209,7 @@
   },
   "5202502":{
     "município":"Aruanã",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":8623,
     "ext_pob":23,
     "pob":1062,
@@ -190,6 +217,7 @@
   },
   "5202601":{
     "município":"Aurilândia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":3209,
     "ext_pob":167,
     "pob":321,
@@ -197,6 +225,7 @@
   },
   "5202809":{
     "município":"Avelinópolis",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":3021,
     "ext_pob":637,
     "pob":182,
@@ -204,6 +233,7 @@
   },
   "5203104":{
     "município":"Baliza",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":3279,
     "ext_pob":918,
     "pob":367,
@@ -211,6 +241,7 @@
   },
   "5203203":{
     "município":"Barro Alto",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":10967,
     "ext_pob":1600,
     "pob":661,
@@ -218,6 +249,7 @@
   },
   "5203302":{
     "município":"Bela Vista de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":38010,
     "ext_pob":5852,
     "pob":1616,
@@ -225,6 +257,7 @@
   },
   "5203401":{
     "município":"Bom Jardim de Goiás",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":7727,
     "ext_pob":1124,
     "pob":1028,
@@ -232,6 +265,7 @@
   },
   "5203500":{
     "município":"Bom Jesus de Goiás",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":25145,
     "ext_pob":1415,
     "pob":2302,
@@ -239,6 +273,7 @@
   },
   "5203559":{
     "município":"Bonfinópolis",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":11218,
     "ext_pob":719,
     "pob":1216,
@@ -246,6 +281,7 @@
   },
   "5203575":{
     "município":"Bonópolis",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":3273,
     "ext_pob":719,
     "pob":467,
@@ -253,6 +289,7 @@
   },
   "5203609":{
     "município":"Brazabrantes",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":4252,
     "ext_pob":547,
     "pob":226,
@@ -260,6 +297,7 @@
   },
   "5203807":{
     "município":"Britânia",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":5808,
     "ext_pob":446,
     "pob":376,
@@ -267,6 +305,7 @@
   },
   "5203906":{
     "município":"Buriti Alegre",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":11028,
     "ext_pob":287,
     "pob":656,
@@ -274,6 +313,7 @@
   },
   "5203939":{
     "município":"Buriti de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2811,
     "ext_pob":592,
     "pob":155,
@@ -281,6 +321,7 @@
   },
   "5203962":{
     "município":"Buritinópolis",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":3126,
     "ext_pob":985,
     "pob":314,
@@ -288,6 +329,7 @@
   },
   "5204003":{
     "município":"Cabeceiras",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":7700,
     "ext_pob":2001,
     "pob":479,
@@ -295,6 +337,7 @@
   },
   "5204102":{
     "município":"Cachoeira Alta",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":11917,
     "ext_pob":1453,
     "pob":522,
@@ -302,6 +345,7 @@
   },
   "5204201":{
     "município":"Cachoeira de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":1415,
     "ext_pob":407,
     "pob":76,
@@ -309,6 +353,7 @@
   },
   "5204250":{
     "município":"Cachoeira Dourada",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":7724,
     "ext_pob":431,
     "pob":712,
@@ -316,6 +361,7 @@
   },
   "5204300":{
     "município":"Caçu",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":14062,
     "ext_pob":1270,
     "pob":894,
@@ -323,6 +369,7 @@
   },
   "5204409":{
     "município":"Caiapônia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":16602,
     "ext_pob":637,
     "pob":932,
@@ -330,6 +377,7 @@
   },
   "5204508":{
     "município":"Caldas Novas",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":108805,
     "ext_pob":7232,
     "pob":5702,
@@ -337,6 +385,7 @@
   },
   "5204557":{
     "município":"Caldazinha",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":4901,
     "ext_pob":427,
     "pob":417,
@@ -344,6 +393,7 @@
   },
   "5204607":{
     "município":"Campestre de Goiás",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":3904,
     "ext_pob":967,
     "pob":321,
@@ -351,6 +401,7 @@
   },
   "5204656":{
     "município":"Campinaçu",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":3761,
     "ext_pob":1124,
     "pob":114,
@@ -358,6 +409,7 @@
   },
   "5204706":{
     "município":"Campinorte",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":13084,
     "ext_pob":797,
     "pob":2541,
@@ -365,6 +417,7 @@
   },
   "5204805":{
     "município":"Campo Alegre de Goiás",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":7901,
     "ext_pob":1071,
     "pob":367,
@@ -372,6 +425,7 @@
   },
   "5204854":{
     "município":"Campo Limpo de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":8707,
     "ext_pob":2800,
     "pob":563,
@@ -379,6 +433,7 @@
   },
   "5204904":{
     "município":"Campos Belos",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":18196,
     "ext_pob":4560,
     "pob":1791,
@@ -386,6 +441,7 @@
   },
   "5204953":{
     "município":"Campos Verdes",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":3747,
     "ext_pob":1674,
     "pob":258,
@@ -393,6 +449,7 @@
   },
   "5205000":{
     "município":"Carmo do Rio Verde",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":10039,
     "ext_pob":1424,
     "pob":670,
@@ -400,6 +457,7 @@
   },
   "5205059":{
     "município":"Castelândia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":2823,
     "ext_pob":886,
     "pob":136,
@@ -407,6 +465,7 @@
   },
   "5205109":{
     "município":"Catalão",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":124683,
     "ext_pob":11558,
     "pob":2896,
@@ -414,6 +473,7 @@
   },
   "5205208":{
     "município":"Caturaí",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":5385,
     "ext_pob":860,
     "pob":875,
@@ -421,6 +481,7 @@
   },
   "5205307":{
     "município":"Cavalcante",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":9739,
     "ext_pob":1884,
     "pob":1533,
@@ -428,6 +489,7 @@
   },
   "5205406":{
     "município":"Ceres",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":22655,
     "ext_pob":1255,
     "pob":783,
@@ -435,6 +497,7 @@
   },
   "5205455":{
     "município":"Cezarina",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":8336,
     "ext_pob":752,
     "pob":712,
@@ -442,6 +505,7 @@
   },
   "5205471":{
     "município":"Chapadão do Céu",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":14735,
     "ext_pob":1647,
     "pob":667,
@@ -449,6 +513,7 @@
   },
   "5205497":{
     "município":"Cidade Ocidental",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":104114,
     "ext_pob":20261,
     "pob":5829,
@@ -456,6 +521,7 @@
   },
   "5205513":{
     "município":"Cocalzinho de Goiás",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":27741,
     "ext_pob":6975,
     "pob":1066,
@@ -463,6 +529,7 @@
   },
   "5205521":{
     "município":"Colinas do Sul",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":4222,
     "ext_pob":990,
     "pob":508,
@@ -470,6 +537,7 @@
   },
   "5205703":{
     "município":"Córrego do Ouro",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2427,
     "ext_pob":421,
     "pob":169,
@@ -477,6 +545,7 @@
   },
   "5205802":{
     "município":"Corumbá de Goiás",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":10733,
     "ext_pob":1950,
     "pob":835,
@@ -484,6 +553,7 @@
   },
   "5205901":{
     "município":"Corumbaíba",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":9549,
     "ext_pob":784,
     "pob":827,
@@ -491,6 +561,7 @@
   },
   "5206206":{
     "município":"Cristalina",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":67922,
     "ext_pob":12987,
     "pob":3467,
@@ -498,6 +569,7 @@
   },
   "5206305":{
     "município":"Cristianópolis",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":3709,
     "ext_pob":819,
     "pob":201,
@@ -505,6 +577,7 @@
   },
   "5206404":{
     "município":"Crixás",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":17616,
     "ext_pob":636,
     "pob":1515,
@@ -512,6 +585,7 @@
   },
   "5206503":{
     "município":"Cromínia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":4020,
     "ext_pob":919,
     "pob":262,
@@ -519,6 +593,7 @@
   },
   "5206602":{
     "município":"Cumari",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":2947,
     "ext_pob":439,
     "pob":160,
@@ -526,6 +601,7 @@
   },
   "5206701":{
     "município":"Damianópolis",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":3950,
     "ext_pob":1259,
     "pob":309,
@@ -533,6 +609,7 @@
   },
   "5206800":{
     "município":"Damolândia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2752,
     "ext_pob":1020,
     "pob":201,
@@ -540,6 +617,7 @@
   },
   "5206909":{
     "município":"Davinópolis",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":1877,
     "ext_pob":432,
     "pob":84,
@@ -547,6 +625,7 @@
   },
   "5207105":{
     "município":"Diorama",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":1960,
     "ext_pob":221,
     "pob":94,
@@ -554,6 +633,7 @@
   },
   "5207253":{
     "município":"Doverlândia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":6752,
     "ext_pob":843,
     "pob":650,
@@ -561,6 +641,7 @@
   },
   "5207352":{
     "município":"Edealina",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":4121,
     "ext_pob":574,
     "pob":433,
@@ -568,6 +649,7 @@
   },
   "5207402":{
     "município":"Edéia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":12010,
     "ext_pob":1453,
     "pob":790,
@@ -575,6 +657,7 @@
   },
   "5207501":{
     "município":"Estrela do Norte",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":3204,
     "ext_pob":501,
     "pob":379,
@@ -582,6 +665,7 @@
   },
   "5207535":{
     "município":"Faina",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":7169,
     "ext_pob":1105,
     "pob":503,
@@ -589,6 +673,7 @@
   },
   "5207600":{
     "município":"Fazenda Nova",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":5807,
     "ext_pob":1646,
     "pob":175,
@@ -596,6 +681,7 @@
   },
   "5207808":{
     "município":"Firminópolis",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":10185,
     "ext_pob":1135,
     "pob":602,
@@ -603,6 +689,7 @@
   },
   "5207907":{
     "município":"Flores de Goiás",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":14388,
     "ext_pob":2873,
     "pob":855,
@@ -610,6 +697,7 @@
   },
   "5208004":{
     "município":"Formosa",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":122613,
     "ext_pob":11521,
     "pob":13156,
@@ -617,6 +705,7 @@
   },
   "5208103":{
     "município":"Formoso",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":4643,
     "ext_pob":314,
     "pob":792,
@@ -624,6 +713,7 @@
   },
   "5208152":{
     "município":"Gameleira de Goiás",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":3584,
     "ext_pob":305,
     "pob":269,
@@ -631,6 +721,7 @@
   },
   "5208301":{
     "município":"Divinópolis de Goiás",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":4370,
     "ext_pob":1806,
     "pob":442,
@@ -638,6 +729,7 @@
   },
   "5208400":{
     "município":"Goianápolis",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":14956,
     "ext_pob":1363,
     "pob":2541,
@@ -645,6 +737,7 @@
   },
   "5208509":{
     "município":"Goiandira",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":4938,
     "ext_pob":635,
     "pob":203,
@@ -652,6 +745,7 @@
   },
   "5208608":{
     "município":"Goianésia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":78980,
     "ext_pob":3890,
     "pob":4339,
@@ -659,6 +753,7 @@
   },
   "5208707":{
     "município":"Goiânia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":1511709,
     "ext_pob":96809,
     "pob":62800,
@@ -666,6 +761,7 @@
   },
   "5208806":{
     "município":"Goianira",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":84170,
     "ext_pob":8844,
     "pob":5252,
@@ -673,6 +769,7 @@
   },
   "5208905":{
     "município":"Goiás",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":24113,
     "ext_pob":3355,
     "pob":1203,
@@ -680,6 +777,7 @@
   },
   "5209101":{
     "município":"Goiatuba",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":37187,
     "ext_pob":1320,
     "pob":2275,
@@ -687,6 +785,7 @@
   },
   "5209150":{
     "município":"Gouvelândia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":4271,
     "ext_pob":829,
     "pob":260,
@@ -694,6 +793,7 @@
   },
   "5209200":{
     "município":"Guapó",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":21373,
     "ext_pob":3703,
     "pob":2669,
@@ -701,6 +801,7 @@
   },
   "5209291":{
     "município":"Guaraíta",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2156,
     "ext_pob":318,
     "pob":307,
@@ -708,6 +809,7 @@
   },
   "5209408":{
     "município":"Guarani de Goiás",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":4076,
     "ext_pob":1044,
     "pob":210,
@@ -715,6 +817,7 @@
   },
   "5209457":{
     "município":"Guarinos",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2143,
     "ext_pob":168,
     "pob":225,
@@ -722,6 +825,7 @@
   },
   "5209606":{
     "município":"Heitoraí",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":3325,
     "ext_pob":870,
     "pob":582,
@@ -729,6 +833,7 @@
   },
   "5209705":{
     "município":"Hidrolândia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":31328,
     "ext_pob":2857,
     "pob":2804,
@@ -736,6 +841,7 @@
   },
   "5209804":{
     "município":"Hidrolina",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":3441,
     "ext_pob":538,
     "pob":219,
@@ -743,6 +849,7 @@
   },
   "5209903":{
     "município":"Iaciara",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":10151,
     "ext_pob":3941,
     "pob":1125,
@@ -750,6 +857,7 @@
   },
   "5209937":{
     "município":"Inaciolândia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":6091,
     "ext_pob":502,
     "pob":398,
@@ -757,6 +865,7 @@
   },
   "5209952":{
     "município":"Indiara",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":18217,
     "ext_pob":703,
     "pob":1683,
@@ -764,6 +873,7 @@
   },
   "5210000":{
     "município":"Inhumas",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":54133,
     "ext_pob":4354,
     "pob":2627,
@@ -771,6 +881,7 @@
   },
   "5210109":{
     "município":"Ipameri",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":26282,
     "ext_pob":3033,
     "pob":1518,
@@ -778,6 +889,7 @@
   },
   "5210158":{
     "município":"Ipiranga de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2972,
     "ext_pob":569,
     "pob":156,
@@ -785,6 +897,7 @@
   },
   "5210208":{
     "município":"Iporá",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":37575,
     "ext_pob":2581,
     "pob":1729,
@@ -792,6 +905,7 @@
   },
   "5210307":{
     "município":"Israelândia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2490,
     "ext_pob":490,
     "pob":96,
@@ -799,6 +913,7 @@
   },
   "5210406":{
     "município":"Itaberaí",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":48247,
     "ext_pob":4279,
     "pob":3628,
@@ -806,6 +921,7 @@
   },
   "5210562":{
     "município":"Itaguari",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":5150,
     "ext_pob":398,
     "pob":596,
@@ -813,6 +929,7 @@
   },
   "5210604":{
     "município":"Itaguaru",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":4796,
     "ext_pob":511,
     "pob":626,
@@ -820,6 +937,7 @@
   },
   "5210802":{
     "município":"Itajá",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":4225,
     "ext_pob":300,
     "pob":278,
@@ -827,6 +945,7 @@
   },
   "5210901":{
     "município":"Itapaci",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":22068,
     "ext_pob":1238,
     "pob":1312,
@@ -834,6 +953,7 @@
   },
   "5211008":{
     "município":"Itapirapuã",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":8142,
     "ext_pob":1478,
     "pob":742,
@@ -841,6 +961,7 @@
   },
   "5211206":{
     "município":"Itapuranga",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":26532,
     "ext_pob":611,
     "pob":3507,
@@ -848,6 +969,7 @@
   },
   "5211305":{
     "município":"Itarumã",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":6106,
     "ext_pob":594,
     "pob":305,
@@ -855,6 +977,7 @@
   },
   "5211404":{
     "município":"Itauçu",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":7573,
     "ext_pob":1390,
     "pob":407,
@@ -862,6 +985,7 @@
   },
   "5211503":{
     "município":"Itumbiara",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":114331,
     "ext_pob":8245,
     "pob":7700,
@@ -869,6 +993,7 @@
   },
   "5211602":{
     "município":"Ivolândia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2732,
     "ext_pob":741,
     "pob":108,
@@ -876,6 +1001,7 @@
   },
   "5211701":{
     "município":"Jandaia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":6369,
     "ext_pob":337,
     "pob":444,
@@ -883,6 +1009,7 @@
   },
   "5211800":{
     "município":"Jaraguá",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":46835,
     "ext_pob":5864,
     "pob":4557,
@@ -890,6 +1017,7 @@
   },
   "5211909":{
     "município":"Jataí",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":112835,
     "ext_pob":6781,
     "pob":4509,
@@ -897,6 +1025,7 @@
   },
   "5212006":{
     "município":"Jaupaci",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2932,
     "ext_pob":423,
     "pob":235,
@@ -904,6 +1033,7 @@
   },
   "5212055":{
     "município":"Jesúpolis",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2100,
     "ext_pob":727,
     "pob":119,
@@ -911,6 +1041,7 @@
   },
   "5212105":{
     "município":"Joviânia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":7246,
     "ext_pob":96,
     "pob":419,
@@ -918,6 +1049,7 @@
   },
   "5212204":{
     "município":"Jussara",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":19949,
     "ext_pob":1963,
     "pob":2153,
@@ -925,6 +1057,7 @@
   },
   "5212253":{
     "município":"Lagoa Santa",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":1444,
     "ext_pob":576,
     "pob":82,
@@ -932,6 +1065,7 @@
   },
   "5212303":{
     "município":"Leopoldo de Bulhões",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":9210,
     "ext_pob":328,
     "pob":2194,
@@ -939,6 +1073,7 @@
   },
   "5212501":{
     "município":"Luziânia",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":223596,
     "ext_pob":32382,
     "pob":21840,
@@ -946,6 +1081,7 @@
   },
   "5212600":{
     "município":"Mairipotaba",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":2643,
     "ext_pob":488,
     "pob":178,
@@ -953,6 +1089,7 @@
   },
   "5212709":{
     "município":"Mambaí",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":8579,
     "ext_pob":3167,
     "pob":374,
@@ -960,6 +1097,7 @@
   },
   "5212808":{
     "município":"Mara Rosa",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":10797,
     "ext_pob":1180,
     "pob":1094,
@@ -967,6 +1105,7 @@
   },
   "5212907":{
     "município":"Marzagão",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":2990,
     "ext_pob":405,
     "pob":95,
@@ -974,6 +1113,7 @@
   },
   "5212956":{
     "município":"Matrinchã",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":3975,
     "ext_pob":1315,
     "pob":386,
@@ -981,6 +1121,7 @@
   },
   "5213004":{
     "município":"Maurilândia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":10052,
     "ext_pob":1299,
     "pob":829,
@@ -988,6 +1129,7 @@
   },
   "5213053":{
     "município":"Mimoso de Goiás",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":2619,
     "ext_pob":630,
     "pob":116,
@@ -995,6 +1137,7 @@
   },
   "5213087":{
     "município":"Minaçu",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":26301,
     "ext_pob":2259,
     "pob":1579,
@@ -1002,6 +1145,7 @@
   },
   "5213103":{
     "município":"Mineiros",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":76188,
     "ext_pob":4284,
     "pob":3809,
@@ -1009,6 +1153,7 @@
   },
   "5213400":{
     "município":"Moiporá",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":1680,
     "ext_pob":243,
     "pob":84,
@@ -1016,6 +1161,7 @@
   },
   "5213509":{
     "município":"Monte Alegre de Goiás",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":6456,
     "ext_pob":3444,
     "pob":353,
@@ -1023,6 +1169,7 @@
   },
   "5213707":{
     "município":"Montes Claros de Goiás",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":9074,
     "ext_pob":338,
     "pob":747,
@@ -1030,6 +1177,7 @@
   },
   "5213756":{
     "município":"Montividiu",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":13227,
     "ext_pob":989,
     "pob":530,
@@ -1037,6 +1185,7 @@
   },
   "5213772":{
     "município":"Montividiu do Norte",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":3717,
     "ext_pob":1449,
     "pob":205,
@@ -1044,6 +1193,7 @@
   },
   "5213806":{
     "município":"Morrinhos",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":54995,
     "ext_pob":873,
     "pob":1921,
@@ -1051,6 +1201,7 @@
   },
   "5213855":{
     "município":"Morro Agudo de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2511,
     "ext_pob":535,
     "pob":183,
@@ -1058,6 +1209,7 @@
   },
   "5213905":{
     "município":"Mossâmedes",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":4599,
     "ext_pob":269,
     "pob":381,
@@ -1065,6 +1217,7 @@
   },
   "5214002":{
     "município":"Mozarlândia",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":15287,
     "ext_pob":2808,
     "pob":975,
@@ -1072,6 +1225,7 @@
   },
   "5214051":{
     "município":"Mundo Novo",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":6181,
     "ext_pob":751,
     "pob":311,
@@ -1079,6 +1233,7 @@
   },
   "5214101":{
     "município":"Mutunópolis",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":3517,
     "ext_pob":715,
     "pob":403,
@@ -1086,6 +1241,7 @@
   },
   "5214408":{
     "município":"Nazário",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":8367,
     "ext_pob":1065,
     "pob":427,
@@ -1093,6 +1249,7 @@
   },
   "5214507":{
     "município":"Nerópolis",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":34826,
     "ext_pob":1753,
     "pob":4085,
@@ -1100,6 +1257,7 @@
   },
   "5214606":{
     "município":"Niquelândia",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":33329,
     "ext_pob":947,
     "pob":3068,
@@ -1107,6 +1265,7 @@
   },
   "5214705":{
     "município":"Nova América",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2384,
     "ext_pob":718,
     "pob":115,
@@ -1114,6 +1273,7 @@
   },
   "5214804":{
     "município":"Nova Aurora",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":2133,
     "ext_pob":256,
     "pob":79,
@@ -1121,6 +1281,7 @@
   },
   "5214838":{
     "município":"Nova Crixás",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":13210,
     "ext_pob":1079,
     "pob":1585,
@@ -1128,6 +1289,7 @@
   },
   "5214861":{
     "município":"Nova Glória",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":8337,
     "ext_pob":1662,
     "pob":321,
@@ -1135,6 +1297,7 @@
   },
   "5214879":{
     "município":"Nova Iguaçu de Goiás",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":3096,
     "ext_pob":378,
     "pob":261,
@@ -1142,6 +1305,7 @@
   },
   "5214903":{
     "município":"Nova Roma",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":2992,
     "ext_pob":926,
     "pob":90,
@@ -1149,6 +1313,7 @@
   },
   "5215009":{
     "município":"Nova Veneza",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":9973,
     "ext_pob":1096,
     "pob":1327,
@@ -1156,6 +1321,7 @@
   },
   "5215207":{
     "município":"Novo Brasil",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":3566,
     "ext_pob":837,
     "pob":92,
@@ -1163,6 +1329,7 @@
   },
   "5215231":{
     "município":"Novo Gama",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":108219,
     "ext_pob":14044,
     "pob":7990,
@@ -1170,6 +1337,7 @@
   },
   "5215256":{
     "município":"Novo Planalto",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":3684,
     "ext_pob":670,
     "pob":508,
@@ -1177,6 +1345,7 @@
   },
   "5215306":{
     "município":"Orizona",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":17177,
     "ext_pob":1021,
     "pob":716,
@@ -1184,6 +1353,7 @@
   },
   "5215405":{
     "município":"Ouro Verde de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":4109,
     "ext_pob":493,
     "pob":344,
@@ -1191,6 +1361,7 @@
   },
   "5215504":{
     "município":"Ouvidor",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":7785,
     "ext_pob":317,
     "pob":577,
@@ -1198,6 +1369,7 @@
   },
   "5215603":{
     "município":"Padre Bernardo",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":37709,
     "ext_pob":3578,
     "pob":3354,
@@ -1205,6 +1377,7 @@
   },
   "5215652":{
     "município":"Palestina de Goiás",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":3094,
     "ext_pob":287,
     "pob":256,
@@ -1212,6 +1385,7 @@
   },
   "5215702":{
     "município":"Palmeiras de Goiás",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":34985,
     "ext_pob":2483,
     "pob":2926,
@@ -1219,6 +1393,7 @@
   },
   "5215801":{
     "município":"Palmelo",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":2260,
     "ext_pob":279,
     "pob":162,
@@ -1226,6 +1401,7 @@
   },
   "5215900":{
     "município":"Palminópolis",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":3978,
     "ext_pob":488,
     "pob":382,
@@ -1233,6 +1409,7 @@
   },
   "5216007":{
     "município":"Panamá",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":2414,
     "ext_pob":285,
     "pob":202,
@@ -1240,6 +1417,7 @@
   },
   "5216304":{
     "município":"Paranaiguara",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":7245,
     "ext_pob":423,
     "pob":979,
@@ -1247,6 +1425,7 @@
   },
   "5216403":{
     "município":"Paraúna",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":10706,
     "ext_pob":422,
     "pob":746,
@@ -1254,6 +1433,7 @@
   },
   "5216452":{
     "município":"Perolândia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":2999,
     "ext_pob":85,
     "pob":211,
@@ -1261,6 +1441,7 @@
   },
   "5216809":{
     "município":"Petrolina de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":9464,
     "ext_pob":950,
     "pob":793,
@@ -1268,6 +1449,7 @@
   },
   "5216908":{
     "município":"Pilar de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2221,
     "ext_pob":463,
     "pob":104,
@@ -1275,6 +1457,7 @@
   },
   "5217104":{
     "município":"Piracanjuba",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":25436,
     "ext_pob":1848,
     "pob":1931,
@@ -1282,6 +1465,7 @@
   },
   "5217203":{
     "município":"Piranhas",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":11965,
     "ext_pob":1528,
     "pob":432,
@@ -1289,6 +1473,7 @@
   },
   "5217302":{
     "município":"Pirenópolis",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":28292,
     "ext_pob":756,
     "pob":2357,
@@ -1296,6 +1481,7 @@
   },
   "5217401":{
     "município":"Pires do Rio",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":33974,
     "ext_pob":2356,
     "pob":2883,
@@ -1303,6 +1489,7 @@
   },
   "5217609":{
     "município":"Planaltina",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":113950,
     "ext_pob":20117,
     "pob":9602,
@@ -1310,6 +1497,7 @@
   },
   "5217708":{
     "município":"Pontalina",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":18838,
     "ext_pob":438,
     "pob":1094,
@@ -1317,6 +1505,7 @@
   },
   "5218003":{
     "município":"Porangatu",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":45620,
     "ext_pob":1815,
     "pob":4600,
@@ -1324,6 +1513,7 @@
   },
   "5218052":{
     "município":"Porteirão",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":4325,
     "ext_pob":352,
     "pob":159,
@@ -1331,6 +1521,7 @@
   },
   "5218102":{
     "município":"Portelândia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":3149,
     "ext_pob":832,
     "pob":127,
@@ -1338,6 +1529,7 @@
   },
   "5218300":{
     "município":"Posse",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":36517,
     "ext_pob":5370,
     "pob":3917,
@@ -1345,6 +1537,7 @@
   },
   "5218391":{
     "município":"Professor Jamil",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":3768,
     "ext_pob":722,
     "pob":206,
@@ -1352,6 +1545,7 @@
   },
   "5218508":{
     "município":"Quirinópolis",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":50665,
     "ext_pob":636,
     "pob":3460,
@@ -1359,6 +1553,7 @@
   },
   "5218607":{
     "município":"Rialma",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":12776,
     "ext_pob":949,
     "pob":724,
@@ -1366,6 +1561,7 @@
   },
   "5218706":{
     "município":"Rianápolis",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":3849,
     "ext_pob":488,
     "pob":248,
@@ -1373,6 +1569,7 @@
   },
   "5218789":{
     "município":"Rio Quente",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":4072,
     "ext_pob":433,
     "pob":225,
@@ -1380,6 +1577,7 @@
   },
   "5218805":{
     "município":"Rio Verde",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":244881,
     "ext_pob":15144,
     "pob":10093,
@@ -1387,6 +1585,7 @@
   },
   "5218904":{
     "município":"Rubiataba",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":20239,
     "ext_pob":821,
     "pob":1200,
@@ -1394,6 +1593,7 @@
   },
   "5219001":{
     "município":"Sanclerlândia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":8107,
     "ext_pob":466,
     "pob":819,
@@ -1401,6 +1601,7 @@
   },
   "5219100":{
     "município":"Santa Bárbara de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":6332,
     "ext_pob":802,
     "pob":758,
@@ -1408,6 +1609,7 @@
   },
   "5219209":{
     "município":"Santa Cruz de Goiás",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":2993,
     "ext_pob":388,
     "pob":191,
@@ -1415,6 +1617,7 @@
   },
   "5219258":{
     "município":"Santa Fé de Goiás",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":5058,
     "ext_pob":526,
     "pob":255,
@@ -1422,6 +1625,7 @@
   },
   "5219308":{
     "município":"Santa Helena de Goiás",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":39719,
     "ext_pob":3334,
     "pob":2921,
@@ -1429,6 +1633,7 @@
   },
   "5219357":{
     "município":"Santa Isabel",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":3531,
     "ext_pob":695,
     "pob":378,
@@ -1436,6 +1641,7 @@
   },
   "5219407":{
     "município":"Santa Rita do Araguaia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":5690,
     "ext_pob":942,
     "pob":469,
@@ -1443,6 +1649,7 @@
   },
   "5219456":{
     "município":"Santa Rita do Novo Destino",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2575,
     "ext_pob":522,
     "pob":188,
@@ -1450,6 +1657,7 @@
   },
   "5219506":{
     "município":"Santa Rosa de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2819,
     "ext_pob":359,
     "pob":263,
@@ -1457,6 +1665,7 @@
   },
   "5219605":{
     "município":"Santa Tereza de Goiás",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":3120,
     "ext_pob":535,
     "pob":162,
@@ -1464,6 +1673,7 @@
   },
   "5219704":{
     "município":"Santa Terezinha de Goiás",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":10856,
     "ext_pob":991,
     "pob":1638,
@@ -1471,6 +1681,7 @@
   },
   "5219712":{
     "município":"Santo Antônio da Barra",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":4266,
     "ext_pob":249,
     "pob":246,
@@ -1478,6 +1689,7 @@
   },
   "5219738":{
     "município":"Santo Antônio de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":8254,
     "ext_pob":1034,
     "pob":646,
@@ -1485,6 +1697,7 @@
   },
   "5219753":{
     "município":"Santo Antônio do Descoberto",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":75814,
     "ext_pob":15685,
     "pob":3897,
@@ -1492,6 +1705,7 @@
   },
   "5219803":{
     "município":"São Domingos",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":9336,
     "ext_pob":2287,
     "pob":933,
@@ -1499,6 +1713,7 @@
   },
   "5219902":{
     "município":"São Francisco de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":6522,
     "ext_pob":1468,
     "pob":597,
@@ -1506,6 +1721,7 @@
   },
   "5220009":{
     "município":"São João d'Aliança",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":15290,
     "ext_pob":684,
     "pob":2238,
@@ -1513,6 +1729,7 @@
   },
   "5220058":{
     "município":"São João da Paraúna",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":1817,
     "ext_pob":245,
     "pob":165,
@@ -1520,6 +1737,7 @@
   },
   "5220108":{
     "município":"São Luís de Montes Belos",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":35539,
     "ext_pob":1727,
     "pob":2440,
@@ -1527,6 +1745,7 @@
   },
   "5220157":{
     "município":"São Luiz do Norte",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":4953,
     "ext_pob":1179,
     "pob":412,
@@ -1534,6 +1753,7 @@
   },
   "5220207":{
     "município":"São Miguel do Araguaia",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":22001,
     "ext_pob":2655,
     "pob":2362,
@@ -1541,6 +1761,7 @@
   },
   "5220264":{
     "município":"São Miguel do Passa Quatro",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":4719,
     "ext_pob":401,
     "pob":173,
@@ -1548,6 +1769,7 @@
   },
   "5220280":{
     "município":"São Patrício",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":2210,
     "ext_pob":585,
     "pob":114,
@@ -1555,6 +1777,7 @@
   },
   "5220405":{
     "município":"São Simão",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":17167,
     "ext_pob":1061,
     "pob":1804,
@@ -1562,6 +1785,7 @@
   },
   "5220454":{
     "município":"Senador Canedo",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":180111,
     "ext_pob":9928,
     "pob":11623,
@@ -1569,6 +1793,7 @@
   },
   "5220504":{
     "município":"Serranópolis",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":8272,
     "ext_pob":958,
     "pob":429,
@@ -1576,6 +1801,7 @@
   },
   "5220603":{
     "município":"Silvânia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":23356,
     "ext_pob":2084,
     "pob":2035,
@@ -1583,6 +1809,7 @@
   },
   "5220686":{
     "município":"Simolândia",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":5576,
     "ext_pob":1347,
     "pob":702,
@@ -1590,6 +1817,7 @@
   },
   "5220702":{
     "município":"Sítio d'Abadia",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":2982,
     "ext_pob":1405,
     "pob":180,
@@ -1597,6 +1825,7 @@
   },
   "5221007":{
     "município":"Taquaral de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":4213,
     "ext_pob":469,
     "pob":306,
@@ -1604,6 +1833,7 @@
   },
   "5221080":{
     "município":"Teresina de Goiás",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":2636,
     "ext_pob":1774,
     "pob":237,
@@ -1611,6 +1841,7 @@
   },
   "5221197":{
     "município":"Terezópolis de Goiás",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":8435,
     "ext_pob":2812,
     "pob":501,
@@ -1618,6 +1849,7 @@
   },
   "5221304":{
     "município":"Três Ranchos",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":2981,
     "ext_pob":549,
     "pob":139,
@@ -1625,6 +1857,7 @@
   },
   "5221403":{
     "município":"Trindade",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":156197,
     "ext_pob":11905,
     "pob":11374,
@@ -1632,6 +1865,7 @@
   },
   "5221452":{
     "município":"Trombas",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":3054,
     "ext_pob":172,
     "pob":600,
@@ -1639,6 +1873,7 @@
   },
   "5221502":{
     "município":"Turvânia",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":4422,
     "ext_pob":443,
     "pob":257,
@@ -1646,6 +1881,7 @@
   },
   "5221551":{
     "município":"Turvelândia",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":5210,
     "ext_pob":767,
     "pob":338,
@@ -1653,6 +1889,7 @@
   },
   "5221577":{
     "município":"Uirapuru",
+    "mesorregiao":"Noroeste Goiano",
     "populacao_estimada":2786,
     "ext_pob":624,
     "pob":245,
@@ -1660,6 +1897,7 @@
   },
   "5221601":{
     "município":"Uruaçu",
+    "mesorregiao":"Norte Goiano",
     "populacao_estimada":44907,
     "ext_pob":1551,
     "pob":2358,
@@ -1667,6 +1905,7 @@
   },
   "5221700":{
     "município":"Uruana",
+    "mesorregiao":"Centro Goiano",
     "populacao_estimada":13843,
     "ext_pob":2894,
     "pob":1604,
@@ -1674,6 +1913,7 @@
   },
   "5221809":{
     "município":"Urutaí",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":3733,
     "ext_pob":256,
     "pob":321,
@@ -1681,6 +1921,7 @@
   },
   "5221858":{
     "município":"Valparaíso de Goiás",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":223210,
     "ext_pob":1857,
     "pob":21142,
@@ -1688,6 +1929,7 @@
   },
   "5221908":{
     "município":"Varjão",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":3772,
     "ext_pob":563,
     "pob":223,
@@ -1695,6 +1937,7 @@
   },
   "5222005":{
     "município":"Vianópolis",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":15808,
     "ext_pob":1424,
     "pob":899,
@@ -1702,6 +1945,7 @@
   },
   "5222054":{
     "município":"Vicentinópolis",
+    "mesorregiao":"Sul Goiano",
     "populacao_estimada":9271,
     "ext_pob":469,
     "pob":896,
@@ -1709,6 +1953,7 @@
   },
   "5222203":{
     "município":"Vila Boa",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":4106,
     "ext_pob":952,
     "pob":495,
@@ -1716,6 +1961,7 @@
   },
   "5222302":{
     "município":"Vila Propício",
+    "mesorregiao":"Leste Goiano",
     "populacao_estimada":6073,
     "ext_pob":1295,
     "pob":253,
