@@ -50,6 +50,9 @@ export function buildGeoData(topology, tabcad, historical, programs, converter =
     const old = historical[code];
     const social = programs[code];
     validateRecord(current, code, ['populacao_estimada', 'ext_pob', 'pob', 'pob_pbf'], 'info_tabcad.json');
+    if (typeof current.macrorregiao_sus !== 'string' || !current.macrorregiao_sus.trim()) {
+      throw new Error(`info_tabcad.json: campo macrorregiao_sus invalido no municipio ${code}.`);
+    }
     validateRecord(old, code, ['populacao_estimada_2019', 'pob_pbf_2019'], 'info_2019.json');
     validateRecord(social, code, [...regularKeys, ...plesKeys], 'info_Programas_Sociais.json');
     const name = current['município'] ?? social.municipio ?? original.name_muni ?? original.name;
@@ -60,7 +63,7 @@ export function buildGeoData(topology, tabcad, historical, programs, converter =
     const properties = {
       ...original,
       ...Object.fromEntries([...regularKeys, ...plesKeys].map(key => [key, social[key]])),
-      id: code, name, description: name, mesorregiao: current.mesorregiao,
+      id: code, name, description: name, macrorregiao_sus: current.macrorregiao_sus,
       população: current.populacao_estimada,
       população_2019: old.populacao_estimada_2019,
       ext_pob: current.ext_pob, pob: current.pob, pob_p1_p2: current.pob_pbf,

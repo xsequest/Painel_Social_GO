@@ -12,24 +12,44 @@ async function openStatistics(page) {
   await expect(page.locator('#statistics-container')).toBeVisible();
 }
 
-test('mesoregion filter composes globally, resets and agrees with the statistical sample', async ({ page }) => {
+test('region filter composes globally, resets and agrees with the statistical sample', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await ready(page);
-  const source = await page.evaluate(async () => {
-    const { geojsonData } = await import('./assets/js/data.js');
-    return geojsonData.features.filter(f => f.properties.mesorregiao === 'Centro Goiano').map(f => f.properties.id);
-  });
+  const current = JSON.parse(await readFile(new URL('../output/info_tabcad.json', import.meta.url), 'utf8'));
+  const regions = ['Centro Norte', 'Centro Sudeste', 'Centro-Oeste', 'Nordeste', 'Sudoeste'];
+  const regionFilter = page.getByRole('combobox', { name: 'Região', exact: true });
+  await expect(regionFilter).toHaveAttribute('id', 'filter-region');
+  await expect(regionFilter.locator('option')).toHaveText(['Todas as regiões', ...regions]);
+  expect(await regionFilter.locator('option').evaluateAll(options => options.map(option => option.value)))
+    .toEqual(['all', ...regions]);
+  const map = page.locator('#map .leaflet-overlay-pane');
+  for (const region of regions) {
+    const expectedLabels = Object.values(current).filter(record => record.macrorregiao_sus === region)
+      .map(record => `Selecionar município ${record['município']}`).sort();
+    expect(expectedLabels.length).toBeGreaterThan(0);
+    await regionFilter.selectOption(region);
+    await expect.poll(() => map.locator('path[aria-hidden="false"]')
+      .evaluateAll(paths => paths.map(path => path.getAttribute('aria-label')).sort())).toEqual(expectedLabels);
+    await expect(map.locator('path[tabindex="0"]')).toHaveCount(expectedLabels.length);
+    await expect(map.locator('path[fill-opacity="0.96"]')).toHaveCount(expectedLabels.length);
+    await expect(map.locator('path[aria-hidden="true"]')).toHaveCount(246 - expectedLabels.length);
+  }
+  await page.locator('#btn-reset-filters').click();
+  await expect(regionFilter).toHaveValue('all');
+  await expect(map.locator('path[aria-hidden="false"]')).toHaveCount(246);
+  await expect(map.locator('path[tabindex="0"]')).toHaveCount(246);
+  await expect(map.locator('path[fill-opacity="0.96"]')).toHaveCount(246);
+  const source = Object.entries(current).filter(([, record]) => record.macrorregiao_sus === 'Centro-Oeste').map(([id]) => id);
   expect(source.length).toBeGreaterThan(1);
-  await expect(page.locator('#filter-mesoregion option')).toHaveCount(6);
-  await page.locator('#filter-mesoregion').selectOption('Centro Goiano');
+  await regionFilter.selectOption('Centro-Oeste');
   await page.locator('#view-tabela').click();
   await expect(page.locator('#table-body tr')).toHaveCount(source.length);
   await page.locator('#filter-search').fill('Abadia');
   await expect(page.locator('#table-body tr')).toHaveCount(1);
   await openStatistics(page);
   await expect(page.locator('#statistics-table-body tr')).toHaveCount(1);
-  await expect(page.locator('#statistics-scope')).toContainText('Centro Goiano · 1 municípios');
+  await expect(page.locator('#statistics-scope')).toContainText('Centro-Oeste · 1 municípios');
   await expect(page.locator('#statistics-correlation-context')).toContainText('indisponível');
   const cells = page.locator('#statistics-table-body tr').first().locator('th, td');
   await expect(cells.nth(0)).toHaveText('Abadia de Goiás');
@@ -46,14 +66,15 @@ test('mesoregion filter composes globally, resets and agrees with the statistica
   }, [...bytes]);
   expect(spreadsheet.data).toHaveLength(1);
   expect(spreadsheet.data[0]['Δ PBF (pessoas)']).toBe(2429);
-  expect(spreadsheet.data[0]['Mesorregião']).toBe('Centro Goiano');
-  expect(spreadsheet.metadata.find(row => row.Campo === 'Mesorregião').Valor).toBe('Centro Goiano');
+  expect(spreadsheet.data[0]['Região']).toBe('Centro-Oeste');
+  expect(spreadsheet.metadata.find(row => row.Campo === 'Região').Valor).toBe('Centro-Oeste');
   await page.locator('#filter-search').fill('Jataí');
   await expect(page.locator('#statistics-empty')).toBeVisible();
   await expect(page.locator('#statistics-content')).toBeHidden();
   await expect(page.locator('#statistics-export')).toBeDisabled();
   await page.locator('#btn-reset-filters').click();
-  await expect(page.locator('#filter-mesoregion')).toHaveValue('all');
+  await expect(regionFilter).toHaveValue('all');
+  await expect(page.locator('#filter-search')).toHaveValue('');
   await expect(page.locator('#statistics-table-body tr')).toHaveCount(246);
   await expect(page.locator('#statistics-empty')).toBeHidden();
   expect(errors).toEqual([]);
@@ -93,13 +114,14 @@ test('statistics availability, chart rankings, sorting and switching views', asy
   await page.locator('#tab-prog').click();
   await expect(page.locator('#view-scatter')).toBeVisible();
   await page.locator('#view-scatter').click();
-  await page.locator('#filter-mesoregion').selectOption('Centro Goiano');
+  await page.locator('#filter-region').selectOption('Centro-Oeste');
   await expect(page.locator('#scatter-chart-svg circle[tabindex="0"]').first()).toBeVisible();
   const scope = await page.evaluate(async () => {
     const { State, DataSelectors } = await import('./assets/js/core.js');
-    return DataSelectors.getFilteredFeatures(State.getState()).map(f => f.properties.mesorregiao);
+    return DataSelectors.getFilteredFeatures(State.getState()).map(f => f.properties.macrorregiao_sus);
   });
-  expect(scope.every(value => value === 'Centro Goiano')).toBe(true);
+  expect(scope.length).toBeGreaterThan(0);
+  expect(scope.every(value => value === 'Centro-Oeste')).toBe(true);
 });
 
 test('statistics compares both years while respecting the selected filter reference year', async ({ page }) => {
@@ -200,11 +222,11 @@ test('statistical tooltips show detailed values, support hover and keyboard, and
   const point = page.locator('#statistics-correlation-chart g[tabindex]').first();
   await point.focus();
   await expect(tooltip.locator('strong')).toHaveText('Abadia de Goiás');
-  await expect(tooltip).toContainText('Centro Goiano');
+  await expect(tooltip).toContainText('Centro-Oeste');
   await expect(tooltip).toContainText('4.841');
   await expect(tooltip).toContainText('7.270');
   await expect(tooltip).toContainText('-23,46 p.p.');
-  await page.locator('#filter-mesoregion').selectOption('Sul Goiano');
+  await page.locator('#filter-region').selectOption('Sudoeste');
   await expect(tooltip).toBeHidden();
   expect(errors).toEqual([]);
 });

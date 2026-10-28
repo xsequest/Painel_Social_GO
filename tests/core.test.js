@@ -20,8 +20,8 @@ test('joins all 246 municipalities by IBGE code and derives ratios from JSON', (
     const p = feature.properties;
     const current = datasets[1][feature.id];
     const old = datasets[2][feature.id];
-    assert.equal(p.mesorregiao, current.mesorregiao);
-    assert.ok(typeof p.mesorregiao === 'string' && p.mesorregiao.length > 0);
+    assert.equal(p.macrorregiao_sus, current.macrorregiao_sus);
+    assert.ok(typeof p.macrorregiao_sus === 'string' && p.macrorregiao_sus.trim().length > 0);
     assert.equal(p.norm_ext, current.ext_pob / current.populacao_estimada);
     assert.equal(p.norm_pob_p1_p2, current.pob_pbf / current.populacao_estimada);
     assert.equal(p.norm_PBF_2019, old.pob_pbf_2019 / old.populacao_estimada_2019);
@@ -49,6 +49,18 @@ test('zero is not unknown and percentages keep full calculation precision', () =
   const variation = Utils.getPbfVariacao2026x2019({ PBF_2019: 1, população_2019: 6, pob_p1_p2: 1, população: 3 });
   assert.equal(Utils.fmtPtbrPct(variation), '16,67%');
 });
+
+for (const [label, value] of [
+  ['missing', undefined], ['empty', ''], ['whitespace-only', ' \t\n '],
+  ['null', null], ['numeric', 123], ['boolean', true], ['array', ['Centro-Oeste']], ['object', {}]
+]) {
+  test(`region data rejects ${label} macrorregiao_sus before rendering`, () => {
+    const bad = structuredClone(datasets);
+    if (label === 'missing') delete bad[1]['5200050'].macrorregiao_sus;
+    else bad[1]['5200050'].macrorregiao_sus = value;
+    assert.throws(() => buildGeoData(...bad, topojson), /macrorregiao_sus/);
+  });
+}
 
 test('poverty map scale follows the selected indicator distribution', () => {
   const extState = { activeTab: 'pob', pobIndicator: 'norm_ext', pobPbfAno: '2026' };
@@ -112,26 +124,26 @@ test('population variation warning includes above-average growth and decline', (
   assert.equal(Utils.isPopulationVariationAboveAverage({ população_2019: 100, população: null }), false);
 });
 
-test('mesoregion visibility composes with search, criticity and population bounds', () => {
-  assert.equal(State.get('mesoregionFilter'), 'all');
-  const feature = { properties: { name: 'Município de teste', mesorregiao: 'Centro Goiano', população: 15000, norm_ext: 0.1 } };
-  const state = { ...State.getState(), mesoregionFilter: 'Centro Goiano', searchTerm: 'municipio', riskFilter: 'estavel', populationBand: 'custom', populationMin: 10000, populationMax: 20000 };
+test('region visibility composes with search, criticity and population bounds', () => {
+  assert.equal(State.get('regionFilter'), 'all');
+  const feature = { properties: { name: 'Município de teste', macrorregiao_sus: 'Centro-Oeste', população: 15000, norm_ext: 0.1 } };
+  const state = { ...State.getState(), regionFilter: 'Centro-Oeste', searchTerm: 'municipio', riskFilter: 'estavel', populationBand: 'custom', populationMin: 10000, populationMax: 20000 };
   assert.equal(Utils.isFeatureVisible(feature, state, 1), true);
   for (const patch of [
-    { mesoregionFilter: 'Leste Goiano' },
+    { regionFilter: 'Nordeste' },
     { searchTerm: 'outro' },
     { riskFilter: 'critico' },
     { populationMin: 15001 },
     { populationMax: 14999 }
   ]) assert.equal(Utils.isFeatureVisible(feature, { ...state, ...patch }, 1), false);
-  const unknownRegion = { properties: { ...feature.properties, mesorregiao: undefined } };
+  const unknownRegion = { properties: { ...feature.properties, macrorregiao_sus: undefined } };
   assert.equal(Utils.isFeatureVisible(unknownRegion, state, 1), false);
-  assert.equal(Utils.isFeatureVisible(unknownRegion, { ...state, mesoregionFilter: 'all' }, 1), true);
+  assert.equal(Utils.isFeatureVisible(unknownRegion, { ...state, regionFilter: 'all' }, 1), true);
 });
 
-test('mesoregion selectors filter every indicator and preserve statewide references', () => {
-  const mesoregions = [...new Set(Object.values(datasets[1]).map(record => record.mesorregiao))].sort();
-  assert.deepEqual(mesoregions, ['Centro Goiano', 'Leste Goiano', 'Noroeste Goiano', 'Norte Goiano', 'Sul Goiano']);
+test('region selectors filter every indicator and preserve statewide references', () => {
+  const regions = [...new Set(Object.values(datasets[1]).map(record => record.macrorregiao_sus))].sort();
+  assert.deepEqual(regions, ['Centro Norte', 'Centro Sudeste', 'Centro-Oeste', 'Nordeste', 'Sudoeste']);
   const modes = [
     { activeTab: 'pob', pobIndicator: 'norm_ext' },
     { activeTab: 'pob', pobIndicator: 'norm_pob' },
@@ -139,35 +151,35 @@ test('mesoregion selectors filter every indicator and preserve statewide referen
     ...['absoluto', 'percentual'].map(progMetricaModo => ({ activeTab: 'prog', progPrograma: 'MAES', progMetricaModo })),
     { activeTab: 'prog', progPrograma: 'PLES', progPlesMetrica: 'PLES_Ativo_Beneficios' }
   ];
-  for (const mesoregion of mesoregions) {
-    const base = { ...State.getState(), mesoregionFilter: mesoregion };
-    const expected = Object.entries(datasets[1]).filter(([, record]) => record.mesorregiao === mesoregion).map(([id]) => id).sort();
+  for (const region of regions) {
+    const base = { ...State.getState(), regionFilter: region };
+    const expected = Object.entries(datasets[1]).filter(([, record]) => record.macrorregiao_sus === region).map(([id]) => id).sort();
     assert.ok(expected.length > 0 && expected.length < collection.features.length);
     for (const mode of modes) {
       const state = { ...base, ...mode };
       assert.deepEqual(DataSelectors.getFilteredFeatures(state).map(feature => feature.id).sort(), expected);
-      assert.equal(DataSelectors.getFilteredFeatures({ ...state, mesoregionFilter: 'all' }).length, 246);
-      assert.deepEqual(DataSelectors.getFilteredFeatures({ ...state, mesoregionFilter: 'inexistente' }), []);
-      assert.equal(Utils.getCriticityMax(state), Utils.getCriticityMax({ ...state, mesoregionFilter: 'all' }));
-      assert.equal(Utils.getDynamicMax(state), Utils.getDynamicMax({ ...state, mesoregionFilter: 'all' }));
+      assert.equal(DataSelectors.getFilteredFeatures({ ...state, regionFilter: 'all' }).length, 246);
+      assert.deepEqual(DataSelectors.getFilteredFeatures({ ...state, regionFilter: 'inexistente' }), []);
+      assert.equal(Utils.getCriticityMax(state), Utils.getCriticityMax({ ...state, regionFilter: 'all' }));
+      assert.equal(Utils.getDynamicMax(state), Utils.getDynamicMax({ ...state, regionFilter: 'all' }));
       const combined = { ...state, populationBand: 'gt100k' };
-      const expectedCombined = DataSelectors.getFilteredFeatures({ ...combined, mesoregionFilter: 'all' })
-        .filter(feature => feature.properties.mesorregiao === state.mesoregionFilter);
+      const expectedCombined = DataSelectors.getFilteredFeatures({ ...combined, regionFilter: 'all' })
+        .filter(feature => feature.properties.macrorregiao_sus === state.regionFilter);
       assert.deepEqual(DataSelectors.getFilteredFeatures(combined), expectedCombined);
     }
   }
 });
 
-test('mesoregion state changes clear only invisible selections and reset restores all', async t => {
+test('region state changes clear only invisible selections and reset restores all', async t => {
   const initial = State.getState();
   t.after(async () => { State.batch(initial); await Promise.resolve(); });
-  const city = collection.features.find(feature => feature.properties.mesorregiao === 'Sul Goiano').properties;
-  const otherRegion = collection.features.find(feature => feature.properties.mesorregiao !== city.mesorregiao).properties.mesorregiao;
+  const city = collection.features.find(feature => feature.properties.macrorregiao_sus === 'Sudoeste').properties;
+  const otherRegion = collection.features.find(feature => feature.properties.macrorregiao_sus !== city.macrorregiao_sus).properties.macrorregiao_sus;
   State.set('selectedCity', city);
-  State.set('mesoregionFilter', city.mesorregiao);
+  State.set('regionFilter', city.macrorregiao_sus);
   await Promise.resolve();
   assert.equal(State.get('selectedCity'), city);
-  State.set('mesoregionFilter', otherRegion);
+  State.set('regionFilter', otherRegion);
   await Promise.resolve();
   assert.equal(State.get('selectedCity'), null);
   State.set('searchTerm', 'inexistente');
@@ -175,13 +187,13 @@ test('mesoregion state changes clear only invisible selections and reset restore
   let renders = 0;
   const render = () => {
     renders++;
-    assert.equal(State.get('mesoregionFilter'), 'all');
+    assert.equal(State.get('regionFilter'), 'all');
     assert.equal(State.get('searchTerm'), '');
   };
-  const unsubscribeRegion = State.subscribe('mesoregionFilter', render);
+  const unsubscribeRegion = State.subscribe('regionFilter', render);
   const unsubscribeSearch = State.subscribe('searchTerm', render);
   t.after(() => { unsubscribeRegion(); unsubscribeSearch(); });
-  State.batch({ mesoregionFilter: 'all', searchTerm: '' });
+  State.batch({ regionFilter: 'all', searchTerm: '' });
   await Promise.resolve();
   assert.equal(renders, 1);
   assert.equal(DataSelectors.getFilteredFeatures(State.getState()).length, 246);

@@ -418,7 +418,7 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
              setTimeout(() => { map?.invalidateSize({ pan: false }); adjustMapControlsPosition(); }, 50);
            }
        });
-       State.subscribe('searchTerm', updateLayer); State.subscribe('riskFilter', updateLayer); State.subscribe('mesoregionFilter', updateLayer); State.subscribe('populationBand', updateLayer); State.subscribe('populationMin', updateLayer); State.subscribe('populationMax', updateLayer);
+       State.subscribe('searchTerm', updateLayer); State.subscribe('riskFilter', updateLayer); State.subscribe('regionFilter', updateLayer); State.subscribe('populationBand', updateLayer); State.subscribe('populationMin', updateLayer); State.subscribe('populationMax', updateLayer);
          if (btnResetView) btnResetView.addEventListener('click', () => { if (map && geoJsonLayer) { try { map.fitBounds(geoJsonLayer.getBounds(), { ...getFitBoundsOptions(), maxZoom: 8 }); } catch(e) {} } });
          window.addEventListener('resize', () => {
           if (!map) return;

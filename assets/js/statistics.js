@@ -15,7 +15,7 @@ const signed = (value, unit = '', decimals = 2) => Number.isFinite(value) ? `${v
 const number = value => Number.isFinite(value) ? fmtPtbrInt(value) : '–';
 const percent = value => Number.isFinite(value) ? `${fmtPtbrNum(value)}%` : '–';
 const columns = [
-  ['name', 'Município', String], ['mesoregion', 'Mesorregião', String],
+  ['name', 'Município', String], ['region', 'Região', String],
   ['population2019', 'População 2019', number], ['population2026', 'População 2026*', number],
   ['populationDelta', 'Δ população (pessoas)', value => signed(value, '', 0)], ['populationChange', 'Δ população (%)', value => signed(value, '%')],
   ['pbf2019', 'Pobreza PBF 2019', number], ['pbf2026', 'Pobreza PBF 2026', number],
@@ -31,7 +31,7 @@ function tooltipPairs(pairs) {
 }
 
 function municipalityTooltip(row, extra = []) {
-  return `<strong>${escape(row.name)}</strong><span class="statistics-tooltip-region">${escape(row.mesoregion)}</span>
+  return `<strong>${escape(row.name)}</strong><span class="statistics-tooltip-region">${escape(row.region)}</span>
     <table><thead><tr><th scope="col">Indicador</th><th scope="col">2019</th><th scope="col">2026</th></tr></thead><tbody>
       <tr><th scope="row">População*</th><td>${number(row.population2019)}</td><td>${number(row.population2026)}</td></tr>
       <tr><th scope="row">Pobreza PBF</th><td>${number(row.pbf2019)}</td><td>${number(row.pbf2026)}</td></tr>
@@ -244,7 +244,7 @@ function render() {
   rows = buildStatisticsRows(DataSelectors.getFilteredFeatures(state));
   const summary = summarizeStatistics(rows);
   const reference = state.pobPbfAno === '2019' ? '2019' : '2026';
-  document.getElementById('statistics-scope').textContent = `${state.mesoregionFilter && state.mesoregionFilter !== 'all' ? state.mesoregionFilter : 'Goiás'} · ${rows.length} municípios no recorte · ${summary.count} com comparação completa · filtros de status/população: ${reference}`;
+  document.getElementById('statistics-scope').textContent = `${state.regionFilter && state.regionFilter !== 'all' ? state.regionFilter : 'Goiás'} · ${rows.length} municípios no recorte · ${summary.count} com comparação completa · filtros de status/população: ${reference}`;
   const decreasing = rows.filter(row => Number.isFinite(row.rateDelta) && row.rateDelta < 0).length;
   const increasing = rows.filter(row => Number.isFinite(row.rateDelta) && row.rateDelta > 0).length;
   const unchanged = rows.filter(row => row.rateDelta === 0).length;
@@ -330,7 +330,7 @@ exportButton.addEventListener('click', async () => {
       ['Indicador', 'Pobreza PBF: pessoas por faixa de renda, não beneficiários do Bolsa Família'],
       ['Fontes', 'info_2019.json; info_tabcad.json (CadÚnico agosto/2026)'],
       ['População 2026*', 'População estimada da base atual; o arquivo não explicita seu ano efetivo de referência'],
-      ['Mesorregião', state.mesoregionFilter === 'all' ? 'Todas' : state.mesoregionFilter],
+      ['Região', state.regionFilter === 'all' ? 'Todas as regiões' : state.regionFilter],
       ['Busca por município', state.searchTerm], ['Status do indicador', state.riskFilter],
       ['Faixa populacional', state.populationBand], ['População mínima', state.populationMin], ['População máxima', state.populationMax],
       ['Ano aplicado aos filtros', state.pobPbfAno === '2019' ? '2019' : '2026'], ['Municípios', count],
@@ -346,4 +346,4 @@ exportButton.addEventListener('click', async () => {
   } finally { exportButton.disabled = !rows.length; }
 });
 
-['viewMode', 'activeTab', 'pobIndicator', 'pobPbfAno', 'searchTerm', 'mesoregionFilter', 'riskFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, render));
+['viewMode', 'activeTab', 'pobIndicator', 'pobPbfAno', 'searchTerm', 'regionFilter', 'riskFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, render));

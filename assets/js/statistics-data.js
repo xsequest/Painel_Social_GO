@@ -13,7 +13,7 @@ export function buildStatisticsRows(features) {
     const rate2019 = rate(pbf2019, population2019);
     const rate2026 = rate(pbf2026, population2026);
     return {
-      id: p.id, name: p.name, mesoregion: p.mesorregiao || 'Não informada',
+      id: p.id, name: p.name, region: p.macrorregiao_sus || 'Não informada',
       population2019, population2026,
       populationDelta: difference(population2026, population2019),
       populationChange: change(population2026, population2019),

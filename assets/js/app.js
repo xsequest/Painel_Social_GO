@@ -35,7 +35,7 @@ import './panel.js';
         State.subscribe('activeTab', update); 
         State.subscribe('pobIndicator', update); State.subscribe('pobPbfAno', update);
         State.subscribe('progPrograma', update); State.subscribe('progStatus', update); State.subscribe('progMetrica', update); State.subscribe('progPlesMetrica', update); State.subscribe('progMetricaModo', update);
-        State.subscribe('searchTerm', update); State.subscribe('riskFilter', update); State.subscribe('mesoregionFilter', update); State.subscribe('populationBand', update); State.subscribe('populationMin', update); State.subscribe('populationMax', update);
+        State.subscribe('searchTerm', update); State.subscribe('riskFilter', update); State.subscribe('regionFilter', update); State.subscribe('populationBand', update); State.subscribe('populationMin', update); State.subscribe('populationMax', update);
        if (!State.get('dataError')) update();
     })();
 
@@ -54,23 +54,23 @@ import './panel.js';
      // 4.8 Filter Module
      const FilterModule = (function() {
         const inputSearch = document.getElementById('filter-search'), selRisk = document.getElementById('filter-risk'), selPop = document.getElementById('filter-pop'), btnReset = document.getElementById('btn-reset-filters'), customPopFilter = document.getElementById('custom-population-filter'), inputPopMin = document.getElementById('filter-pop-min'), inputPopMax = document.getElementById('filter-pop-max'), customPopError = document.getElementById('custom-population-error');
-        const selMesoregion = document.getElementById('filter-mesoregion');
+        const selRegion = document.getElementById('filter-region');
         if (!inputSearch || !selRisk || !selPop || !customPopFilter || !inputPopMin || !inputPopMax || !customPopError) return;
 
-       if (selMesoregion) {
-         const mesoregions = [...new Set((geojsonData?.features || [])
-           .map(feature => feature.properties.mesorregiao)
+       if (selRegion) {
+         const regions = [...new Set((geojsonData?.features || [])
+           .map(feature => feature.properties.macrorregiao_sus)
            .filter(value => typeof value === 'string' && value.trim()))]
            .sort((a, b) => a.localeCompare(b, 'pt-BR', { sensitivity: 'base' }));
-         mesoregions.forEach(mesoregion => {
+         regions.forEach(region => {
            const option = document.createElement('option');
-           option.value = mesoregion;
-           option.textContent = mesoregion;
-           selMesoregion.appendChild(option);
+           option.value = region;
+           option.textContent = region;
+           selRegion.appendChild(option);
          });
-         selMesoregion.value = State.get('mesoregionFilter');
-         selMesoregion.addEventListener('change', e => State.set('mesoregionFilter', e.target.value));
-         State.subscribe('mesoregionFilter', value => selMesoregion.value = value);
+         selRegion.value = State.get('regionFilter');
+         selRegion.addEventListener('change', e => State.set('regionFilter', e.target.value));
+         State.subscribe('regionFilter', value => selRegion.value = value);
        }
 
       function setCustomPopulationError(message) {
@@ -127,7 +127,7 @@ import './panel.js';
         document.getElementById('search-input').value = '';
         inputSearch.value = ''; inputPopMin.value = ''; inputPopMax.value = '';
         setCustomPopulationError('');
-        State.batch({ searchTerm: '', riskFilter: 'all', mesoregionFilter: 'all', populationBand: 'all', populationMin: null, populationMax: null });
+        State.batch({ searchTerm: '', riskFilter: 'all', regionFilter: 'all', populationBand: 'all', populationMin: null, populationMax: null });
       });
        State.subscribe('searchTerm', v => inputSearch.value = v); State.subscribe('riskFilter', v => selRisk.value = v); State.subscribe('populationBand', v => selPop.value = v);
        State.subscribe('populationBand', syncCustomPopulationVisibility);

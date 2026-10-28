@@ -795,7 +795,7 @@ import { MapModule } from './map.js';
            window.dispatchEvent(new Event('resize'));
          });
         State.subscribe('viewMode', refreshPanel);
-        ['isDark', 'isKiosk', 'pobPalette', 'progPalette', 'activeTab', 'pobIndicator', 'pobPbfAno', 'pobChartMode', 'progPrograma', 'progStatus', 'progMetrica', 'progPlesMetrica', 'progMetricaModo', 'searchTerm', 'riskFilter', 'mesoregionFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, refreshPanel));
+        ['isDark', 'isKiosk', 'pobPalette', 'progPalette', 'activeTab', 'pobIndicator', 'pobPbfAno', 'pobChartMode', 'progPrograma', 'progStatus', 'progMetrica', 'progPlesMetrica', 'progMetricaModo', 'searchTerm', 'riskFilter', 'regionFilter', 'populationBand', 'populationMin', 'populationMax'].forEach(key => State.subscribe(key, refreshPanel));
         reducedMotion.addEventListener('change', refreshPanel);
         syncOverviewRankingToggle();
         refreshPanel();

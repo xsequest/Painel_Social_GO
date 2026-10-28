@@ -3,14 +3,14 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { buildStatisticsRows, summarizeStatistics, pearsonCorrelation, getCorrelationFrame, rankStatistics, buildWaterfall } from '../assets/js/statistics-data.js';
 
-const feature = (id, population2019, population2026, pbf2019, pbf2026) => ({ properties: {
-  id, name: id, mesorregiao: 'Centro Goiano', população_2019: population2019, população: population2026, PBF_2019: pbf2019, pob_p1_p2: pbf2026
+const feature = (id, population2019, population2026, pbf2019, pbf2026, region = 'Centro-Oeste') => ({ properties: {
+  id, name: id, macrorregiao_sus: region, população_2019: population2019, população: population2026, PBF_2019: pbf2019, pob_p1_p2: pbf2026
 } });
 const close = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-10, `${actual} != ${expected}`);
 
 test('statistics separate population, PBF counts, relative variation and percentage points', () => {
   const [row] = buildStatisticsRows([feature('A', 100, 200, 50, 60)]);
-  assert.equal(row.mesoregion, 'Centro Goiano');
+  assert.equal(row.region, 'Centro-Oeste');
   assert.equal(row.populationDelta, 100);
   assert.equal(row.populationChange, 100);
   assert.equal(row.pbfDelta, 10);
@@ -105,8 +105,16 @@ test('framing handles empty, invalid, small and constant samples without collaps
 test('actual 2019 and current sources reconcile to municipality and statewide statistics', async () => {
   const current = JSON.parse(await readFile(new URL('../output/info_tabcad.json', import.meta.url)));
   const old = JSON.parse(await readFile(new URL('../output/info_2019.json', import.meta.url)));
-  const rows = buildStatisticsRows(Object.entries(current).map(([id, p]) => feature(id, old[id].populacao_estimada_2019, p.populacao_estimada, old[id].pob_pbf_2019, p.pob_pbf)));
+  const rows = buildStatisticsRows(Object.entries(current).map(([id, p]) => feature(id, old[id].populacao_estimada_2019, p.populacao_estimada, old[id].pob_pbf_2019, p.pob_pbf, p.macrorregiao_sus)));
   assert.equal(rows.length, 246);
+  assert.deepEqual(rows.map(row => row.id).sort(), Object.keys(current).sort());
+  for (const row of rows) {
+    assert.equal(row.region, current[row.id].macrorregiao_sus, `region for municipality ${row.id}`);
+    assert.equal(row.populationDelta, current[row.id].populacao_estimada - old[row.id].populacao_estimada_2019);
+    assert.equal(row.pbfDelta, current[row.id].pob_pbf - old[row.id].pob_pbf_2019);
+    close(row.rateDelta, current[row.id].pob_pbf / current[row.id].populacao_estimada * 100 - old[row.id].pob_pbf_2019 / old[row.id].populacao_estimada_2019 * 100);
+  }
+  assert.deepEqual([...new Set(rows.map(row => row.region))].sort(), ['Centro Norte', 'Centro Sudeste', 'Centro-Oeste', 'Nordeste', 'Sudoeste']);
   const abadia = rows.find(row => row.id === '5200050');
   assert.equal(abadia.pbfDelta, 2429);
   close(abadia.rateDelta, 7270 / 22918 * 100 - 4841 / 8773 * 100);
