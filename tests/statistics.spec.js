@@ -18,9 +18,9 @@ test('region filter composes globally, resets and agrees with the statistical sa
   await ready(page);
   const current = JSON.parse(await readFile(new URL('../output/info_tabcad.json', import.meta.url), 'utf8'));
   const regions = ['Centro Norte', 'Centro Sudeste', 'Centro-Oeste', 'Nordeste', 'Sudoeste'];
-  const regionFilter = page.getByRole('combobox', { name: 'Região', exact: true });
+  const regionFilter = page.getByRole('combobox', { name: 'Macrorregião', exact: true });
   await expect(regionFilter).toHaveAttribute('id', 'filter-region');
-  await expect(regionFilter.locator('option')).toHaveText(['Todas as regiões', ...regions]);
+  await expect(regionFilter.locator('option')).toHaveText(['Todas as macrorregiões', ...regions]);
   expect(await regionFilter.locator('option').evaluateAll(options => options.map(option => option.value)))
     .toEqual(['all', ...regions]);
   const map = page.locator('#map .leaflet-overlay-pane');
