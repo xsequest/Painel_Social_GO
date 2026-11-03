@@ -724,6 +724,12 @@ test('criticity help supports keyboard and contextual explanations in both panel
   await expect(tooltip).toBeHidden();
 });
 
+test('macrorregiao label has the CIB resolution tooltip', async ({ page }) => {
+  await ready(page);
+  await expect(page.locator('label[for="filter-region"]'))
+    .toHaveAttribute('title', 'Resolução CIB n. 07/2026 - Diário Oicial - GO n. 24.803');
+});
+
 test.describe('mobile criticity help', () => {
   test.use({ hasTouch: true, viewport: { width: 360, height: 800 } });
 
