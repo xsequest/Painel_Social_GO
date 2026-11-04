@@ -120,8 +120,14 @@
         #map-attribution-host .leaflet-control-attribution a { color: #0f766e; }
         .dark #map-attribution-host .leaflet-control-attribution { background: rgba(15,23,42,.86); color: #cbd5e1; }
         .dark #map-attribution-host .leaflet-control-attribution a { color: #6ee7b7; }
-        #btn-reset-view { position: static; width: 90px; min-height: 30px; padding: 7px 6px; border: 1px solid #cbd5e1; border-radius: 7px; background: rgba(255,255,255,.95); color: #334155; box-shadow: 0 3px 12px rgba(0,0,0,.2); font-size: .72rem; font-weight: 650; line-height: 1.2; white-space: normal; }
-        .dark #btn-reset-view { border-color: #475569; background: rgba(15,23,42,.95); color: #e2e8f0; }
+        #btn-reset-view, #btn-cartogram { position: static; width: 90px; min-height: 30px; padding: 7px 6px; border: 1px solid #cbd5e1; border-radius: 7px; background: rgba(255,255,255,.95); color: #334155; box-shadow: 0 3px 12px rgba(0,0,0,.2); font-size: .72rem; font-weight: 650; line-height: 1.2; white-space: normal; }
+        .dark #btn-reset-view, .dark #btn-cartogram { border-color: #475569; background: rgba(15,23,42,.95); color: #e2e8f0; }
+        #btn-cartogram[aria-pressed="true"] { background: #047857; border-color: #059669; color: #fff; }
+        #cartogram-description { max-width: 220px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #94a3b8; font-size: 11px; line-height: 1.4; }
+        #map.is-cartogram .leaflet-tile-pane { opacity: 0; }
+        #map.is-cartogram { background: #f8fafc; }
+        .dark #map.is-cartogram { background: #0f172a; }
+        #cartogram-phase { font-weight: 700; }
         #side-panel { top: 16px; right: 16px; bottom: auto; width: 380px; height: auto; max-height: calc(100vh - 32px); gap: 16px; padding: 18px; }
         #side-panel.is-collapsed { top: 16px; bottom: auto; width: min(380px, calc(100vw - 32px)); height: auto; max-height: none; overflow: hidden; padding: 10px 12px; }
         #btn-center-city:not(.hidden) { display: flex; width: 40px; height: 40px; flex: none; align-items: center; justify-content: center; padding: 0; }

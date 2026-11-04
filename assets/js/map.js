@@ -1,6 +1,10 @@
 import { geojsonData } from './data.js';
+import { createCartogram, CARTOGRAM_PHASES } from './cartogram.js';
 import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, MetricSelectors, DataSelectors } from './core.js';
     const MapModule = (function() {
+        let cartogram = null, cartogramActive = false;
+        let cartogramFeatureData = null;
+        const btnCartogram = document.getElementById('btn-cartogram');
         let map = null, geoJsonLayer = null, legendControl = null, legendElement = null, tileLayer = null, highlightedLayer = null, renderFrame = null, clickInMunicipality = false, fullStateBounds = null;
         const mapEl = document.getElementById('map'), containerEl = document.getElementById('map-container'), btnResetView = document.getElementById('btn-reset-view'), loadingOverlay = document.getElementById('map-loading-overlay'), mapControlsContainer = document.getElementById('map-controls-legend'), mapLegendHost = document.getElementById('map-legend-host'), mapAttributionHost = document.getElementById('map-attribution-host');
        function setLoading(isLoading) {
@@ -87,7 +91,8 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
               animate: !window.matchMedia('(prefers-reduced-motion: reduce)').matches
             };
          }
-         function getFullStateBounds() {
+          function getFullStateBounds() {
+            if (cartogramActive) return cartogram.getBounds();
            if (fullStateBounds) return fullStateBounds;
             if (geoJsonLayer) fullStateBounds = geoJsonLayer.getBounds();
            return fullStateBounds;
@@ -185,7 +190,7 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
            const focusKey = focusedButton?.dataset.metricMode ? 'metricMode' : 'pbfAno';
            const focusValue = focusedButton?.dataset[focusKey];
            legendElement.innerHTML = `${modeToggle}${pbfYearToggle}<strong class="block mb-2 text-sm uppercase tracking-wide">${escapeHtml(legendTitle)}</strong>`;
-          if (isPbfDiffLegend) {
+           if (isPbfDiffLegend) {
             const pbfDiff = getPbfDiffScale();
              [-pbfDiff.bound, -pbfDiff.bound / 2, pbfDiff.bound / 2, pbfDiff.bound].forEach(valor => {
                const displayVal = `${valor > 0 ? '+' : ''}${fmtPtbrNum(valor)} p.p.`;
@@ -199,7 +204,9 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
               legendElement.innerHTML += `<div class="flex items-center mb-1 text-sm"><i style="background:${colorScale(valor).hex()}"></i><span>${displayVal}</span></div>`;
             }
           }
-           if (hasMetricModeToggle) {
+            const areaMetric = MetricSelectors.get({ ...state, progMetricaModo: 'absoluto', pobPbfAno: isPbfDiffLegend ? '2026' : state.pobPbfAno });
+            legendElement.innerHTML += `<p id="cartogram-description"${cartogramActive ? '' : ' hidden'}><span id="cartogram-phase" role="status">${cartogramActive ? CARTOGRAM_PHASES[mapEl.dataset.cartogramPhase] || CARTOGRAM_PHASES.morph : ''}</span><br>Área dos círculos: ${escapeHtml(areaMetric.label)} (valor bruto). Cores: ${escapeHtml(metric.label)}${isProgramTab ? (activeMode === 'percentual' ? ' (modo %)' : ' (modo #)') : ''}. ${isPbfDiffLegend ? 'Em Diff, a área usa o valor bruto de 2026; a cor indica a variação em p.p. ' : ''}Maiores valores brutos têm prioridade na localização. Valores zero ou sem dados não têm área. Inspirado em Karim Douïeb.</p>`;
+            if (hasMetricModeToggle) {
              legendElement.querySelectorAll('[data-metric-mode]').forEach(button => {
                 button.addEventListener('click', () => State.set('progMetricaModo', button.dataset.metricMode));
              });
@@ -239,8 +246,9 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
         });
          return found;
        }
-       function centerOnCity(city) {
-         if (!map || !geoJsonLayer || !city) return false;
+        function centerOnCity(city) {
+          if (!map || !geoJsonLayer || !city) return false;
+          cartogram?.finish();
 
          let cityLayer = null;
          geoJsonLayer.eachLayer(layer => {
@@ -286,12 +294,14 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
            const colorScale = chroma.scale(PALETAS[paletteName]).domain([0, colorMax]);
            const isPbfDiffMode = activeTab === 'pob' && state.pobIndicator === 'norm_pob_p1_p2' && state.pobPbfAno === 'diff';
            const pbfDiffData = isPbfDiffMode ? getPbfDiffScale() : null;
-         const isDark = state.isDark;
+           const isDark = state.isDark;
+           cartogramFeatureData = feature => ({ value: metric.rawValue(feature.properties), visible: visibleFeatures.has(feature) });
         
           const styleFeature = (feature) => {
             const properties = feature.properties;
              const val = metric.value(properties);
-            const isVisible = visibleFeatures.has(feature);
+             const isVisible = visibleFeatures.has(feature);
+             if (cartogramActive && !isVisible) return { weight: 0, opacity: 0, fillOpacity: 0 };
              let fillColor = 'transparent';
             if (isVisible) {
               if (isPbfDiffMode) {
@@ -300,7 +310,7 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
               }
               else fillColor = (val === null || val === undefined || isNaN(val)) ? '#cccccc' : colorScale(val).hex();
            }
-            return { fillColor, weight: isVisible ? 0.9 : 0.2, color: isDark ? '#fafaf9' : (isVisible ? '#4b5563' : '#e5e7eb'), fillOpacity: isVisible ? 0.96 : 0.1 };
+             return { fillColor, weight: isVisible ? 0.9 : 0.2, opacity: 1, color: isDark ? '#fafaf9' : (isVisible ? '#4b5563' : '#e5e7eb'), fillOpacity: isVisible ? 0.96 : 0.1 };
          };
          const isInitialRender = !geoJsonLayer;
          if (!geoJsonLayer) geoJsonLayer = L.geoJSON(geojsonData, {
@@ -323,7 +333,14 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
              });
            }
          }).addTo(map);
-         geoJsonLayer.options.style = styleFeature;
+          geoJsonLayer.options.style = styleFeature;
+          if (!cartogram) {
+            fullStateBounds = geoJsonLayer.getBounds();
+            cartogram = createCartogram(map, geoJsonLayer, feature => cartogramFeatureData(feature), active => {
+              map.fitBounds(active ? cartogram.getBounds() : fullStateBounds, { ...getFitBoundsOptions(), animate: false });
+            });
+          }
+          if (cartogram.refresh()) map.fitBounds(cartogram.getBounds(), { ...getFitBoundsOptions(), animate: false });
          geoJsonLayer.setStyle(styleFeature);
            geoJsonLayer.eachLayer(layer => {
              const feature = layer.feature;
@@ -410,7 +427,8 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
         State.subscribe('progPrograma', updateLayer); State.subscribe('progStatus', updateLayer); State.subscribe('progMetrica', updateLayer); State.subscribe('progPlesMetrica', updateLayer); State.subscribe('progMetricaModo', updateLayer); State.subscribe('progPalette', updateLayer);
         State.subscribe('viewMode', () => {
            const mode = State.get('viewMode');
-          const showMap = mode === 'mapa';
+           const showMap = mode === 'mapa';
+           if (!showMap) cartogram?.finish();
           containerEl.classList.toggle('hidden', !showMap);
            if (showMap) {
              if (!map) initMap();
@@ -419,7 +437,19 @@ import { fmtPtbrInt, fmtPtbrNum, PLES_COLUMN_LABELS, PALETAS, State, Utils, Metr
            }
        });
        State.subscribe('searchTerm', updateLayer); State.subscribe('riskFilter', updateLayer); State.subscribe('regionFilter', updateLayer); State.subscribe('populationBand', updateLayer); State.subscribe('populationMin', updateLayer); State.subscribe('populationMax', updateLayer);
-         if (btnResetView) btnResetView.addEventListener('click', () => { if (map && geoJsonLayer) { try { map.fitBounds(geoJsonLayer.getBounds(), { ...getFitBoundsOptions(), maxZoom: 8 }); } catch(e) {} } });
+          if (btnResetView) btnResetView.addEventListener('click', () => { if (map && geoJsonLayer) { map.fitBounds(getFullStateBounds(), { ...getFitBoundsOptions(), maxZoom: 8 }); } });
+          btnCartogram?.addEventListener('click', () => {
+            if (!map || !cartogram) return;
+            cartogramActive = !cartogramActive;
+            btnCartogram.setAttribute('aria-pressed', String(cartogramActive));
+            btnCartogram.textContent = cartogramActive ? 'Ver territórios' : 'Ver círculos';
+            btnCartogram.title = cartogramActive ? 'Restaurar os limites geográficos dos municípios' : 'Transformar os municípios em círculos proporcionais ao valor bruto do indicador selecionado';
+            mapEl.classList.toggle('is-cartogram', cartogramActive);
+            map.stop();
+            map.fitBounds(cartogram.getBounds(true), { ...getFitBoundsOptions(), animate: false });
+            cartogram.setActive(cartogramActive);
+            updateLayer();
+          });
          window.addEventListener('resize', () => {
           if (!map) return;
           map.invalidateSize({ pan: false, debounceMoveend: true });

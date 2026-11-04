@@ -187,6 +187,7 @@
             <div id="map-controls-legend" role="group" aria-label="Controles e legenda do mapa">
               <div id="map-zoom-reframe">
                 <button id="btn-reset-view" type="button" aria-label="Reenquadrar mapa de Goiás" title="Reenquadrar o mapa">Reenquadrar</button>
+                <button id="btn-cartogram" type="button" aria-pressed="false" aria-controls="map" aria-describedby="cartogram-description" title="Transformar os municípios em círculos proporcionais ao valor bruto do indicador selecionado">Ver círculos</button>
                 <div id="map-display-controls" role="group" aria-label="Aparência e apresentação do mapa">
                   <button id="btn-dark-toggle" type="button" aria-pressed="false" class="rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800" aria-label="Tema escuro" title="Alternar tema">
                     <svg id="icon-sun" class="w-5 h-5 hidden dark:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
@@ -459,6 +460,7 @@
               <h4>Mapa e painel direito</h4>
               <ul>
                 <li>O mapa é <strong>coroplético</strong>: cada polígono é um município colorido pelo indicador, não uma superfície contínua de calor.</li>
+                <li><strong>Ver círculos</strong>, abaixo de Reenquadrar, transforma os territórios diretamente em círculos com área proporcional ao <strong>valor bruto</strong> do indicador, não ao percentual sobre a população. Os círculos maiores têm prioridade na localização; os menores ocupam a posição livre mais próxima ao redor deles, sem grade ou agrupamento por criticidade. Em Programas Sociais, programa, status e métrica definem o valor bruto; os botões <strong>#</strong> e <strong>%</strong> alteram as cores, não as áreas. Em Pobreza PBF, a área usa o valor bruto do ano selecionado; em Diff, mantém o valor bruto de 2026 e a cor indica a variação em p.p. Valores zero ou sem dados não têm área. <strong>Ver territórios</strong> desfaz a transição. Visualização inspirada em “Land doesn't vote, people do”, de Karim Douïeb.</li>
                 <li>Passe o ponteiro ou focalize um município para consultar o tooltip. Clique ou use <kbd>Enter</kbd> ou <kbd>Espaço</kbd> para selecioná-lo e abrir seus dados.</li>
                 <li><strong>Localizar no mapa</strong> enquadra o município; <strong>Reenquadrar</strong> retorna ao estado inteiro. A seleção do polígono não exige mudança da câmera.</li>
                 <li>Sem seleção, o painel mostra o agregado do recorte e os cinco maiores ou menores valores. Os nomes do ranking selecionam e localizam o município.</li>
