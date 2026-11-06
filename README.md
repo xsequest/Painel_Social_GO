@@ -49,7 +49,7 @@ O build copia as bibliotecas para `assets/vendor/`, compila `assets/css/utilitie
 
 | Aba | Indicadores e controles | Visualizações |
 | --- | --- | --- |
-| CadÚnico | Extrema Pobreza, Pobreza e Pobreza PBF; escolha de paleta | Mapa e Tabela |
+| CadÚnico | Extrema Pobreza, Pobreza e Pobreza PBF; escolha de paleta | Mapa e Tabela; Estatísticas somente em Pobreza PBF |
 | Programas Sociais | Programa, status cadastral, métrica e paleta; modalidade própria para PLES | Mapa, Tabela e Correlação |
 
 O painel inicia em CadÚnico, Extrema Pobreza, Mapa e tema claro. O estado da interface não é persistido entre recarregamentos.
@@ -59,6 +59,8 @@ No mapa de Pobreza PBF, os botões da legenda alternam entre `2019`, `2026` e `D
 ### Mapa e Painel Direito
 
 - O mapa é coroplético: cada polígono representa um município, colorido pelo indicador selecionado. Não é uma superfície contínua de calor.
+- O botão Ver círculos, abaixo de Reenquadrar, ativa o cartograma de círculos proporcionais ao valor bruto do indicador. Círculos maiores têm prioridade na localização; os menores ocupam posições livres próximas, sem grade ou agrupamento por criticidade. Ver territórios reverte a transição. A visualização é inspirada em “Land doesn't vote, people do”, de Karim Douïeb.
+- No cartograma, programa, status e métrica definem a área; `#` e `%` mudam apenas as cores. Em Pobreza PBF, a área representa a contagem do ano selecionado; em Diff, usa a contagem de 2026 e a cor mostra a diferença em p.p. Zero e ausência não têm área. O deslocamento dos círculos não representa mudança geográfica dos municípios.
 - Passe o ponteiro ou focalize um município para consultar o tooltip. Selecione-o por clique, Enter ou Espaço para abrir os dados no painel direito.
 - O botão Localizar no mapa enquadra o município; Reenquadrar retorna ao estado inteiro. Selecionar um polígono, por si só, não exige mudança da câmera.
 - Sem município selecionado, o painel mostra o agregado do recorte e um ranking dos cinco maiores ou menores valores. Os nomes do ranking são clicáveis e localizam o município no mapa.
@@ -79,7 +81,9 @@ PLES usa um seletor próprio de modalidade, obtido das colunas `PLES_*`; os cont
 
 ### Filtros e Seleção
 
-Busca pelo nome municipal, status do indicador e faixa populacional são combinados e compartilhados entre as visualizações. A busca ignora acentos e diferenças entre maiúsculas e minúsculas; não é uma busca pelo código IBGE.
+Busca pelo nome municipal, Macrorregião SUAS, status do indicador e faixa populacional são combinados e compartilhados entre as visualizações. A busca ignora acentos e diferenças entre maiúsculas e minúsculas; não é uma busca pelo código IBGE.
+
+Macrorregião SUAS oferece Centro Norte, Centro Sudeste, Centro-Oeste, Nordeste e Sudoeste, além de Todas as macrorregiões. As opções são extraídas do campo `macrorregiao_sus` da base atual. A referência apresentada no rótulo é “Resolução CIB n. 07/2026 - Diário Oficial - GO n. 24.803”.
 
 As faixas implementadas são população menor que 20.000, de 20.000 a 100.000 inclusive, acima de 100.000 ou intervalo personalizado. Apesar do rótulo `Até 20 mil`, exatamente 20.000 entra na faixa intermediária. Mínimo e máximo personalizados são inclusivos e opcionais; entradas inválidas preservam os últimos limites válidos.
 
@@ -87,13 +91,27 @@ Em Pobreza PBF 2019, o filtro populacional usa a população de 2019. Em 2026, D
 
 Selecionar um município não equivale a filtrá-lo. A seleção é compartilhada entre mapa, tabela, dispersão e painel, mas pode permanecer ativa mesmo quando o município deixa de pertencer ao recorte filtrado. A Correlação identifica essa situação no seletor municipal. A tabela principal permite selecionar, mas não realça a linha como o mapa realça o polígono.
 
-O botão Limpar dos filtros redefine busca, criticidade e população, sem redefinir o indicador, o programa ou o município selecionado. Trocar entre as abas principais limpa a seleção municipal; clicar no fundo do mapa também a limpa.
+O botão Limpar dos filtros redefine busca, macrorregião, criticidade e população, sem redefinir o indicador, o programa ou o município selecionado. Trocar entre as abas principais limpa a seleção municipal; clicar no fundo do mapa também a limpa.
 
 ### Tabela e Exportação
 
 A tabela oferece ordenação por cabeçalho, busca sincronizada e seleção municipal. Em Programas Sociais, as colunas gerais incluem simultaneamente benefícios, pessoas e percentual de pessoas, independentemente da métrica usada na cor do mapa. PLES e os modos históricos de PBF possuem colunas próprias.
 
-A exportação XLSX respeita o recorte, a configuração e a ordenação da tabela e gera as planilhas `Dados Numericos`, `Formatado` e `Metadados`. A biblioteca de exportação é carregada sob demanda. São exportadas as colunas da tabela, não todos os dados de todos os gráficos. Não há exportação nativa de mapa/gráficos para imagem, nem botões CSV ou PDF.
+A exportação XLSX da tabela principal respeita o recorte, a configuração e a ordenação da tabela e gera as planilhas `Dados Numericos`, `Formatado` e `Metadados`. A biblioteca de exportação é carregada sob demanda. São exportadas as colunas da tabela, não todos os dados de todos os gráficos. Não há exportação nativa de mapa/gráficos para imagem, nem botões CSV ou PDF.
+
+### Estatísticas de Pobreza PBF
+
+Selecione CadÚnico → Pobreza PBF → Estatísticas. Essa visualização compara 2019 e 2026 simultaneamente, mesmo quando a legenda do mapa está em 2019, 2026 ou Diff. Ao sair do indicador Pobreza PBF, a visualização Estatísticas deixa de estar disponível.
+
+- Resumo do recorte pareado: população, contagem PBF e taxas agregadas, além da contagem de municípios com redução, aumento ou estabilidade da taxa.
+- Ranking de até 15 municípios, com comparação de taxas por gráfico dumbbell (dois pontos ligados), variação populacional em porcentagem ou diferença PBF em pessoas.
+- Gráfico waterfall (cascata) das contribuições municipais para a diferença total de pessoas na faixa de renda PBF.
+- Correlação entre variação populacional (%) e diferença da taxa PBF (p.p.), com enquadramento completo ou central de 95% por eixo.
+- Tabela comparativa completa, ordenável, e tooltips acessíveis por ponteiro, foco de teclado ou toque.
+
+Os filtros globais definem a amostra. Status e população usam 2019 quando esse ano está selecionado no mapa; em 2026 ou Diff, usam 2026. Assim, mudar o ano de referência pode mudar o recorte, mas não os dois anos comparados nas Estatísticas. O resumo agregado utiliza somente municípios com comparação completa; valores ausentes não viram zero.
+
+A exportação própria gera `Pobreza_PBF_Estatisticas_2019_2026.xlsx`, com as planilhas `Comparativo 2019-2026` e `Metodologia e filtros`. Respeita o recorte e a ordenação da tabela estatística, incluindo macrorregião e metadados dos filtros. Células vazias indicam ausência de dado ou base zero para variação relativa; zero continua sendo valor válido.
 
 ## Fontes e Mapeamento
 
@@ -107,6 +125,7 @@ O aplicativo utiliza os arquivos locais preparados a partir das bases; não cons
 | Série histórica denominada Pobreza PBF 2019 | [Pessoas inscritas no Cadastro Único por faixa de renda per capita](https://dados.gov.br/dados/conjuntos-dados/pessoas-inscritas-no-cadastro-unico-por-faixa-de-renda-per-capita), Portal Brasileiro de Dados Abertos |
 | População estimada utilizada nos cenários 2019 e 2026 | [Tabela SIDRA 6579: População residente estimada](https://sidra.ibge.gov.br/tabela/6579), IBGE |
 | Programas sociais estaduais | Base consolidada local `output/info_Programas_Sociais.json` |
+| Macrorregião SUAS | Campo `macrorregiao_sus` de `output/info_tabcad.json`; referência exibida: Resolução CIB n. 07/2026 - Diário Oficial - GO n. 24.803 |
 | Limites municipais temáticos | Malha local `output/municipios_GO.topojson` |
 
 
@@ -117,6 +136,7 @@ Os três arquivos de indicadores são objetos indexados pelo código IBGE munici
 | Arquivo | Campos de entrada relevantes | Propriedades internas / finalidade |
 | --- | --- | --- |
 | `output/info_tabcad.json` | `município` | Nome municipal preferencial |
+| `output/info_tabcad.json` | `macrorregiao_sus` | Macrorregião SUAS; filtro global e identificação regional nas Estatísticas |
 | `output/info_tabcad.json` | `populacao_estimada` | `população`, usada no cenário atual/2026 |
 | `output/info_tabcad.json` | `ext_pob`, `pob` | Quantidades de extrema pobreza e pobreza |
 | `output/info_tabcad.json` | `pob_pbf` | `pob_p1_p2`, quantidade denominada Pobreza PBF |
@@ -164,6 +184,8 @@ Os cálculos preservam a precisão; o arredondamento ocorre na exibição em for
 
 ### Pobreza PBF: 2026 e 2019
 
+Pobreza PBF representa pessoas inscritas por faixa de renda, não beneficiários do Bolsa Família. São dois retratos, não uma série anual: a base atual é identificada como CadÚnico agosto/2026; o mês da contagem de 2019 não está informado. “População 2026” denomina o cenário atual, mas o arquivo não explicita o ano efetivo de referência dessa estimativa. Mudanças cadastrais, de renda e de estimativa populacional podem afetar a comparação.
+
 ```text
 Taxa 2019 = 100 × PBF_2019 / população_2019
 Taxa 2026 = 100 × pob_p1_p2 / população
@@ -199,6 +221,7 @@ O mesmo critério sinaliza crescimento e queda: no card, destaca a variação pe
 - JSONs de indicadores devem ser objetos, com registros municipais e campos obrigatórios presentes.
 - Contagens conhecidas devem ser inteiros seguros não negativos. Strings numéricas não são aceitas na base; `null` é permitido para contagem desconhecida, não para população.
 - Populações devem ser inteiros seguros maiores que zero; o nome final deve ser uma string não vazia.
+- O campo obrigatório `macrorregiao_sus` deve ser uma string não vazia; a chave técnica é preservada embora o rótulo da interface seja Macrorregião SUAS.
 - Os códigos geométricos precisam seguir o padrão esperado e não podem se repetir; cada geometria deve ter os três registros e cada registro deve ter geometria.
 - A malha deve conter polígonos ou multipolígonos, com coordenadas finitas dentro dos limites de longitude/latitude e anéis fechados com pelo menos quatro posições.
 - Falhas HTTP, JSON inválido ou violações do contrato interrompem a inicialização e são apresentadas como erro, em vez de descartar silenciosamente municípios.
@@ -261,9 +284,17 @@ A listagem detalhada calcula a correlação de Pearson para o recorte exibido. O
 
 A listagem permite ordenação por coluna. O seletor municipal e seu botão Limpar controlam a seleção compartilhada, não o recorte dos filtros. O zoom visual varia de 75% a 250%, com restauração para 100%.
 
+### Correlação nas Estatísticas PBF
+
+É uma análise distinta da Correlação de Programas Sociais: `X = 100 × (população 2026 − população 2019) / população 2019` e `Y = Taxa PBF 2026 − Taxa PBF 2019`, em p.p. Pearson usa os pares municipais válidos do recorte, sem ponderação populacional, e fica indisponível com menos de três pares ou variância nula em algum eixo.
+
+O enquadramento central de 95% usa os percentis 2,5 e 97,5 de cada eixo, com interpolação. Altera somente os eixos e os pontos visíveis: Pearson, tabela e exportação mantêm a amostra completa do recorte. Não é intervalo de confiança nem garante que 95% dos pontos fiquem visíveis conjuntamente; com menos de três pares, usa o enquadramento completo.
+
+A população também compõe o denominador da taxa PBF e pode influenciar a associação observada. A correlação não demonstra causalidade, impacto de políticas ou significância estatística.
+
 ### Alcance e Limitações
 
-- A análise espacial implementada é a visualização coroplética por município. Não há Moran global/local, LISA, matriz de vizinhança, defasagem espacial ou testes de agrupamentos espaciais.
+- A análise espacial inclui a visualização coroplética municipal e o cartograma de círculos proporcionais. Não há Moran global/local, LISA, matriz de vizinhança, defasagem espacial ou testes de agrupamentos espaciais.
 
 ## Estrutura
 
@@ -282,8 +313,11 @@ A listagem permite ordenação por coluna. O seletor municipal e seu botão Limp
 |   |   |-- app.js                # Coordenação dos módulos e filtros
 |   |   |-- controls.js           # Controles da interface e ajuda contextual
 |   |   |-- map.js                # Mapa, legenda, estilos e tooltips
+|   |   |-- cartogram.js          # Geometria e disposição dos círculos proporcionais
 |   |   |-- panel.js              # Resumo, cards e gráficos do painel direito
 |   |   |-- scatter.js            # Visualização de correlação
+|   |   |-- statistics-data.js    # Cálculos comparativos e enquadramento estatístico
+|   |   |-- statistics.js         # Gráficos, tabela e exportação das Estatísticas PBF
 |   |   `-- table.js              # Tabela, ordenação e exportação
 |   `-- vendor/                   # Bibliotecas, imagens e licenças locais
 |-- output/
@@ -299,6 +333,10 @@ A listagem permite ordenação por coluna. O seletor municipal e seu botão Limp
 |-- tests/
 |   |-- core.test.js              # Testes unitários
 |   |-- dashboard.spec.js         # Fluxos funcionais no navegador
+|   |-- statistics.test.js        # Cálculos das Estatísticas PBF
+|   |-- statistics.spec.js        # Filtros, gráficos e exportação das Estatísticas
+|   |-- cartogram.test.js         # Geometria do cartograma
+|   |-- cartogram.spec.js         # Transições e interação do cartograma
 |   `-- chart-lifecycle.spec.js   # Ciclo de vida e interação dos gráficos
 |-- .github/workflows/pages.yml   # Testes, build e publicação
 |-- playwright.config.js
@@ -308,3 +346,15 @@ A listagem permite ordenação por coluna. O seletor municipal e seu botão Limp
 ```
 
 `dist/`, `node_modules/` e os relatórios de testes são artefatos gerados e não constituem a fonte da aplicação.
+
+## Validação e Documentação
+
+```sh
+npm test
+npm run build
+npx playwright test
+```
+
+Para a primeira execução dos testes de navegador, instale o Chromium com `npx playwright install chromium`. O Playwright testa a prévia de `dist/`; execute o build após alterar os fontes para não validar uma cópia antiga.
+
+O Guia de uso e metodologia exibido no botão Sobre o painel e metodologia tem conteúdo próprio em `index.html`, organizado a partir deste README. Não há conversão automática de Markdown: alterações de recursos, fontes ou critérios metodológicos devem ser refletidas nos dois arquivos. O guia omite deliberadamente instruções de desenvolvimento, execução e estrutura do repositório.

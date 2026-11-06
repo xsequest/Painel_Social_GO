@@ -451,7 +451,7 @@
               <div class="about-table-wrap" role="region" aria-label="Abas e visualizações disponíveis" tabindex="0"><table>
                 <thead><tr><th scope="col">Aba</th><th scope="col">Indicadores e controles</th><th scope="col">Visualizações</th></tr></thead>
                 <tbody>
-                  <tr><th scope="row">CadÚnico</th><td>Extrema Pobreza, Pobreza e Pobreza PBF; escolha de paleta.</td><td>Mapa e Tabela</td></tr>
+                  <tr><th scope="row">CadÚnico</th><td>Extrema Pobreza, Pobreza e Pobreza PBF; escolha de paleta.</td><td>Mapa e Tabela; Estatísticas somente em Pobreza PBF</td></tr>
                   <tr><th scope="row">Programas Sociais</th><td>Programa, status cadastral, métrica e paleta; modalidade própria para PLES.</td><td>Mapa, Tabela e Correlação</td></tr>
                 </tbody>
               </table></div>
@@ -475,17 +475,29 @@
               <p><strong>PLES</strong> usa modalidades das colunas <code>PLES_*</code>, ocultando os controles gerais de status e métrica. <strong>CAUT</strong> permite somente Ativo.</p>
               <details><summary>Programas disponíveis</summary><p>Todos Programas; Mães de Goiás; Aprendiz do Futuro; Dignidade; Goiás Por Elas; Goiás + Inclusivo; Passe Livre Estudantil; Carteira de Identificação do Autista; Passe Livre da Pessoa com Deficiência; Passaporte da Pessoa Idosa.</p></details>
               <h4>Filtros e seleção</h4>
-              <p>Busca por nome, status do indicador e população são combinados entre as visualizações. A busca ignora acentos e maiúsculas/minúsculas; não busca pelo código IBGE.</p>
+              <p>Busca por nome, <strong>Macrorregião SUAS</strong>, status do indicador e população são combinados entre as visualizações. A busca ignora acentos e maiúsculas/minúsculas; não busca pelo código IBGE.</p>
               <ul>
+                <li>Macrorregião SUAS oferece Centro Norte, Centro Sudeste, Centro-Oeste, Nordeste e Sudoeste, além de Todas as macrorregiões. As opções vêm do campo <code>macrorregiao_sus</code> da base atual.</li>
                 <li>Faixas: menos de 20.000; de 20.000 a 100.000, inclusive; acima de 100.000; ou intervalo personalizado. Apesar do rótulo “Até 20 mil”, exatamente 20.000 pertence à faixa intermediária.</li>
                 <li>Limites personalizados são inclusivos e opcionais. Entradas inválidas preservam os últimos limites válidos.</li>
                 <li>No PBF 2019, o filtro usa a população de 2019. Em 2026, Diff e demais indicadores, usa a população atual.</li>
                 <li>Selecionar não é filtrar: a seleção pode permanecer fora do recorte. A Correlação informa isso no seletor; a tabela permite selecionar, mas não realça a linha como o mapa realça o polígono.</li>
-                <li><strong>Limpar</strong> redefine busca, criticidade e população, sem mudar indicador, programa ou seleção. Trocar a aba principal ou clicar no fundo do mapa limpa a seleção municipal.</li>
+                <li><strong>Limpar</strong> redefine busca, macrorregião, criticidade e população, sem mudar indicador, programa ou seleção. Trocar a aba principal ou clicar no fundo do mapa limpa a seleção municipal.</li>
               </ul>
               <h4>Tabela e exportação</h4>
               <p>A tabela permite ordenação por cabeçalho, busca sincronizada e seleção municipal. Nos programas, mostra benefícios, pessoas e percentual de pessoas, independentemente da métrica da cor do mapa. PLES e os modos históricos de PBF têm colunas próprias.</p>
-              <p>A exportação <strong>XLSX</strong> respeita filtros, configuração e ordenação, gerando <code>Dados Numericos</code>, <code>Formatado</code> e <code>Metadados</code>. A biblioteca é carregada sob demanda. Exporta as colunas da tabela, não todos os gráficos. Não há exportação nativa de imagens, CSV ou PDF.</p>
+              <p>A exportação <strong>XLSX da tabela principal</strong> respeita filtros, configuração e ordenação, gerando <code>Dados Numericos</code>, <code>Formatado</code> e <code>Metadados</code>. A biblioteca é carregada sob demanda. Exporta as colunas da tabela, não todos os gráficos. Não há exportação nativa de imagens, CSV ou PDF.</p>
+              <h4>Estatísticas de Pobreza PBF</h4>
+              <p>Acesse <strong>CadÚnico → Pobreza PBF → Estatísticas</strong>. A visualização compara 2019 e 2026 simultaneamente, independentemente do modo 2019, 2026 ou Diff do mapa. Ao sair de Pobreza PBF, Estatísticas deixa de estar disponível.</p>
+              <ul>
+                <li>Resumo do recorte pareado: população, contagem PBF e taxas agregadas, com quantidade de municípios por redução, aumento ou estabilidade da taxa.</li>
+                <li>Ranking de até 15 municípios: taxas em gráfico dumbbell (dois pontos ligados), variação populacional em porcentagem ou diferença PBF em pessoas.</li>
+                <li>Gráfico waterfall (cascata) das contribuições municipais à diferença total de pessoas na faixa de renda PBF.</li>
+                <li>Correlação entre variação populacional (%) e diferença da taxa PBF (p.p.), com enquadramento completo ou central de 95% por eixo.</li>
+                <li>Tabela comparativa completa e ordenável. Os gráficos oferecem tooltips por ponteiro, foco de teclado ou toque.</li>
+              </ul>
+              <p>Os filtros globais definem a amostra. Status e população usam 2019 quando esse ano está selecionado no mapa; em 2026 ou Diff, usam 2026. Mudar essa referência pode alterar o recorte, mas não os dois anos comparados. O resumo agregado usa somente municípios com comparação completa; ausências não viram zero.</p>
+              <p>A exportação própria gera <code>Pobreza_PBF_Estatisticas_2019_2026.xlsx</code>, com <code>Comparativo 2019-2026</code> e <code>Metodologia e filtros</code>. Respeita recorte e ordenação da tabela estatística, incluindo macrorregião e metadados dos filtros. Células vazias indicam ausência ou base zero para variação relativa; zero é válido.</p>
             </section>
 
             <section id="about-sources" class="about-section" role="tabpanel" aria-labelledby="about-tab-sources" tabindex="0" hidden>
@@ -500,6 +512,7 @@
                   <tr><th scope="row">Pobreza PBF 2019</th><td><a href="https://dados.gov.br/dados/conjuntos-dados/pessoas-inscritas-no-cadastro-unico-por-faixa-de-renda-per-capita" target="_blank" rel="noopener noreferrer">Pessoas inscritas no Cadastro Único por faixa de renda per capita <span class="about-new-tab">(nova aba)</span></a>, Portal Brasileiro de Dados Abertos</td></tr>
                   <tr><th scope="row">População dos cenários 2019 e 2026</th><td><a href="https://sidra.ibge.gov.br/tabela/6579" target="_blank" rel="noopener noreferrer">Tabela SIDRA 6579: População residente estimada <span class="about-new-tab">(nova aba)</span></a>, IBGE</td></tr>
                   <tr><th scope="row">Programas sociais estaduais</th><td>Base consolidada local <code>output/info_Programas_Sociais.json</code></td></tr>
+                  <tr><th scope="row">Macrorregião SUAS</th><td>Campo <code>macrorregiao_sus</code> de <code>output/info_tabcad.json</code>; referência exibida no filtro: Resolução CIB n. 07/2026 - Diário Oficial - GO n. 24.803</td></tr>
                   <tr><th scope="row">Limites municipais temáticos</th><td>Malha local <code>output/municipios_GO.topojson</code></td></tr>
                 </tbody>
               </table></div>
@@ -511,6 +524,7 @@
                   <thead><tr><th scope="col">Arquivo em output/</th><th scope="col">Entrada</th><th scope="col">Uso interno</th></tr></thead>
                   <tbody>
                     <tr><th scope="row">info_tabcad.json</th><td><code>município</code></td><td>Nome municipal preferencial</td></tr>
+                    <tr><th scope="row">info_tabcad.json</th><td><code>macrorregiao_sus</code></td><td>Macrorregião SUAS; filtro global e identificação regional nas Estatísticas</td></tr>
                     <tr><th scope="row">info_tabcad.json</th><td><code>populacao_estimada</code></td><td><code>população</code>, cenário atual/2026</td></tr>
                     <tr><th scope="row">info_tabcad.json</th><td><code>ext_pob</code>, <code>pob</code></td><td>Contagens de extrema pobreza e pobreza</td></tr>
                     <tr><th scope="row">info_tabcad.json</th><td><code>pob_pbf</code></td><td><code>pob_p1_p2</code>, Pobreza PBF</td></tr>
@@ -547,6 +561,7 @@
               </div>
               <p><strong>Zero é conhecido; <code>null</code> é desconhecido</strong> e não vira zero. Populações precisam ser positivas. As razões não são limitadas artificialmente a 100%, nem toda contagem é garantidamente menor que a população. A precisão é preservada no cálculo; o arredondamento ocorre na exibição brasileira, normalmente com duas casas para percentuais.</p>
               <h4>Pobreza PBF: 2026 e 2019</h4>
+              <p><strong>Pobreza PBF representa pessoas inscritas por faixa de renda, não beneficiários do Bolsa Família.</strong> São dois retratos, não uma série anual: a base atual é identificada como CadÚnico agosto/2026; o mês da contagem de 2019 não está informado. “População 2026” nomeia o cenário atual, mas o arquivo não explicita o ano efetivo da estimativa. Mudanças cadastrais, de renda e de estimativa populacional podem afetar a comparação.</p>
               <div class="about-formula">
                 <p>Taxa 2019 = 100 × PBF_2019 / população_2019</p>
                 <p>Taxa 2026 = 100 × pob_p1_p2 / população</p>
@@ -571,6 +586,7 @@
                   <li>JSONs devem ser objetos, com registros municipais e campos obrigatórios.</li>
                   <li>Contagens conhecidas devem ser inteiros seguros não negativos; strings numéricas não são aceitas. <code>null</code> é permitido para contagens, não para população.</li>
                   <li>Populações devem ser inteiros seguros positivos; o nome final deve ser uma string não vazia.</li>
+                  <li>O campo obrigatório <code>macrorregiao_sus</code> deve ser uma string não vazia; a chave técnica é preservada embora a interface use Macrorregião SUAS.</li>
                   <li>Códigos geométricos devem seguir o padrão, sem repetição, com correspondência completa entre geometria e as três bases.</li>
                   <li>Polígonos ou multipolígonos devem ter coordenadas finitas nos limites de longitude/latitude, com anéis fechados de pelo menos quatro posições.</li>
                   <li>Falhas HTTP, JSON inválido ou violações do contrato interrompem a inicialização com erro, em vez de descartar municípios silenciosamente.</li>
@@ -608,7 +624,7 @@
                 <li>No Diff PBF, a escala é simétrica pelas magnitudes em p.p. De <strong>−2 a +2 p.p., inclusive, não há preenchimento</strong>. É regra visual, não intervalo de confiança ou teste de significância. Ausências recebem tratamento próprio.</li>
                 <li>Variações PBF positivas usam rosa/vermelho; negativas, verde. A diferença populacional em pessoas é neutra; o percentual fica laranja acima da referência de magnitude. O tooltip avisa mudanças populacionais acentuadas nos modos 2019, 2026 e Diff.</li>
               </ul>
-              <h4>Correlação descritiva</h4>
+              <h4>Correlação descritiva de Programas Sociais</h4>
               <div class="about-formula">
                 <p>X = 100 × extrema pobreza / população municipal</p>
                 <p>Y = 100 × métrica selecionada do programa / população municipal</p>
@@ -616,7 +632,15 @@
               <p>O eixo Y é sempre percentual, mesmo com mapa absoluto. Só entram municípios com ambos os valores válidos.</p>
               <p>As linhas dos quadrantes são médias aritméticas municipais da base completa com pares válidos, sem ponderação populacional. Filtros alteram os pontos, não as referências. Igualdade à média entra na categoria alta. Os quadrantes combinam alta/baixa extrema pobreza com alta/baixa proporção do programa no próprio município.</p>
               <p>A listagem calcula <strong>Pearson para o recorte exibido</strong>, indisponível com menos de dois pares ou variância nula. Permite ordenação por coluna; seleção e Limpar controlam o município compartilhado, não os filtros. Há tooltips, ampliação e zoom visual de 75% a 250%, restaurável para 100%.</p>
-              <aside class="about-note"><strong>Alcance e limitações</strong><p>A análise espacial é a visualização coroplética municipal. Não há Moran global/local, LISA, matriz de vizinhança, defasagem espacial ou testes de agrupamentos. A correlação não realiza regressão, cálculo de p-valor ou intervalo de confiança e não comprova causalidade.</p></aside>
+              <h4>Correlação nas Estatísticas PBF</h4>
+              <div class="about-formula">
+                <p>X = 100 × (população 2026 − população 2019) / população 2019</p>
+                <p>Y = Taxa PBF 2026 − Taxa PBF 2019, em p.p.</p>
+              </div>
+              <p>É uma análise distinta da Correlação de Programas Sociais. Pearson usa os pares municipais válidos do recorte, sem ponderação populacional, e fica indisponível com menos de três pares ou variância nula em algum eixo.</p>
+              <p>O enquadramento central de 95% usa os percentis 2,5 e 97,5 de cada eixo, com interpolação. Altera somente os eixos e os pontos visíveis: <strong>Pearson, tabela e exportação mantêm a amostra completa do recorte</strong>. Não é intervalo de confiança nem garante 95% dos pontos visíveis conjuntamente. Com menos de três pares, usa o enquadramento completo.</p>
+              <p>A população também integra o denominador da taxa PBF e pode influenciar a associação observada. Correlação não demonstra causalidade, impacto de políticas ou significância estatística.</p>
+              <aside class="about-note"><strong>Alcance e limitações</strong><p>A análise espacial inclui a visualização coroplética municipal e o cartograma de círculos proporcionais. O deslocamento dos círculos não representa mudança geográfica dos municípios. Não há Moran global/local, LISA, matriz de vizinhança, defasagem espacial ou testes de agrupamentos. A correlação não realiza regressão, cálculo de p-valor ou intervalo de confiança e não comprova causalidade.</p></aside>
             </section>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 
 const route = 'index.html';
 async function ready(page) {
@@ -55,6 +56,27 @@ test('about guide opens below the version, navigates by keyboard and restores fo
   await page.locator('#about-dialog').click({ position: { x: 2, y: 2 } });
   await expect(dialog).toBeHidden();
   expect(errors).toEqual([]);
+});
+
+test('about guide and README document current resources and methodology', async ({ page }) => {
+  const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8');
+  await ready(page);
+  await page.locator('#btn-about').click();
+  const topics = [
+    ['Navegação e Recursos', '#about-navigation', ['Macrorregião SUAS', 'Estatísticas de Pobreza PBF', 'Ver círculos', 'Comparativo 2019-2026', 'Metodologia e filtros']],
+    ['Fontes e Mapeamento', '#about-sources', ['Resolução CIB n. 07/2026 - Diário Oficial - GO n. 24.803', 'macrorregiao_sus']],
+    ['Cálculo e Validações', '#about-calculations', ['não beneficiários do Bolsa Família', 'não uma série anual', 'ano efetivo']],
+    ['Classificação e Análise Espacial', '#about-analysis', ['Correlação nas Estatísticas PBF', 'menos de três pares', 'percentis 2,5 e 97,5', 'cartograma de círculos proporcionais']]
+  ];
+  for (const [tab, selector, terms] of topics) {
+    await page.getByRole('tab', { name: tab, exact: true }).click();
+    const section = page.locator(selector);
+    await expect(section).toBeVisible();
+    for (const term of terms) {
+      await expect(section).toContainText(term);
+      expect(readme).toContain(term);
+    }
+  }
 });
 
 for (const width of [360, 768, 1366]) {
@@ -727,7 +749,7 @@ test('criticity help supports keyboard and contextual explanations in both panel
 test('macrorregiao label has the CIB resolution tooltip', async ({ page }) => {
   await ready(page);
   await expect(page.locator('label[for="filter-region"]'))
-    .toHaveAttribute('title', 'Resolução CIB n. 07/2026 - Diário Oicial - GO n. 24.803');
+    .toHaveAttribute('title', 'Resolução CIB n. 07/2026 - Diário Oficial - GO n. 24.803');
 });
 
 test.describe('mobile criticity help', () => {
